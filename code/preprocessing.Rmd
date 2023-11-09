@@ -47,8 +47,8 @@ magda.data <- magda.data[!magda.data$coding == "", ]
 
 Remove UTF8 characters which do not represent actual signs on the objects, i.e "punctuation".
 ```{r}
-# remove delimiters (i.e. '_', '!')
-coding.clean <- gsub('[_!?]', '', magda.data$coding)
+# remove special characters 
+coding.clean <- gsub('[!?]', '', magda.data$coding)
 # remove sign strings which are not discrete, i.e. overlapping sign types 
 # -> indicated by parentheses '()' 
 coding.clean <- gsub("\\([^()]*\\)", "", coding.clean)
@@ -85,8 +85,8 @@ aur.data <- aur.data[!aur.data$coding == "", ]
 
 Remove UTF8 characters which do not represent actual signs on the objects, i.e "punctuation".
 ```{r}
-# remove delimiters (i.e. '_', '!')
-coding.clean <- gsub('[_!?]', '', aur.data$coding)
+# remove special characters
+coding.clean <- gsub('[!?]', '', aur.data$coding)
 # remove sign strings which are not discrete, i.e. overlapping sign types 
 # -> indicated by parentheses '()' 
 coding.clean <- gsub("\\([^()]*\\)", "", coding.clean)
