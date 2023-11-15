@@ -196,7 +196,7 @@ magda.data &lt;- select(magda.data, c(&#39;VanhaerenDErrico2003_Fig.6&#39;, &#39
 # remove rows for which there is no sign coding
 magda.data &lt;- magda.data[!magda.data$coding == &quot;&quot;, ]</code></pre>
 <p>Remove UTF8 characters which do not represent actual signs on the objects, i.e “punctuation”.</p>
-<pre class="r"><code># remove special characters 
+<pre class="r"><code># remove some special characters 
 coding.clean &lt;- gsub(&#39;[!?]&#39;, &#39;&#39;, magda.data$coding)
 # remove sign strings which are not discrete, i.e. overlapping sign types 
 # -&gt; indicated by parentheses &#39;()&#39; 

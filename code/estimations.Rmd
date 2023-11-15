@@ -1,7 +1,7 @@
 ---
 title: "Estimations of Quantitative Features"
 author: ""
-date: "08/11/2023"
+date: "15/11/2023"
 output:
   pdf_document: default
   html_document: default
@@ -62,7 +62,11 @@ for (i in 1:nrow(all.samples)){
   
   # split strings into UTF-8 characters
   chars <- unlist(strsplit(coding_sample, ""))
-  
+  # preprocess text with bag-of-words normalization
+  # note: this is an important step! Without it, entropy rate estimation will fail
+  # to yield realistic results due to issues with processing special characters.
+  chars <- PreprocessText(chars)
+    
   # unigram entropy estimation
   # calculate unigram entropy for characters
   chars.df <- as.data.frame(table(chars))

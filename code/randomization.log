@@ -1,9 +1,9 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2023.6.6)  1 NOV 2023 14:59
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2023.6.6)  15 NOV 2023 10:59
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**preprocessing.tex
-(./preprocessing.tex
+**randomization.tex
+(./randomization.tex
 LaTeX2e <2017-04-15>
 Babel <3.18> and hyphenation patterns for 34 language(s) loaded.
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -813,8 +813,8 @@ Package graphics Info: Driver file: pdftex.def on input line 99.
 \Gin@req@height=\dimen129
 \Gin@req@width=\dimen130
 )
-No file preprocessing.aux.
-\openout1 = `preprocessing.aux'.
+No file randomization.aux.
+\openout1 = `randomization.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 109.
 LaTeX Font Info:    ... okay on input line 109.
@@ -968,18 +968,11 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-LaTeX Font Info:    Try loading font information for T1+lmtt on input line 124.
+LaTeX Font Info:    Try loading font information for T1+lmtt on input line 127.
 
 (/usr/share/texmf/tex/latex/lm/t1lmtt.fd
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-LaTeX Font Info:    Try loading font information for TS1+lmtt on input line 159
-.
-(/usr/share/texmf/tex/latex/lm/ts1lmtt.fd
-File: ts1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
-) [1
-
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 
 ! Package inputenc Error: Unicode char ⚹ (U+26B9)
 (inputenc)                not set up for use with LaTeX.
@@ -988,15 +981,15 @@ See the inputenc package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.193 \end{verbatim}
+l.172 \end{verbatim}
                      
 Here is how much of TeX's memory you used:
- 13339 strings out of 494283
- 192194 string characters out of 6166779
- 295776 words of memory out of 5000000
- 16611 multiletter control sequences out of 15000+600000
- 36596 words of font info for 49 fonts, out of 8000000 for 9000
+ 13284 strings out of 494283
+ 191364 string characters out of 6166779
+ 297776 words of memory out of 5000000
+ 16572 multiletter control sequences out of 15000+600000
+ 33069 words of font info for 47 fonts, out of 8000000 for 9000
  331 hyphenation exceptions out of 8191
- 34i,5n,38p,396b,373s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 34i,4n,38p,242b,332s stack positions out of 5000i,500n,10000p,200000b,80000s
 
 !  ==> Fatal error occurred, no output PDF file produced!

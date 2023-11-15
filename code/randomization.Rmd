@@ -1,7 +1,7 @@
 ---
 title: "Randomization"
 author: ''
-date: "11/1/2023"
+date: "15/1/2023"
 output:
   html_document: default
   pdf_document: default
@@ -45,17 +45,22 @@ Concatenate and randomize the sign strings on Magdalenian teeth.
 # choose observations based on "certainty" factor 
 mag <- mag[mag$certainty == "very certain" |
             mag$certainty == "certain" ,]
+# add length in characters
+mag$nchar <- nchar(mag$coding_clean)
+# get average number of signs on teeth
+mean(mag$nchar) # ca. 4
 
-# choose number of randomizations
+# choose number of random samples
 n = 100
 # initialize data frame
 mag.sample <- data.frame(id = numeric(0), coding_sample = character(0))
 # run loop to randomize, concatenate and safe in data frame
 for (i in 1:n){
-  # random sampling
-  coding_sample <- sample(mag$coding_clean)
+  # random sampling, choose teeth randomly, the size is here chosen
+  # to give c. 100 signs (avg. 4 per tooth) per random sample 
+  coding_sample <- sample(mag$coding_clean, size = 25)
   # concatenations using underscore
-  coding_sample <- paste(coding_sample, collapse = " _ ")
+  coding_sample <- paste(coding_sample, collapse = "_")
   id <- i
   # store in local data frame
   local.df <- data.frame(id, coding_sample)
@@ -91,13 +96,13 @@ aur.sample <- data.frame(id = numeric(0), coding_sample = character(0))
 # run loop to randomize, concatenate and safe in data frame
 for (i in 1:n){
   # random sampling
-  # note that 16 strings are here chosen since this will give
-  # an expected length of c. 220 signs (similar to the Magdalenian material)
-  coding_sample <- sample(aur$coding_clean, size = 16)
+  # note that 7 strings are here chosen since this will give
+  # an expected length of c. 100 signs
+  coding_sample <- sample(aur$coding_clean, size = 7)
   # concatenations using underscore
-  coding_sample <- paste(coding_sample, collapse = " _ ")
+  coding_sample <- paste(coding_sample, collapse = "_")
   # replace multiple underscores by single underscore
-  coding_sample <- gsub("( _ )+", " _ ", coding_sample)
+  coding_sample <- gsub("( _ )+", "_", coding_sample)
   # get id
   id <- i
   # store in local data frame

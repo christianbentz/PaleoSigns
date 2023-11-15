@@ -3,8 +3,8 @@ title: "Preprocessing"
 author: ''
 date: "11/1/2023"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -47,7 +47,7 @@ magda.data <- magda.data[!magda.data$coding == "", ]
 
 Remove UTF8 characters which do not represent actual signs on the objects, i.e "punctuation".
 ```{r}
-# remove special characters 
+# remove some special characters 
 coding.clean <- gsub('[!?]', '', magda.data$coding)
 # remove sign strings which are not discrete, i.e. overlapping sign types 
 # -> indicated by parentheses '()' 
@@ -56,7 +56,7 @@ coding.clean <- gsub("\\([^()]*\\)", "", coding.clean)
 # -> indicated by square brackets '[]' 
 coding.clean <- gsub("\\[(.*?)\\]", "", coding.clean)
 # print for visual inspection
-print(coding.clean)
+# print(coding.clean)
 
 # add column to original data frame again
 magda.data$coding_clean <- coding.clean
@@ -94,7 +94,7 @@ coding.clean <- gsub("\\([^()]*\\)", "", coding.clean)
 # -> indicated by square brackets '[]' 
 coding.clean <- gsub("\\[(.*?)\\]", "", coding.clean)
 # print for visual inspection
-print(coding.clean)
+#print(coding.clean)
 
 # add column to original data frame again
 aur.data$coding_clean <- coding.clean

@@ -1,0 +1,82 @@
+---
+title: "Plots with Feature Values"
+author: ""
+date: "15/11/2023"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load libraries
+If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
+```{r}
+library(stringr)
+library(ggplot2)
+library(ggrepel)
+library(dplyr)
+library(ggExtra)
+library(ggpubr)
+```
+
+# Load Data
+Load csv file with quantitative feature values for samples per row. Comparative sample: A comparative sample of feature values for languages across the world, as well as other symbolic and non-symbolic sign sequences, is loaded here too. Note that the feature values were calculated as part of another Github project on ``Natural Language Fingerprints'' (NaLaFi), and published in Bentz (2023). 
+```{r}
+upperPal <- read.csv("~/Github/UpperPalCombinatorics/results/features.csv")
+# select columns
+upperPal <- select(upperPal, c('period','num.char','huni.chars', 'hrate.chars', 'ttr.chars', 'rm.chars'))
+# change column names
+colnames(upperPal) <- c('subcorpus','num.char','huni.chars', 'hrate.chars', 'ttr.chars', 'rm.chars')
+
+# read feature values for languages and other sign systems
+nalafi <- read.csv("~/Github/NaLaFi/results/features.csv")
+# select columns
+nalafi <- select(nalafi, c('subcorpus','num.char','huni.chars', 'hrate.chars', 'ttr.chars', 'rm.chars'))
+# select only data with 100 chars
+nalafi <- nalafi[nalafi$num.char == 100, ]
+
+# combine the data frames
+estimations.df <- rbind(upperPal, nalafi)
+nrow(estimations.df)
+
+# select only certain subcorpora for plotting
+estimations.df.selected <- estimations.df[estimations.df$subcorpus == "aurignacian"|
+                                          estimations.df$subcorpus == "magdalenian"|
+                                          estimations.df$subcorpus == "teddi", ]
+```
+## Entropy rate vs. unigram entropy
+```{r, fig.width = 5, fig.height = 5, warning = FALSE}
+huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y = hrate.chars, 
+                                    colour = subcorpus, fill = subcorpus)) + 
+  geom_point(alpha = 0.3, size  = 1) +
+  labs(x = "Unigram entropy for characters", y = "Entropy rate for characters") #+
+  #theme(legend.position = c(.8,.2))
+  #facet_wrap(~subcorpus)
+huni.hrate.chars.plot <- ggMarginal(huni.hrate.chars.plot, type = "histogram", colour = "white", 
+                                      fill = "light grey")
+huni.hrate.chars.plot
+```
+
+
+## TTR vs. repetition rate
+```{r, fig.width = 5, fig.height = 5, warning = FALSE}
+ttr.rm.chars.plot <- ggplot(estimations.df.selected, aes(x = ttr.chars, y = rm.chars, 
+                                    colour = subcorpus)) + 
+  geom_point(alpha = 0.3, size  = 1) +
+  labs(x = "TTR for characters", y = "Repetition rate for characters") #+
+  #theme(legend.position = c(.8,.2))
+  #facet_wrap(~subcorpus)
+ttr.rm.chars.plot <- ggMarginal(ttr.rm.chars.plot, type = "histogram", colour = "white", 
+                                      fill = "light grey")
+ttr.rm.chars.plot
+```
+
+## Safe complete figure to file
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/huni_hrate_chars.pdf", huni.hrate.chars.plot, dpi = 300, width = 5, height = 5, device = cairo_pdf)
+```
+
+

@@ -162,7 +162,7 @@ pre code {
 
 <h1 class="title toc-ignore">Randomization</h1>
 <h4 class="author"></h4>
-<h4 class="date">11/1/2023</h4>
+<h4 class="date">15/1/2023</h4>
 
 </div>
 
@@ -225,17 +225,22 @@ head(aur)</code></pre>
 <pre class="r"><code># choose observations based on &quot;certainty&quot; factor 
 mag &lt;- mag[mag$certainty == &quot;very certain&quot; |
             mag$certainty == &quot;certain&quot; ,]
-
-# choose number of randomizations
+# add length in characters
+mag$nchar &lt;- nchar(mag$coding_clean)
+# get average number of signs on teeth
+mean(mag$nchar) # ca. 4</code></pre>
+<pre><code>## [1] 4.03125</code></pre>
+<pre class="r"><code># choose number of random samples
 n = 100
 # initialize data frame
 mag.sample &lt;- data.frame(id = numeric(0), coding_sample = character(0))
 # run loop to randomize, concatenate and safe in data frame
 for (i in 1:n){
-  # random sampling
-  coding_sample &lt;- sample(mag$coding_clean)
+  # random sampling, choose teeth randomly, the size is here chosen
+  # to give c. 100 signs (avg. 4 per tooth) per random sample 
+  coding_sample &lt;- sample(mag$coding_clean, size = 25)
   # concatenations using underscore
-  coding_sample &lt;- paste(coding_sample, collapse = &quot; _ &quot;)
+  coding_sample &lt;- paste(coding_sample, collapse = &quot;_&quot;)
   id &lt;- i
   # store in local data frame
   local.df &lt;- data.frame(id, coding_sample)
@@ -250,7 +255,7 @@ write.csv(mag.sample, &quot;~/Github/UpperPalCombinatorics/data/magdalenian/StGe
 <p>Simple statistics for the concatenated sign strings on Magdalenian teeth.</p>
 <pre class="r"><code># number of characters
 nchar(mag.sample$coding_sample[1])</code></pre>
-<pre><code>## [1] 222</code></pre>
+<pre><code>## [1] 127</code></pre>
 </div>
 <div id="swabian-jura" class="section level2">
 <h2>Swabian Jura</h2>
@@ -270,13 +275,13 @@ aur.sample &lt;- data.frame(id = numeric(0), coding_sample = character(0))
 # run loop to randomize, concatenate and safe in data frame
 for (i in 1:n){
   # random sampling
-  # note that 16 strings are here chosen since this will give
-  # an expected length of c. 220 signs (similar to the Magdalenian material)
-  coding_sample &lt;- sample(aur$coding_clean, size = 16)
+  # note that 7 strings are here chosen since this will give
+  # an expected length of c. 100 signs
+  coding_sample &lt;- sample(aur$coding_clean, size = 7)
   # concatenations using underscore
-  coding_sample &lt;- paste(coding_sample, collapse = &quot; _ &quot;)
+  coding_sample &lt;- paste(coding_sample, collapse = &quot;_&quot;)
   # replace multiple underscores by single underscore
-  coding_sample &lt;- gsub(&quot;( _ )+&quot;, &quot; _ &quot;, coding_sample)
+  coding_sample &lt;- gsub(&quot;( _ )+&quot;, &quot;_&quot;, coding_sample)
   # get id
   id &lt;- i
   # store in local data frame
