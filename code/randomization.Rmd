@@ -1,7 +1,7 @@
 ---
 title: "Randomization"
 author: ''
-date: "15/1/2023"
+date: "16/02/2024"
 output:
   html_document: default
   pdf_document: default
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Description
-This file enables randomization of sign strings which occur on different parts of an object (indicated by underscore `_'). We do not know the order of these strings (if any), hence they are randomized. In the case of the Magdalenian teeth of the Saint-Germain-la-Rivière burial, we consider them as one assemblage, that is, we concatenate them by also using underscores.
+This file enables concatenation and randomization of sign strings which occur on different parts of an object (indicated by underscore `_'). We do not know the order of these strings (if any), hence, if we want to combine them, they need to be randomized.
 
 # Session Info
 Give the session info (reduced).
@@ -25,68 +25,21 @@ sessionInfo()$R.version$platform
 
 # Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2"). 
-```{r, message=F}
+```{r, message = F}
 #library(stringr)
 ```
 
 # Load Data
 ```{r}
-mag <- read.csv("~/Github/UpperPalCombinatorics/data/magdalenian/StGermain_clean.csv")
-head(mag)
-aur <- read.csv("~/Github/UpperPalCombinatorics/data/aurignacian/swabianJura_clean.csv")
-head(aur)
+sign.data <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/signBase_clean.csv")
+head(sign.data)
 ```
 
-# Randomize and Concatenate
-
-## Magdalenian burial teeth
-Concatenate and randomize the sign strings on Magdalenian teeth.
+# Randomize
+Randomize sign sequences per object.
 ```{r}
-# choose observations based on "certainty" factor 
-mag <- mag[mag$certainty == "very certain" |
-            mag$certainty == "certain" ,]
-# add length in characters
-mag$nchar <- nchar(mag$coding_clean)
-# get average number of signs on teeth
-mean(mag$nchar) # ca. 4
+# split sequences on '_'
 
-# choose number of random samples
-n = 100
-# initialize data frame
-mag.sample <- data.frame(id = numeric(0), coding_sample = character(0))
-# run loop to randomize, concatenate and safe in data frame
-for (i in 1:n){
-  # random sampling, choose teeth randomly, the size is here chosen
-  # to give c. 100 signs (avg. 4 per tooth) per random sample 
-  coding_sample <- sample(mag$coding_clean, size = 25)
-  # concatenations using underscore
-  coding_sample <- paste(coding_sample, collapse = "_")
-  id <- i
-  # store in local data frame
-  local.df <- data.frame(id, coding_sample)
-  # append to global data frame
-  mag.sample <- rbind(mag.sample, local.df)
-}
-# safe to file
-write.csv(mag.sample, "~/Github/UpperPalCombinatorics/data/magdalenian/StGermain_randomized.csv", row.names = F)
-```
-
-## Simple Stats
-Simple statistics for the concatenated sign strings on Magdalenian teeth.
-```{r}
-# number of characters
-nchar(mag.sample$coding_sample[1])
-```
-
-## Swabian Jura
-Randomize and concatenate sign strings on objects of the Swabian Jura.
-```{r}
-# add length in characters
-aur$nchar <- nchar(aur$coding_clean)
-# exclude empty rows for codings
-aur <- aur[aur$nchar > 0, ]
-# get average number of signs on objects
-mean(aur$nchar) # ca. 14
 
 # randomize and concatenate sign strings
 # choose number of randomizations

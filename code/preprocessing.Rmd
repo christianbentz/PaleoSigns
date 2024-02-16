@@ -1,7 +1,7 @@
 ---
 title: "Preprocessing"
 author: ''
-date: "11/1/2023"
+date: "16/2/2024"
 output:
   pdf_document: default
   html_document: default
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Description
-This file enables preprocessing of paleolithic sign sequences from the Swabian Aurignacian and the Magdalenian ``necklace'' of the Saint-Germain-la-Rivière burial.
+This file enables preprocessing of upper-paleolithic sign sequences as published at https://www.signbase.org. The csv file with latest objects and sign codings can be downloaded from there.
 
 # Session Info
 Give the session info (reduced).
@@ -26,83 +26,42 @@ sessionInfo()$R.version$platform
 # Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2"). 
 ```{r, message=F}
-library(dplyr)
+#library(dplyr)
 ```
 
 # Preprocessing
-
-## Magdalenian
-Preprocessing and storage of cleaned file for signs of the Magdalenian ``necklace''.
-Load data from github repo and remove missing rows.
+Preprocessing and storage of cleaned file for signs. Load data from github repo and remove missing rows.
 ```{r}
 # load data from github repo
-magda.data <- read.csv(
-  "~/Github/UpperPalCombinatorics/data/magdalenian/StGermain_original.csv")
-# select columns
-magda.data <- select(magda.data, c('VanhaerenDErrico2003_Fig.6', 'DutkiewiczBentz2023',
-                                   'lateralization','position', 'coding', 'certainty'))
+sign.data <- read.csv(
+  "~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-02-16.csv")
+# remove certain columns
+sign.data <- subset(sign.data, select = -c(id, comments, short_description, references))
 # remove rows for which there is no sign coding
-magda.data <- magda.data[!magda.data$coding == "", ]
+sign.data <- sign.data[!sign.data$sign_coding == "", ]
 ```
 
 Remove UTF8 characters which do not represent actual signs on the objects, i.e "punctuation".
 ```{r}
 # remove some special characters 
-coding.clean <- gsub('[!?]', '', magda.data$coding)
+coding.clean <- gsub('[!?]', '', sign.data$sign_coding)
 # remove sign strings which are not discrete, i.e. overlapping sign types 
 # -> indicated by parentheses '()' 
 coding.clean <- gsub("\\([^()]*\\)", "", coding.clean)
 # remove sign strings which are not in linear order, i.e. those grouped in visual fields 
 # -> indicated by square brackets '[]' 
 coding.clean <- gsub("\\[(.*?)\\]", "", coding.clean)
-# print for visual inspection
-# print(coding.clean)
+# replace multiple underscores by single underscore
+coding.clean <- gsub("( _ )+", " _ ", coding.clean)
 
 # add column to original data frame again
-magda.data$coding_clean <- coding.clean
+sign.data$coding_clean <- coding.clean
 ```
 
 Safe to file.
 ```{r}
-write.csv(magda.data, 
-          file = "~/Github/UpperPalCombinatorics/data/magdalenian/StGermain_clean.csv",
+write.csv(sign.data, 
+          file = "~/Github/UpperPalCombinatorics/data/signBase/signBase_clean.csv",
           row.names = F)
 ```
 
-## Aurignacian 
-Preprocessing and storage of cleaned file for the signs of the mobile objects from the Swabian Jura.
-Load data from github repo and remove missing rows.
-```{r}
-# load data from github repo
-aur.data <- read.csv(
-  "~/Github/UpperPalCombinatorics/data/aurignacian/signBase_Version1.0_CodingsUTF8.csv")
-# select columns
-aur.data <- select(aur.data, c('object_id', 'site_name', 'date_bp_max_min',
-                                   'material','object_type', 'coding'))
-# remove rows for which there is no sign coding
-aur.data <- aur.data[!aur.data$coding == "", ]
-```
-
-Remove UTF8 characters which do not represent actual signs on the objects, i.e "punctuation".
-```{r}
-# remove special characters
-coding.clean <- gsub('[!?]', '', aur.data$coding)
-# remove sign strings which are not discrete, i.e. overlapping sign types 
-# -> indicated by parentheses '()' 
-coding.clean <- gsub("\\([^()]*\\)", "", coding.clean)
-# remove sign strings which are not in linear order, i.e. those grouped in visual fields 
-# -> indicated by square brackets '[]' 
-coding.clean <- gsub("\\[(.*?)\\]", "", coding.clean)
-# print for visual inspection
-#print(coding.clean)
-
-# add column to original data frame again
-aur.data$coding_clean <- coding.clean
-```
-
-Safe to file.
-```{r}
-write.csv(aur.data, 
-          file = "~/Github/UpperPalCombinatorics/data/aurignacian/swabianJura_clean.csv",
-          row.names = F)
-```
