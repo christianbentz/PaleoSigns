@@ -1,7 +1,7 @@
 ---
 title: "Preprocessing"
 author: ''
-date: "16/2/2024"
+date: "19/2/2024"
 output:
   pdf_document: default
   html_document: default
@@ -53,9 +53,13 @@ coding.clean <- gsub("\\([^()]*\\)", "", coding.clean)
 coding.clean <- gsub("\\[(.*?)\\]", "", coding.clean)
 # replace multiple underscores by single underscore
 coding.clean <- gsub("( _ )+", " _ ", coding.clean)
+# trim the underscores and white spaces from beginning and end of sequences
+coding.clean <- trimws(coding.clean, which = "both", whitespace = "[ \\_]")
 
 # add column to original data frame again
 sign.data$coding_clean <- coding.clean
+# again remove rows for which there is no sign coding (after cleaning)
+sign.data <- sign.data[!sign.data$coding_clean == "", ]
 ```
 
 Safe to file.

@@ -1,7 +1,7 @@
 ---
 title: "Estimations of Quantitative Features"
 author: ""
-date: "15/11/2023"
+date: "19/02/2024"
 output:
   pdf_document: default
   html_document: default
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Description
-This file contains the code for estimating the feature values (TTR, unigram entropy, entropy rate, repetition rate) per sign string in the files with randomizations.
+This file contains the code for estimating the feature values (TTR, unigram entropy, entropy rate, repetition rate) per sign sequence on objects.
 
 ## Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2"). For the Hrate package this is different, since it comes from github. The devtools library needs to be installed, and then the install_github() function is used.
@@ -26,16 +26,9 @@ library(Hrate)
 ```
 
 ## Load files
-Load the files with the randomized stríngs and put them into one data frame.
+Load the files with the cleaned and randomized sequences.
 ```{r}
-aur.sample <- read.csv("~/Github/UpperPalCombinatorics/data/aurignacian/swabianJura_randomized.csv")
-# add information about period
-aur.sample$period <- rep("aurignacian", nrow(aur.sample))
-mag.sample <- read.csv("~/Github/UpperPalCombinatorics/data/magdalenian/StGermain_randomized.csv")
-# add information about period
-mag.sample$period <- rep("magdalenian", nrow(aur.sample))
-# merge in one data frame
-all.samples <- rbind(aur.sample, mag.sample)
+sign.data <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/signBase_randomized.csv")
 ```
 
 # Estimations per file
@@ -50,12 +43,12 @@ estimations.df <- data.frame(id = numeric(0), period = character(0),
 
 # start time
 start_time <- Sys.time()
-for (i in 1:nrow(all.samples)){
+for (i in 1:nrow(sign.data)){
   try({ # if the processing fails for a certain row, there will be no output for this row,
   # but the try() function allows the loop to keep running  
   
   # collect info from row
-  id <- all.samples$id[i]
+  id <- sign.data$id[i]
   period <- all.samples$period[i]
   coding_sample <- all.samples$coding_sample[i]
   num.char <- nchar(all.samples$coding_sample[i])

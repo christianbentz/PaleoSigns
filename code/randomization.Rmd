@@ -1,10 +1,10 @@
 ---
 title: "Randomization"
 author: ''
-date: "16/02/2024"
+date: "19/02/2024"
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -38,33 +38,29 @@ head(sign.data)
 # Randomize
 Randomize sign sequences per object.
 ```{r}
-# split sequences on '_'
-
-
-# randomize and concatenate sign strings
-# choose number of randomizations
-n = 100
-# initialize data frame
-aur.sample <- data.frame(id = numeric(0), coding_sample = character(0))
-# run loop to randomize, concatenate and safe in data frame
-for (i in 1:n){
-  # random sampling
-  # note that 7 strings are here chosen since this will give
-  # an expected length of c. 100 signs
-  coding_sample <- sample(aur$coding_clean, size = 7)
-  # concatenations using underscore
-  coding_sample <- paste(coding_sample, collapse = "_")
-  # replace multiple underscores by single underscore
-  coding_sample <- gsub("( _ )+", "_", coding_sample)
-  # get id
-  id <- i
-  # store in local data frame
-  local.df <- data.frame(id, coding_sample)
-  # append to global data frame
-  aur.sample <- rbind(aur.sample, local.df)
+# set seed to get reproducible result
+set.seed(09012020)
+# initialize empty vector
+coding.random <- c()
+# run loop to randomize, and add new column to data frame
+for (i in 1:nrow(sign.data)){
+  # use single coding per row
+  coding.local <- sign.data[i, ]$coding_clean
+  # split on underscores surrounded by white spaces
+  coding.split <- unlist(strsplit(as.character(coding.local), split = " _ "))
+  # randomize order
+  coding.random.local <- sample(coding.split)
+  # concatenate with underscore and white space again
+  coding.random.local <- paste(coding.random.local, collapse = " _ ")
+  # add to vector
+  coding.random <- c(coding.random, coding.random.local)
 }
+
+# add column with randomized order to data frame
+sign.data$coding_random <- coding.random
+
 # safe to file
-write.csv(aur.sample, "~/Github/UpperPalCombinatorics/data/aurignacian/swabianJura_randomized.csv", row.names = F)
+write.csv(sign.data, "~/Github/UpperPalCombinatorics/data/signBase/signBase_randomized.csv", row.names = F)
 ```
 
 
