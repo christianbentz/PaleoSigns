@@ -34,7 +34,7 @@ Preprocessing and storage of cleaned file for signs. Load data from github repo 
 ```{r}
 # load data from github repo
 sign.data <- read.csv(
-  "~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-02-16.csv")
+  "~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-02-20.csv")
 # remove certain columns
 sign.data <- subset(sign.data, select = -c(id, comments, short_description, references))
 # remove rows for which there is no sign coding

@@ -1,7 +1,7 @@
 ---
 title: "Estimations of Quantitative Features"
 author: ""
-date: "19/02/2024"
+date: "20/02/2024"
 output:
   pdf_document: default
   html_document: default
@@ -31,14 +31,14 @@ Load the files with the cleaned and randomized sequences.
 sign.data <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/signBase_randomized.csv")
 ```
 
-# Estimations per file
+# Estimations for UTF-8 Characters
 ```{r}
 # set counter
 counter = 0
 # initialize dataframe to append results to
-estimations.df <- data.frame(id = numeric(0), period = character(0), 
-                             coding_sample = character(0), num.char = numeric(0),
-                             huni.chars = numeric (0), hrate.chars = numeric(0), 
+estimations.df <- data.frame(object_id = numeric(0), num.char = numeric(0),
+                             huni.chars = numeric (0), hrate.chars = numeric(0),
+                             hrate.chars.random = numeric(0),
                              ttr.chars = numeric(0), rm.chars = numeric(0)) 
 
 # start time
@@ -48,20 +48,28 @@ for (i in 1:nrow(sign.data)){
   # but the try() function allows the loop to keep running  
   
   # collect info from row
-  id <- sign.data$id[i]
-  period <- all.samples$period[i]
-  coding_sample <- all.samples$coding_sample[i]
-  num.char <- nchar(all.samples$coding_sample[i])
+  object_id <- sign.data$object_id[i]
+  coding.sample <- as.character(sign.data$coding_clean[i])
+  coding.sample.random <- as.character(sign.data$coding_random[i])
+  # remove the white spaces around underscore
+  coding.sample <- gsub(" _ ", "_", coding.sample, fixed = T)
+  coding.sample.random <- gsub(" _ ", "_", coding.sample.random, fixed = T)
   
+  # get number of characters
+  num.char <- nchar(coding.sample)
+
   # split strings into UTF-8 characters
-  chars <- unlist(strsplit(coding_sample, ""))
+  chars <- unlist(strsplit(coding.sample, ""))
+  chars.random <- unlist(strsplit(coding.sample.random, ""))
   # preprocess text with bag-of-words normalization
   # note: this is an important step! Without it, entropy rate estimation will fail
   # to yield realistic results due to issues with processing special characters.
   chars <- PreprocessText(chars)
-    
+  chars.random <- PreprocessText(chars.random)
+  
   # unigram entropy estimation
-  # calculate unigram entropy for characters
+  # calculate unigram entropy for characters (note that this is the same
+  # for random ordering of chracter strings)
   chars.df <- as.data.frame(table(chars))
   # print(chars.df)
   huni.chars <- entropy(chars.df$Freq, method = "ML", unit = "log2")
@@ -77,11 +85,20 @@ for (i in 1:nrow(sign.data)){
   } else {
     hrate.chars = "NA"
   }
-
-  # calculate type-token ratio (ttr)
+  # for random ordering of characters strings
+  hrate.chars.random <- try(get.estimate(text = chars.random, every.word = 1, max.length = NULL))
+  if (class(hrate.chars.random) == "numeric") {
+    hrate.chars.random <- hrate.chars.random
+  } else {
+    hrate.chars.random = "NA"
+  }
+  
+  # calculate type-token ratio (ttr) 
+  # note that this is the same for random ordering of strings
   ttr.chars <- nrow(chars.df)/sum(chars.df$Freq)
   
   # calculate repetition measure according to Sproat (2014)
+  # note that this is the same for random ordering of strings
   # the maximum number of adjacent repetitions "R" possible is the sum of frequency counts minus 1. 
   R <- sum(chars.df$Freq)-1 
   # calculate the number of adjacent repetitions "r"
@@ -101,8 +118,8 @@ for (i in 1:nrow(sign.data)){
   }
   
   # append results to dataframe
-  local.df <- data.frame(id, period, coding_sample, num.char, 
-                           huni.chars, hrate.chars, ttr.chars, rm.chars)
+  local.df <- data.frame(object_id, num.char, huni.chars, hrate.chars,
+                         hrate.chars.random, ttr.chars, rm.chars)
   estimations.df <- rbind(estimations.df, local.df)
 }) # end of try()
 # counter
@@ -114,7 +131,12 @@ end_time - start_time
 #estimations.df
 ```
 
+Merge estimations with original file
+```{r}
+sign.data.est <- merge(sign.data, estimations.df, by = "object_id")
+```
+
 # Safe outputs to file
 ```{r}
-write.csv(estimations.df, "~/Github/UpperPalCombinatorics/results/features.csv", row.names = F)
+write.csv(sign.data.est, "~/Github/UpperPalCombinatorics/results/signBase_features.csv", row.names = F)
 ```
