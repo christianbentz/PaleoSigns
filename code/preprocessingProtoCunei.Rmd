@@ -1,0 +1,81 @@
+---
+title: "Proto-Cuneiform Preprocessing"
+author: ""
+date: "21/02/2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Description
+This file enables preprocessing of proto-cuneiform tablet transliterations, these can be downloaded from CDLI (https://cdli.mpiwg-berlin.mpg.de/search).
+
+# Session Info
+Give the session info (reduced).
+```{r, echo = F}
+# R version
+sessionInfo()$R.version$version.string
+# platform
+sessionInfo()$R.version$platform 
+```
+
+# Load Libraries
+```{r}
+library(Hmisc)
+library(stringr)
+```
+
+# Load Transliteration and Sign List
+```{r}
+# transliteration
+translit.file = "~/Github/UpperPalCombinatorics/data/CDLI/UrukV/inscriptions.atf"
+textfile <- scan(translit.file, what = "char", quote = "", comment.char = "", 
+                   encoding = "UTF-8", sep = "\n" , skip = 0)
+# sign list
+signlist.file = "~/Github/UpperPalCombinatorics/data/CDLI/UrukV/signlist.txt"
+signlist <- scan(signlist.file, what = "char", quote = "", comment.char = "", 
+                   encoding = "UTF-8", sep = "\n" , skip = 0)
+```
+
+# Process Transliteration
+Get vector of IDs for tablets.
+```{r}
+# the ampersand identifies each line with a tablet ID
+tablet.id <- textfile[grep(pattern = "[\\&]", textfile)]
+# check length
+length(tablet.id)
+# remove ampersand
+tablet.id <- gsub(pattern = "\\&", "", tablet.id)
+# get just the ID
+tablet.id <- substr(tablet.id, 1, 7)
+```
+
+Extract and concatenate the transliterations.
+```{r}
+# split text on empty lines
+textlines <- readLines(translit.file)
+n <- cumsum(textlines == '')
+textchunks <- as.vector(by(textlines, n, paste, collapse = '\n'))
+# use sign list to extract only signs
+# first some characters in the sign list need to be escaped
+signlist <- escapeRegex(signlist)
+# add white spaces around character strings in signlist
+# this helps with only extracting full string matches
+signlist <- paste0(' ',signlist,' ')
+
+# run for loop to extract signs based on sign list
+# initialize vector
+extracted <- c()
+for (i in 1:length(textchunks)){
+  # the paste command keeps the order of strings as in the transliteration
+  signs <- unlist(str_extract_all(textchunks[i], signlist))
+  # collapse the signs into one string
+  signs.collapsed <- paste(signs, collapse = "")
+  extracted <- c(extracted, signs.collapsed)
+}
+
+df <- cbind(tablet.id, extracted)
+
+```
