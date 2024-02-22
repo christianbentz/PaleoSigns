@@ -1,7 +1,7 @@
 ---
 title: "Proto-Cuneiform Preprocessing"
 author: ""
-date: "21/02/2024"
+date: "22/02/2024"
 output: html_document
 ---
 
@@ -25,15 +25,19 @@ sessionInfo()$R.version$platform
 ```{r}
 library(Hmisc)
 library(stringr)
+library(readr)
 ```
 
 # Load Transliteration and Sign List
 ```{r}
-# transliteration
+# transliteration as text file with linebreaks 
 translit.file = "~/Github/UpperPalCombinatorics/data/CDLI/UrukV/inscriptions.atf"
-textfile <- scan(translit.file, what = "char", quote = "", comment.char = "", 
+textlines <- scan(translit.file, what = "char", quote = "", comment.char = "", 
                    encoding = "UTF-8", sep = "\n" , skip = 0)
-# sign list
+# load transliteration as single character string 
+textstring <- read_file("~/Github/UpperPalCombinatorics/data/CDLI/UrukV/inscriptions.atf")
+
+# load sign list
 signlist.file = "~/Github/UpperPalCombinatorics/data/CDLI/UrukV/signlist.txt"
 signlist <- scan(signlist.file, what = "char", quote = "", comment.char = "", 
                    encoding = "UTF-8", sep = "\n" , skip = 0)
@@ -43,7 +47,7 @@ signlist <- scan(signlist.file, what = "char", quote = "", comment.char = "",
 Get vector of IDs for tablets.
 ```{r}
 # the ampersand identifies each line with a tablet ID
-tablet.id <- textfile[grep(pattern = "[\\&]", textfile)]
+tablet.id <- textlines[grep(pattern = "[\\&]", textlines)]
 # check length
 length(tablet.id)
 # remove ampersand
@@ -54,10 +58,11 @@ tablet.id <- substr(tablet.id, 1, 7)
 
 Extract and concatenate the transliterations.
 ```{r}
-# split text on empty lines
-textlines <- readLines(translit.file)
-n <- cumsum(textlines == '')
-textchunks <- as.vector(by(textlines, n, paste, collapse = '\n'))
+# get chunks of text by ampersand (at the beginning of each tablet)
+textchunks <- str_split(textstring, pattern = "&")
+# unlist and remove first element (empty)
+textchunks <- unlist(textchunks)[-1]
+
 # use sign list to extract only signs
 # first some characters in the sign list need to be escaped
 signlist <- escapeRegex(signlist)
@@ -66,16 +71,50 @@ signlist <- escapeRegex(signlist)
 signlist <- paste0(' ',signlist,' ')
 
 # run for loop to extract signs based on sign list
-# initialize vector
-extracted <- c()
+# initialize vectors
+signs.orig.vec <- c()
+signs.expand.vec <- c()
 for (i in 1:length(textchunks)){
-  # the paste command keeps the order of strings as in the transliteration
+  # note that the order of signs is here sometimes changed, 
+  # as it follows the order of signs in sign list
+  signs.orig <- unlist(str_extract_all(textchunks[i], signlist))
   signs <- unlist(str_extract_all(textchunks[i], signlist))
+  # trim white spaces around signs
+  signs.orig <- trimws(signs.orig)
+  signs <- trimws(signs)
+  # unravel the multiplication syntax to get multiple sign tokens
+  try({ # if the processing fails for a certain row, there will be no output for this row,
+  # but the try() function allows the loop to keep running
+  for (j in 1:length(signs)){
+    sign.syntax <- signs[j]
+    # get only number
+    remainder <- sub(pattern = "\\(.*\\)", "", sign.syntax)
+      # if number then multiply with sign type, else 
+      # leave sign syntax as is
+      if (!grepl("[^0-9]", remainder)){
+        # get sign.type inside round brackets
+        sign.type <- gsub(".*\\((.*)\\).*", "\\1", sign.syntax)
+        # repeat given the number ("remainder" from above)
+        sign.tokens <- rep(sign.type, remainder)
+        # collaps into character string
+        sign.tokens <- paste(sign.tokens, collapse = " ")
+      } else {
+        sign.tokens <- sign.syntax
+      }
+    signs[j] <- sign.tokens
+  }}) # end of try() function
   # collapse the signs into one string
-  signs.collapsed <- paste(signs, collapse = "")
-  extracted <- c(extracted, signs.collapsed)
+  signs <- paste(signs, collapse = " _ ")
+  signs.orig <- paste(signs.orig, collapse = " _ ")
+  signs.orig.vec <- c(signs.orig.vec, signs.orig)
+  signs.expand.vec <- c(signs.expand.vec, signs)
 }
+# compile final data frame
+df <- cbind(tablet.id, signs.orig.vec, signs.expand.vec)
+head(df)
+```
 
-df <- cbind(tablet.id, extracted)
-
+Safe to file.
+```{r}
+write.csv(df, file = "~/Github/UpperPalCombinatorics/data/CDLI/UrukV/signs_clean.csv", row.names = F)
 ```
