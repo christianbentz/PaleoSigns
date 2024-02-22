@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Description
-This file enables preprocessing of proto-cuneiform tablet transliterations, these can be downloaded from CDLI (https://cdli.mpiwg-berlin.mpg.de/search).
+This file enables preprocessing of proto-cuneiform tablet transliterations, these can be downloaded from CDLI (https://cdli.mpiwg-berlin.mpg.de/search). The extraction of proto-cuneiform sign codings is done with the sign lists provided by CDLI. In their syntax repetitions of signs are indicated by a number followed by the sign type in parentheses, e.g. 1(N01), 3(N01), 5(N14), etc. This is here expanded to yield individual sign tokens, e.g. N01 N01 N01, etc. Note that signs which are followed by '#' (broken signs), and by '?' (questionable), are not included here. 
 
 # Session Info
 Give the session info (reduced).
@@ -29,6 +29,7 @@ library(readr)
 ```
 
 # Load Transliteration and Sign List
+Loading transliterations and sign lists from CDLI. Note that different datasets can be loaded by replacing e.g. "UrukV" to "UrukIV" in the file paths below to point to the respective folder. This also needs to be changed for the output file! 
 ```{r}
 # transliteration as text file with linebreaks 
 translit.file = "~/Github/UpperPalCombinatorics/data/CDLI/UrukV/inscriptions.atf"
@@ -36,7 +37,6 @@ textlines <- scan(translit.file, what = "char", quote = "", comment.char = "",
                    encoding = "UTF-8", sep = "\n" , skip = 0)
 # load transliteration as single character string 
 textstring <- read_file("~/Github/UpperPalCombinatorics/data/CDLI/UrukV/inscriptions.atf")
-
 # load sign list
 signlist.file = "~/Github/UpperPalCombinatorics/data/CDLI/UrukV/signlist.txt"
 signlist <- scan(signlist.file, what = "char", quote = "", comment.char = "", 
@@ -46,8 +46,8 @@ signlist <- scan(signlist.file, what = "char", quote = "", comment.char = "",
 # Process Transliteration
 Get vector of IDs for tablets.
 ```{r}
-# the ampersand identifies each line with a tablet ID
-tablet.id <- textlines[grep(pattern = "[\\&]", textlines)]
+# the ampersand followed by P identifies a single tablet transliteration
+tablet.id <- textlines[grep(pattern = "\\&P", textlines)]
 # check length
 length(tablet.id)
 # remove ampersand
@@ -58,17 +58,21 @@ tablet.id <- substr(tablet.id, 1, 7)
 
 Extract and concatenate the transliterations.
 ```{r}
-# get chunks of text by ampersand (at the beginning of each tablet)
-textchunks <- str_split(textstring, pattern = "&")
+# get chunks of text by ampersand plus "P" (at the beginning of each tablet)
+textchunks <- str_split(textstring, pattern = "\\&P")
 # unlist and remove first element (empty)
 textchunks <- unlist(textchunks)[-1]
+# remove the header
+textchunks <- gsub("\\=.*qpc", "", textchunks)
 
 # use sign list to extract only signs
 # first some characters in the sign list need to be escaped
 signlist <- escapeRegex(signlist)
 # add white spaces around character strings in signlist
 # this helps with only extracting full string matches
-signlist <- paste0(' ',signlist,' ')
+signlist <- paste0(signlist,' ')
+# remove 'X' as this is a placeholder for unidentified signs
+signlist <- signlist[!signlist == 'X ']
 
 # run for loop to extract signs based on sign list
 # initialize vectors
@@ -77,8 +81,8 @@ signs.expand.vec <- c()
 for (i in 1:length(textchunks)){
   # note that the order of signs is here sometimes changed, 
   # as it follows the order of signs in sign list
-  signs.orig <- unlist(str_extract_all(textchunks[i], signlist))
-  signs <- unlist(str_extract_all(textchunks[i], signlist))
+  signs.orig <- unlist(str_extract_all(textchunks[i], paste(signlist, collapse = "|")))
+  signs <- unlist(str_extract_all(textchunks[i], paste(signlist, collapse = "|")))
   # trim white spaces around signs
   signs.orig <- trimws(signs.orig)
   signs <- trimws(signs)

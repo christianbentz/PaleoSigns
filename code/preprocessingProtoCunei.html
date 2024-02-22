@@ -380,7 +380,7 @@ summary {
 
 <div id="description" class="section level1">
 <h1>Description</h1>
-<p>This file enables preprocessing of proto-cuneiform tablet transliterations, these can be downloaded from CDLI (<a href="https://cdli.mpiwg-berlin.mpg.de/search" class="uri">https://cdli.mpiwg-berlin.mpg.de/search</a>).</p>
+<p>This file enables preprocessing of proto-cuneiform tablet transliterations, these can be downloaded from CDLI (<a href="https://cdli.mpiwg-berlin.mpg.de/search" class="uri">https://cdli.mpiwg-berlin.mpg.de/search</a>). The extraction of proto-cuneiform sign codings is done with the sign lists provided by CDLI. In their syntax repetitions of signs are indicated by a number followed by the sign type in parentheses, e.g. 1(N01), 3(N01), 5(N14), etc. This is here expanded to yield individual sign tokens, e.g. N01 N01 N01, etc. Note that signs which are followed by ‘#’ (broken signs), and by ‘?’ (questionable), are not included here.</p>
 </div>
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
@@ -405,13 +405,13 @@ library(readr)</code></pre>
 </div>
 <div id="load-transliteration-and-sign-list" class="section level1">
 <h1>Load Transliteration and Sign List</h1>
+<p>Loading transliterations and sign lists from CDLI. Note that different datasets can be loaded by replacing e.g. “UrukV” to “UrukIV” in the file paths below to point to the respective folder. This also needs to be changed for the output file!</p>
 <pre class="r"><code># transliteration as text file with linebreaks 
 translit.file = &quot;~/Github/UpperPalCombinatorics/data/CDLI/UrukV/inscriptions.atf&quot;
 textlines &lt;- scan(translit.file, what = &quot;char&quot;, quote = &quot;&quot;, comment.char = &quot;&quot;, 
                    encoding = &quot;UTF-8&quot;, sep = &quot;\n&quot; , skip = 0)
 # load transliteration as single character string 
 textstring &lt;- read_file(&quot;~/Github/UpperPalCombinatorics/data/CDLI/UrukV/inscriptions.atf&quot;)
-
 # load sign list
 signlist.file = &quot;~/Github/UpperPalCombinatorics/data/CDLI/UrukV/signlist.txt&quot;
 signlist &lt;- scan(signlist.file, what = &quot;char&quot;, quote = &quot;&quot;, comment.char = &quot;&quot;, 
@@ -420,8 +420,8 @@ signlist &lt;- scan(signlist.file, what = &quot;char&quot;, quote = &quot;&quot;
 <div id="process-transliteration" class="section level1">
 <h1>Process Transliteration</h1>
 <p>Get vector of IDs for tablets.</p>
-<pre class="r"><code># the ampersand identifies each line with a tablet ID
-tablet.id &lt;- textlines[grep(pattern = &quot;[\\&amp;]&quot;, textlines)]
+<pre class="r"><code># the ampersand followed by P identifies a single tablet transliteration
+tablet.id &lt;- textlines[grep(pattern = &quot;\\&amp;P&quot;, textlines)]
 # check length
 length(tablet.id)</code></pre>
 <pre><code>## [1] 141</code></pre>
@@ -430,17 +430,21 @@ tablet.id &lt;- gsub(pattern = &quot;\\&amp;&quot;, &quot;&quot;, tablet.id)
 # get just the ID
 tablet.id &lt;- substr(tablet.id, 1, 7)</code></pre>
 <p>Extract and concatenate the transliterations.</p>
-<pre class="r"><code># get chunks of text by ampersand (at the beginning of each tablet)
-textchunks &lt;- str_split(textstring, pattern = &quot;&amp;&quot;)
+<pre class="r"><code># get chunks of text by ampersand plus &quot;P&quot; (at the beginning of each tablet)
+textchunks &lt;- str_split(textstring, pattern = &quot;\\&amp;P&quot;)
 # unlist and remove first element (empty)
 textchunks &lt;- unlist(textchunks)[-1]
+# remove the header
+textchunks &lt;- gsub(&quot;\\=.*qpc&quot;, &quot;&quot;, textchunks)
 
 # use sign list to extract only signs
 # first some characters in the sign list need to be escaped
 signlist &lt;- escapeRegex(signlist)
 # add white spaces around character strings in signlist
 # this helps with only extracting full string matches
-signlist &lt;- paste0(' ',signlist,' ')
+signlist &lt;- paste0(signlist,' ')
+# remove 'X' as this is a placeholder for unidentified signs
+signlist &lt;- signlist[!signlist == 'X ']
 
 # run for loop to extract signs based on sign list
 # initialize vectors
@@ -449,8 +453,8 @@ signs.expand.vec &lt;- c()
 for (i in 1:length(textchunks)){
   # note that the order of signs is here sometimes changed, 
   # as it follows the order of signs in sign list
-  signs.orig &lt;- unlist(str_extract_all(textchunks[i], signlist))
-  signs &lt;- unlist(str_extract_all(textchunks[i], signlist))
+  signs.orig &lt;- unlist(str_extract_all(textchunks[i], paste(signlist, collapse = &quot;|&quot;)))
+  signs &lt;- unlist(str_extract_all(textchunks[i], paste(signlist, collapse = &quot;|&quot;)))
   # trim white spaces around signs
   signs.orig &lt;- trimws(signs.orig)
   signs &lt;- trimws(signs)
@@ -526,23 +530,25 @@ for (i in 1:length(textchunks)){
 ## Error in rep(sign.type, remainder) : invalid 'times' argument
 ## Error in rep(sign.type, remainder) : invalid 'times' argument
 ## Error in rep(sign.type, remainder) : invalid 'times' argument
+## Error in rep(sign.type, remainder) : invalid 'times' argument
+## Error in rep(sign.type, remainder) : invalid 'times' argument
 ## Error in rep(sign.type, remainder) : invalid 'times' argument</code></pre>
 <pre class="r"><code># compile final data frame
 df &lt;- cbind(tablet.id, signs.orig.vec, signs.expand.vec)
 head(df)</code></pre>
 <pre><code>##      tablet.id signs.orig.vec            
 ## [1,] &quot;P005303&quot; &quot;&quot;                        
-## [2,] &quot;P005304&quot; &quot;3(N14) _ 5(N14)&quot;         
-## [3,] &quot;P008560&quot; &quot;4(N14) _ 6(N14) _ 6(N14)&quot;
+## [2,] &quot;P005304&quot; &quot;5(N14) _ 3(N14)&quot;         
+## [3,] &quot;P008560&quot; &quot;6(N14) _ 4(N14) _ 6(N14)&quot;
 ## [4,] &quot;P008673&quot; &quot;2(N14) _ 5(N14) _ 9(N14)&quot;
-## [5,] &quot;P005067&quot; &quot;3(N01) _ 3(N14)&quot;         
+## [5,] &quot;P005067&quot; &quot;3(N14) _ 3(N01)&quot;         
 ## [6,] &quot;P009401&quot; &quot;&quot;                        
 ##      signs.expand.vec                                                     
 ## [1,] &quot;&quot;                                                                   
-## [2,] &quot;N14 N14 N14 _ N14 N14 N14 N14 N14&quot;                                  
-## [3,] &quot;N14 N14 N14 N14 _ N14 N14 N14 N14 N14 N14 _ N14 N14 N14 N14 N14 N14&quot;
+## [2,] &quot;N14 N14 N14 N14 N14 _ N14 N14 N14&quot;                                  
+## [3,] &quot;N14 N14 N14 N14 N14 N14 _ N14 N14 N14 N14 _ N14 N14 N14 N14 N14 N14&quot;
 ## [4,] &quot;N14 N14 _ N14 N14 N14 N14 N14 _ N14 N14 N14 N14 N14 N14 N14 N14 N14&quot;
-## [5,] &quot;N01 N01 N01 _ N14 N14 N14&quot;                                          
+## [5,] &quot;N14 N14 N14 _ N01 N01 N01&quot;                                          
 ## [6,] &quot;&quot;</code></pre>
 <p>Safe to file.</p>
 <pre class="r"><code>write.csv(df, file = &quot;~/Github/UpperPalCombinatorics/data/CDLI/UrukV/signs_clean.csv&quot;, row.names = F)</code></pre>

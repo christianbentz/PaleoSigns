@@ -1,7 +1,7 @@
 ---
 title: "Plots with Feature Values"
 author: ""
-date: "20/02/2024"
+date: "22/02/2024"
 output:
   pdf_document: default
   html_document: default
@@ -26,6 +26,7 @@ library(ggpubr)
 # Load Data
 Load csv file with quantitative feature values for sign sequences per object. Comparative sample: A comparative sample of feature values for languages across the world, as well as other symbolic and non-symbolic sign sequences, is loaded here too. Note that the feature values were calculated as part of another Github project on ``Natural Language Fingerprints'' (NaLaFi), and published in Bentz (2023). 
 ```{r}
+# SIGNBASE
 # load signbase estimations for strings on objects
 sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/signBase_features.csv")
 
@@ -36,6 +37,28 @@ sign.data <- select(sign.data, c('archaeological_unit', 'num.char', 'huni.chars'
 colnames(sign.data) <- c('subcorpus','num.char','huni.chars', 'hrate.chars', 
                          'ttr.chars', 'rm.chars')
 
+# CDLI
+# read feature values for proto-cuneiform from CDLI
+# Uruk V
+procuneiV.data <- read.csv("~/Github/UpperPalCombinatorics/results/procunei_urukV_features.csv")
+
+# add column with subcorpus information
+procuneiV.data$subcorpus <- rep("Proto-Cuneiform (Uruk V)", nrow(procuneiV.data))
+
+# select columns for direct comparison with NaLaFi sample
+procuneiV.data <- select(procuneiV.data, c('subcorpus', 'num.char', 'huni.chars', 'hrate.chars', 
+                                 'ttr.chars', 'rm.chars'))
+# Uruk IV
+procuneiIV.data <- read.csv("~/Github/UpperPalCombinatorics/results/procunei_urukIV_features.csv")
+
+# add column with subcorpus information
+procuneiIV.data$subcorpus <- rep("Proto-Cuneiform (Uruk IV)", nrow(procuneiIV.data))
+
+# select columns for direct comparison with NaLaFi sample
+procuneiIV.data <- select(procuneiIV.data, c('subcorpus', 'num.char', 'huni.chars', 'hrate.chars', 
+                                 'ttr.chars', 'rm.chars'))
+
+# NALAFI
 # read feature values for languages and other sign systems
 nalafi <- read.csv("~/Github/NaLaFi/results/features.csv")
 # select columns
@@ -49,21 +72,26 @@ nalafi <- select(nalafi, c('subcorpus','num.char','huni.chars', 'hrate.chars',
 nalafi <- nalafi[nalafi$num.char == 100, ]
 
 # combine the data frames
-estimations.df <- rbind(sign.data, nalafi)
+estimations.df <- rbind(sign.data, procuneiV.data, procuneiIV.data, nalafi)
 nrow(estimations.df)
+
+# select sign strings of certain length
+# estimations.df <- estimations.df[estimations.df$num.char > 10,]
 
 # select only certain subcorpora for plotting
 estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignacien"|
                                           #estimations.df$subcorpus == "Aurignacien/Gravettian"|
-                                          estimations.df$subcorpus == "procunei"|  
+                                          estimations.df$subcorpus == "Proto-Cuneiform (Uruk V)"|
+                                          estimations.df$subcorpus == "Proto-Cuneiform (Uruk IV)"|  
                                           estimations.df$subcorpus == "udhr", ]
 ```
 
 ## Entropy rate vs. unigram entropy
 ```{r, fig.width = 5, fig.height = 5, warning = FALSE}
 huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y = hrate.chars, 
-                                    colour = subcorpus, fill = subcorpus)) + 
-  geom_point(alpha = 0.3, size  = 1.5) +
+                                    colour = subcorpus, size = num.char)) + 
+  geom_point(alpha = 0.3) +
+  #geom_density2d(alpha = .8) +
   labs(x = "Unigram entropy for characters", y = "Entropy rate for characters") +
   theme(legend.position = c(.8,.2))
   #facet_wrap(~subcorpus)
@@ -75,8 +103,9 @@ huni.hrate.chars.plot
 ## TTR vs. repetition rate
 ```{r, fig.width = 5, fig.height = 5, warning = FALSE}
 ttr.rm.chars.plot <- ggplot(estimations.df.selected, aes(x = ttr.chars, y = rm.chars, 
-                                    colour = subcorpus)) + 
-  geom_point(alpha = 0.3, size  = 1.5) +
+                                    colour = subcorpus, size = num.char)) + 
+  geom_point(alpha = 0.3) +
+  #geom_density2d(alpha = .5) +
   labs(x = "TTR for characters", y = "Repetition rate for characters") +
   theme(legend.position = "none")
   #facet_wrap(~subcorpus)
@@ -92,7 +121,7 @@ combined.plot <- grid.arrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2
 
 ## Safe complete figure to file
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", combined.plot, dpi = 300, width = 10, height = 5, device = cairo_pdf)
+ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", combined.plot, dpi = 300, width = 20, height = 10, device = cairo_pdf)
 ```
 
 
