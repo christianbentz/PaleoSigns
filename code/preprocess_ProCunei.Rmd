@@ -1,8 +1,10 @@
 ---
 title: "Proto-Cuneiform Preprocessing"
-author: ""
+author: ''
 date: "22/02/2024"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -31,7 +33,7 @@ library(readr)
 # Load Transliteration and Sign List
 Loading transliterations and sign lists from CDLI. Note that different datasets can be loaded by replacing e.g. "UrukV" to "UrukIV" in the file paths below to point to the respective folder. This also needs to be changed for the output file! 
 ```{r}
-# transliteration as text file with linebreaks 
+# transliteration as text file with line breaks 
 translit.file = "~/Github/UpperPalCombinatorics/data/CDLI/UrukV/inscriptions.atf"
 textlines <- scan(translit.file, what = "char", quote = "", comment.char = "", 
                    encoding = "UTF-8", sep = "\n" , skip = 0)

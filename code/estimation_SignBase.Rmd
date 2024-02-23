@@ -1,7 +1,7 @@
 ---
-title: "Estimations of Quantitative Features"
+title: "Estimations of Quantitative Features for SignBase Objects"
 author: ""
-date: "20/02/2024"
+date: "23/02/2024"
 output:
   pdf_document: default
   html_document: default
@@ -30,10 +30,6 @@ Load the files with the cleaned and randomized sequences.
 ```{r}
 # signBase data
 sign.data <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/signBase_randomized.csv")
-# proto-cuneiform data from CDLI (change path to different folders UrukV, UrukIV)
-procunei.data <- read.csv("~/Github/UpperPalCombinatorics/data/CDLI/UrukIV/signs_clean.csv")
-# remove rows with empty sign codings
-procunei.data <- procunei.data[-which(procunei.data$signs.orig.vec == ""), ]
 ```
 
 # SignBase (Swabian Aurignacian) Estimations
@@ -145,109 +141,4 @@ sign.data.est <- merge(sign.data, estimations.df, by = "object_id")
 Safe outputs to file.
 ```{r}
 write.csv(sign.data.est, "~/Github/UpperPalCombinatorics/results/signBase_features.csv", row.names = F)
-```
-
-# Proto-Cuneiform Estimations
-Estimations of quantitative features for the proto-cuneiform data from CDLI.
-```{r}
-# set counter
-counter = 0
-# initialize dataframe to append results to
-estimations.df <- data.frame(tablet.id = character(0), num.char = numeric(0),
-                             huni.chars = numeric (0), hrate.chars = numeric(0),
-                             ttr.chars = numeric(0), rm.chars = numeric(0)) 
-
-# start time
-start_time <- Sys.time()
-for (i in 1:nrow(procunei.data)){
-  try({ # if the processing fails for a certain row, there will be no output for this row,
-  # but the try() function allows the loop to keep running  
-  
-  # collect info from row
-  tablet.id <- procunei.data$tablet.id[i]
-  coding.sample <- as.character(procunei.data$signs.expand.vec[i])
-
-  # split strings into cuneiform sign types
-  chars <- unlist(strsplit(coding.sample, " "))
-  
-  # get overall number of signs on tablet
-  num.char <- length(chars)
-  
-  # preprocess the signs with bag-of-words normalization
-  # note: this is an important step! Without it, entropy rate estimation will fail
-  # to yield realistic results due to issues with processing special characters.
-  chars <- PreprocessText(chars)
-  
-  # unigram entropy estimation
-  # calculate unigram entropy for characters (note that this is the same
-  # for random ordering of chracter strings)
-  chars.df <- as.data.frame(table(chars))
-  # print(chars.df)
-  huni.chars <- entropy(chars.df$Freq, method = "ML", unit = "log2")
-  
-  # entropy rate estimation
-  # the values chosen for max.length and every.word will crucially 
-  # impact processing time. In case of "max.length = NULL" the length is n units
-  # here use the try() function since entropy rate estimation can fail when particular
-  # special characters are in the strings
-  hrate.chars <- try(get.estimate(text = chars, every.word = 1, max.length = NULL))
-  if (class(hrate.chars) == "numeric") {
-    hrate.chars <- hrate.chars
-  } else {
-    hrate.chars = "NA"
-  }
-  # for random ordering of characters strings
-  hrate.chars.random <- try(get.estimate(text = chars.random, every.word = 1, max.length = NULL))
-  if (class(hrate.chars.random) == "numeric") {
-    hrate.chars.random <- hrate.chars.random
-  } else {
-    hrate.chars.random = "NA"
-  }
-  
-  # calculate type-token ratio (ttr) 
-  # note that this is the same for random ordering of strings
-  ttr.chars <- nrow(chars.df)/sum(chars.df$Freq)
-  
-  # calculate repetition measure according to Sproat (2014)
-  # note that this is the same for random ordering of strings
-  # the maximum number of adjacent repetitions "R" possible is the sum of frequency counts minus 1. 
-  R <- sum(chars.df$Freq)-1 
-  # calculate the number of adjacent repetitions "r"
-  r = 0
-  if (length(chars) > 1){
-    for (i in 1:(length(chars)-1)){
-      if (chars[i] == chars[i+1]){
-        r = r + 1
-      } else {
-        r = r + 0
-      }
-      }
-    # calculate the repetition measure
-    rm.chars <- r/R
-  } else {
-    rm.chars <- "NA"  
-  }
-  
-  # append results to dataframe
-  local.df <- data.frame(tablet.id, num.char, huni.chars, hrate.chars,
-                         ttr.chars, rm.chars)
-  estimations.df <- rbind(estimations.df, local.df)
-}) # end of try()
-# counter
-counter <- counter + 1
-# print(counter)
-}
-end_time <- Sys.time()
-end_time - start_time
-#estimations.df
-```
-
-Merge estimations with original file
-```{r}
-procunei.data.est <- merge(procunei.data, estimations.df, by = "tablet.id")
-```
-
-Safe outputs to file.
-```{r}
-write.csv(procunei.data.est, "~/Github/UpperPalCombinatorics/results/procunei_urukIV_features.csv", row.names = F)
 ```

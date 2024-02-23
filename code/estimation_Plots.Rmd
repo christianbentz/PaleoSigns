@@ -1,7 +1,7 @@
 ---
 title: "Plots with Feature Values"
 author: ""
-date: "22/02/2024"
+date: "23/02/2024"
 output:
   pdf_document: default
   html_document: default
@@ -29,12 +29,14 @@ Load csv file with quantitative feature values for sign sequences per object. Co
 # SIGNBASE
 # load signbase estimations for strings on objects
 sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/signBase_features.csv")
+# select Aurignacian objects
+sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ] 
 
 # select columns for direct comparison with NaLaFi sample
-sign.data <- select(sign.data, c('archaeological_unit', 'num.char', 'huni.chars', 'hrate.chars', 
+sign.data.selected <- select(sign.data, c('archaeological_unit', 'num.char', 'huni.chars', 'hrate.chars', 
                                  'ttr.chars', 'rm.chars'))
 # change column names
-colnames(sign.data) <- c('subcorpus','num.char','huni.chars', 'hrate.chars', 
+colnames(sign.data.selected) <- c('subcorpus','num.char','huni.chars', 'hrate.chars', 
                          'ttr.chars', 'rm.chars')
 
 # CDLI
@@ -46,7 +48,7 @@ procuneiV.data <- read.csv("~/Github/UpperPalCombinatorics/results/procunei_uruk
 procuneiV.data$subcorpus <- rep("Proto-Cuneiform (Uruk V)", nrow(procuneiV.data))
 
 # select columns for direct comparison with NaLaFi sample
-procuneiV.data <- select(procuneiV.data, c('subcorpus', 'num.char', 'huni.chars', 'hrate.chars', 
+procuneiV.data.selected <- select(procuneiV.data, c('subcorpus', 'num.char', 'huni.chars', 'hrate.chars', 
                                  'ttr.chars', 'rm.chars'))
 # Uruk IV
 procuneiIV.data <- read.csv("~/Github/UpperPalCombinatorics/results/procunei_urukIV_features.csv")
@@ -55,24 +57,25 @@ procuneiIV.data <- read.csv("~/Github/UpperPalCombinatorics/results/procunei_uru
 procuneiIV.data$subcorpus <- rep("Proto-Cuneiform (Uruk IV)", nrow(procuneiIV.data))
 
 # select columns for direct comparison with NaLaFi sample
-procuneiIV.data <- select(procuneiIV.data, c('subcorpus', 'num.char', 'huni.chars', 'hrate.chars', 
+procuneiIV.data.selected <- select(procuneiIV.data, c('subcorpus', 'num.char', 'huni.chars', 'hrate.chars', 
                                  'ttr.chars', 'rm.chars'))
 
 # NALAFI
 # read feature values for languages and other sign systems
 nalafi <- read.csv("~/Github/NaLaFi/results/features.csv")
 # select columns
-nalafi <- select(nalafi, c('subcorpus','num.char','huni.chars', 'hrate.chars', 
+nalafi.selected <- select(nalafi, c('subcorpus','num.char','huni.chars', 'hrate.chars', 
                            'ttr.chars', 'rm.chars'))
 ```
 
 # Preprocessing
 ```{r}
 # select only data with 100 chars
-nalafi <- nalafi[nalafi$num.char == 100, ]
+nalafi.selected <- nalafi.selected[nalafi$num.char == 100, ]
 
 # combine the data frames
-estimations.df <- rbind(sign.data, procuneiV.data, procuneiIV.data, nalafi)
+estimations.df <- rbind(sign.data.selected, procuneiV.data.selected, 
+                        procuneiIV.data.selected, nalafi.selected)
 nrow(estimations.df)
 
 # select sign strings of certain length
@@ -97,7 +100,7 @@ huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y =
   #facet_wrap(~subcorpus)
 huni.hrate.chars.plot <- ggMarginal(huni.hrate.chars.plot, groupFill = T, groupColour = T, 
                                   type = "density")
-huni.hrate.chars.plot
+#huni.hrate.chars.plot
 ```
 
 ## TTR vs. repetition rate
@@ -111,17 +114,58 @@ ttr.rm.chars.plot <- ggplot(estimations.df.selected, aes(x = ttr.chars, y = rm.c
   #facet_wrap(~subcorpus)
 ttr.rm.chars.plot <- ggMarginal(ttr.rm.chars.plot, groupFill = T, groupColour = T, 
                                   type = "density")
-ttr.rm.chars.plot
+#ttr.rm.chars.plot
 ```
 
 Combine figures.
-```{r}
+```{r, width = 20, height = 10}
 combined.plot <- grid.arrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2)
 ```
 
 ## Safe complete figure to file
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", combined.plot, dpi = 300, width = 20, height = 10, device = cairo_pdf)
+ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", 
+       combined.plot, dpi = 300, width = 20, height = 10, device = cairo_pdf)
 ```
 
+# Swabian Jura Specific Plots
+Comparisons of different caves of the Swabian Jura.
 
+## Entropy rate vs. unigram entropy
+```{r, fig.width = 5, fig.height = 5, warning = FALSE}
+huni.hrate.chars.plot <- ggplot(sign.data, aes(x = huni.chars, y = hrate.chars, 
+                                    colour = site_name, size = num.char)) + 
+  geom_point(alpha = 0.3) +
+  #geom_density2d(alpha = .8) +
+  labs(x = "Unigram entropy for characters", y = "Entropy rate for characters") +
+  theme(legend.position = c(.8,.2))
+  #facet_wrap(~subcorpus)
+huni.hrate.chars.plot <- ggMarginal(huni.hrate.chars.plot, groupFill = T, groupColour = T, 
+                                  type = "density")
+#huni.hrate.chars.plot
+```
+
+## TTR vs. repetition rate
+```{r, fig.width = 5, fig.height = 5, warning = FALSE}
+ttr.rm.chars.plot <- ggplot(sign.data, aes(x = ttr.chars, y = rm.chars, 
+                                    colour = site_name, size = num.char)) + 
+  geom_point(alpha = 0.3) +
+  #geom_density2d(alpha = .5) +
+  labs(x = "TTR for characters", y = "Repetition rate for characters") +
+  theme(legend.position = "none")
+  #facet_wrap(~subcorpus)
+ttr.rm.chars.plot <- ggMarginal(ttr.rm.chars.plot, groupFill = T, groupColour = T, 
+                                  type = "density")
+#ttr.rm.chars.plot
+```
+
+Combine figures.
+```{r, width = 20, height = 10}
+combined.plot <- grid.arrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2)
+```
+
+## Safe complete figure to file
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_Aurignacian.pdf", 
+       combined.plot, dpi = 300, width = 20, height = 10, device = cairo_pdf)
+```
