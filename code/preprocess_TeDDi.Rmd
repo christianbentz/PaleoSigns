@@ -1,0 +1,75 @@
+---
+title: "Preprocessing TeDDi Sample"
+author: "Chris Bentz"
+date: "2/26/2024"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Description
+This file enables preprocessing of the TeDDi sample natural language text material. This is used as a sample to compare against the sign codings for proto-cuneiform and paleolithic sign sequences. Dumps of the TeDDi sample can be downloaded from https://drive.switch.ch/index.php/s/MJv7xFkzqlzFn0y. Note that the sample of TeDDi lines was here produced by using the follwing Perl commands in the directory where the lines.csv file is stored:
+
+head -1 line.csv > line_sample.csv
+perl -ne 'print if (rand() < .01)' line.csv >> line_sample.csv
+
+This randomly samples 10% of the overall around 20 million text lines.
+
+# Session Info
+Give the session info (reduced).
+```{r, echo = F}
+# R version
+sessionInfo()$R.version$version.string
+# platform
+sessionInfo()$R.version$platform 
+```
+
+# Load libraries
+If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2"). 
+```{r, message=F}
+library(dplyr)
+```
+
+# Load the TeDDi data
+```{r}
+# load data from TeDDi dumps (takes a couple of minutes)
+line.data <- read.csv(
+  "~/Github/UpperPalCombinatorics/data/TeDDi/line_sample.csv")
+file.data <- read.csv("~/Data/TeDDi_dumps/file.csv")
+# merge the files
+teddi.data <- merge(line.data, file.data, by.x = "file_id", by.y = "id")
+```
+
+# Further Sampling
+Sample a given number of lines randomly as a comparative sample.
+```{r}
+set.seed(15022018)
+teddi.sample <-sample_n(teddi.data, 1000)
+```
+
+# Further Preprocessing
+```{r}
+# remove lines with less than 10 characters
+teddi.clean <- teddi.sample[nchar(teddi.sample$text) > 10, ]
+```
+
+# Simple Stats
+Some simple stats of the textual data here sampled from TeDDi.
+```{r}
+# lines of text
+nrow(teddi.sample)
+# unique ISO codes (i.e. languages)
+unique(teddi.sample$iso639_3)
+# writing systems
+unique(teddi.sample$writing_system)
+```
+
+Write to file.
+```{r}
+write.csv(teddi.clean, 
+          file = "~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.csv", row.names = F)
+```

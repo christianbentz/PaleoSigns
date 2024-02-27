@@ -24,7 +24,7 @@ library(ggpubr)
 ```
 
 # Load Data
-Load csv file with quantitative feature values for sign sequences per object. Comparative sample: A comparative sample of feature values for languages across the world, as well as other symbolic and non-symbolic sign sequences, is loaded here too. Note that the feature values were calculated as part of another Github project on ``Natural Language Fingerprints'' (NaLaFi), and published in Bentz (2023). 
+Load csv file with quantitative feature values for sign sequences per object. Comparative sample: A comparative sample of feature values for languages across the world is dreived from the Text Data Diversity (TeDDi) sample (Moran et al 2022). 
 ```{r}
 # SIGNBASE
 # load signbase estimations for strings on objects
@@ -32,7 +32,7 @@ sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/signBase_features.
 # select Aurignacian objects
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ] 
 
-# select columns for direct comparison with NaLaFi sample
+# select columns for direct comparison with TeDDi sample
 sign.data.selected <- select(sign.data, c('archaeological_unit', 'num.char', 'huni.chars', 'hrate.chars', 
                                  'ttr.chars', 'rm.chars'))
 # change column names
@@ -60,33 +60,32 @@ procuneiIV.data$subcorpus <- rep("Proto-Cuneiform (Uruk IV)", nrow(procuneiIV.da
 procuneiIV.data.selected <- select(procuneiIV.data, c('subcorpus', 'num.char', 'huni.chars', 'hrate.chars', 
                                  'ttr.chars', 'rm.chars'))
 
-# NALAFI
-# read feature values for languages and other sign systems
-nalafi <- read.csv("~/Github/NaLaFi/results/features.csv")
+# TeDDI
+# read feature values for character sequences of the TeDDi sample
+teddi.data <- read.csv("~/Github/UpperPalCombinatorics/results/teddi_features.csv")
+# add column with subcorpus information
+teddi.data$subcorpus <- rep("TeDDi", nrow(teddi.data))
 # select columns
-nalafi.selected <- select(nalafi, c('subcorpus','num.char','huni.chars', 'hrate.chars', 
+teddi.selected <- select(teddi.data, c('subcorpus','num.char','huni.chars', 'hrate.chars', 
                            'ttr.chars', 'rm.chars'))
 ```
 
 # Preprocessing
 ```{r}
-# select only data with 100 chars
-nalafi.selected <- nalafi.selected[nalafi$num.char == 100, ]
-
 # combine the data frames
 estimations.df <- rbind(sign.data.selected, procuneiV.data.selected, 
-                        procuneiIV.data.selected, nalafi.selected)
+                        procuneiIV.data.selected, teddi.selected)
 nrow(estimations.df)
 
 # select sign strings of certain length
-# estimations.df <- estimations.df[estimations.df$num.char > 10,]
+estimations.df <- estimations.df[estimations.df$num.char > 5,]
 
 # select only certain subcorpora for plotting
 estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignacien"|
                                           #estimations.df$subcorpus == "Aurignacien/Gravettian"|
                                           estimations.df$subcorpus == "Proto-Cuneiform (Uruk V)"|
                                           estimations.df$subcorpus == "Proto-Cuneiform (Uruk IV)"|  
-                                          estimations.df$subcorpus == "udhr", ]
+                                          estimations.df$subcorpus == "TeDDi", ]
 ```
 
 ## Entropy rate vs. unigram entropy
@@ -169,3 +168,46 @@ combined.plot <- grid.arrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2
 ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_Aurignacian.pdf", 
        combined.plot, dpi = 300, width = 20, height = 10, device = cairo_pdf)
 ```
+
+# TeDDi Specific Plots
+Comparisons of different writing systems in TeDDi.
+
+## Entropy rate vs. unigram entropy
+```{r, fig.width = 5, fig.height = 5, warning = FALSE}
+huni.hrate.chars.plot <- ggplot(teddi.data, aes(x = huni.chars, y = hrate.chars, 
+                                    colour = writing_system, size = num.char)) + 
+  geom_point(alpha = 0.3) +
+  #geom_density2d(alpha = .8) +
+  labs(x = "Unigram entropy for characters", y = "Entropy rate for characters") +
+  theme(legend.position = c(.8,.2))
+  #facet_wrap(~subcorpus)
+huni.hrate.chars.plot <- ggMarginal(huni.hrate.chars.plot, groupFill = T, groupColour = T, 
+                                  type = "density")
+#huni.hrate.chars.plot
+```
+
+## TTR vs. repetition rate
+```{r, fig.width = 5, fig.height = 5, warning = FALSE}
+ttr.rm.chars.plot <- ggplot(teddi.data, aes(x = ttr.chars, y = rm.chars, 
+                                    colour = writing_system, size = num.char)) + 
+  geom_point(alpha = 0.3) +
+  #geom_density2d(alpha = .5) +
+  labs(x = "TTR for characters", y = "Repetition rate for characters") +
+  theme(legend.position = "none")
+  #facet_wrap(~subcorpus)
+ttr.rm.chars.plot <- ggMarginal(ttr.rm.chars.plot, groupFill = T, groupColour = T, 
+                                  type = "density")
+#ttr.rm.chars.plot
+```
+
+Combine figures.
+```{r, width = 20, height = 10}
+combined.plot <- grid.arrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2)
+```
+
+## Safe complete figure to file
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/writingSystem_plot.pdf", 
+       combined.plot, dpi = 300, width = 20, height = 10, device = cairo_pdf)
+```
+
