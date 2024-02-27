@@ -1,7 +1,7 @@
 ---
-title: "Estimations of Quantitative Features for Proto-Cuneiform Tablets"
+title: "Estimations of Quantitative Features for Cuneiform Tablets"
 author: ""
-date: "23/02/2024"
+date: "27/02/2024"
 output:
   pdf_document: default
   html_document: default
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Description
-This file contains the code for estimating the feature values (TTR, unigram entropy, entropy rate, repetition rate) per sign sequence on proto-cuneiform tablets from CDLI.
+This file contains the code for estimating the feature values (TTR, unigram entropy, entropy rate, repetition rate) per sign sequence on cuneiform tablets from CDLI.
 
 ## Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2"). For the Hrate package this is different, since it comes from github. The devtools library needs to be installed, and then the install_github() function is used.
@@ -26,16 +26,21 @@ library(Hrate)
 ```
 
 # Load files
-Load the files with the cleaned and randomized sequences.
+Load the files with the cleaned sequences.
 ```{r}
-# proto-cuneiform data from CDLI (change path to different folders UrukV, UrukIV)
-procunei.data <- read.csv("~/Github/UpperPalCombinatorics/data/CDLI/UrukIV/signs_clean.csv")
+# choose period (UrukIII, UrukIV, UrukV)
+period <- "UrukIII"
+
+# cuneiform data from CDLI
+cunei.data <- read.csv(paste("~/Github/UpperPalCombinatorics/data/CDLI/", 
+                      paste(period, "/signs_clean.csv", sep = ""), 
+                      sep =""))
 # remove rows with empty sign codings
-procunei.data <- procunei.data[-which(procunei.data$signs.orig.vec == ""), ]
+cunei.data <- cunei.data[-which(cunei.data$signs.orig.vec == ""), ]
 ```
 
-# Proto-Cuneiform Estimations
-Estimations of quantitative features for the proto-cuneiform data from CDLI.
+# Cuneiform Estimations
+Estimations of quantitative features for the cuneiform data from CDLI.
 ```{r}
 # set counter
 counter = 0
@@ -46,13 +51,13 @@ estimations.df <- data.frame(tablet.id = character(0), num.char = numeric(0),
 
 # start time
 start_time <- Sys.time()
-for (i in 1:nrow(procunei.data)){
+for (i in 1:nrow(cunei.data)){
   try({ # if the processing fails for a certain row, there will be no output for this row,
   # but the try() function allows the loop to keep running  
   
   # collect info from row
-  tablet.id <- procunei.data$tablet.id[i]
-  coding.sample <- as.character(procunei.data$signs.expand.vec[i])
+  tablet.id <- cunei.data$tablet.id[i]
+  coding.sample <- as.character(cunei.data$signs.expand.vec[i])
 
   # split strings into cuneiform sign types
   chars <- unlist(strsplit(coding.sample, " "))
@@ -83,14 +88,6 @@ for (i in 1:nrow(procunei.data)){
   } else {
     hrate.chars = "NA"
   }
-  # for random ordering of characters strings
-  hrate.chars.random <- try(get.estimate(text = chars.random, every.word = 1, max.length = NULL))
-  if (class(hrate.chars.random) == "numeric") {
-    hrate.chars.random <- hrate.chars.random
-  } else {
-    hrate.chars.random = "NA"
-  }
-  
   # calculate type-token ratio (ttr) 
   # note that this is the same for random ordering of strings
   ttr.chars <- nrow(chars.df)/sum(chars.df$Freq)
@@ -131,10 +128,12 @@ end_time - start_time
 
 Merge estimations with original file
 ```{r}
-procunei.data.est <- merge(procunei.data, estimations.df, by = "tablet.id")
+cunei.data.est <- merge(cunei.data, estimations.df, by = "tablet.id")
 ```
 
 Safe outputs to file.
 ```{r}
-write.csv(procunei.data.est, "~/Github/UpperPalCombinatorics/results/procunei_urukIV_features.csv", row.names = F)
+write.csv(cunei.data.est, paste("~/Github/UpperPalCombinatorics/results/cuneiform_", 
+                      paste(period, "_features.csv", sep = ""), 
+                      sep =""), row.names = F)
 ```

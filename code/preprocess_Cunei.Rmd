@@ -1,7 +1,7 @@
 ---
 title: "Proto-Cuneiform Preprocessing"
 author: ''
-date: "22/02/2024"
+date: "27/02/2024"
 output:
   pdf_document: default
   html_document: default
@@ -31,16 +31,23 @@ library(readr)
 ```
 
 # Load Transliteration and Sign List
-Loading transliterations and sign lists from CDLI. Note that different datasets can be loaded by replacing e.g. "UrukV" to "UrukIV" in the file paths below to point to the respective folder. This also needs to be changed for the output file! 
+Loading transliterations and sign lists from CDLI. Note that different datasets can be loaded by choosing the period as a character string below. 
 ```{r}
+# choose period (UrukIII, UrukIV, UrukV)
+period <- "UrukV"
+
 # transliteration as text file with line breaks 
-translit.file = "~/Github/UpperPalCombinatorics/data/CDLI/UrukV/inscriptions.atf"
+translit.file = paste("~/Github/UpperPalCombinatorics/data/CDLI/", 
+                      paste(period, "/inscriptions.atf", sep = ""), 
+                      sep ="")
 textlines <- scan(translit.file, what = "char", quote = "", comment.char = "", 
                    encoding = "UTF-8", sep = "\n" , skip = 0)
 # load transliteration as single character string 
-textstring <- read_file("~/Github/UpperPalCombinatorics/data/CDLI/UrukV/inscriptions.atf")
+textstring <- read_file(translit.file)
 # load sign list
-signlist.file = "~/Github/UpperPalCombinatorics/data/CDLI/UrukV/signlist.txt"
+signlist.file = paste("~/Github/UpperPalCombinatorics/data/CDLI/", 
+                      paste(period, "/signlist.txt", sep = ""), 
+                      sep ="")
 signlist <- scan(signlist.file, what = "char", quote = "", comment.char = "", 
                    encoding = "UTF-8", sep = "\n" , skip = 0)
 ```
@@ -70,7 +77,7 @@ textchunks <- gsub("\\=.*qpc", "", textchunks)
 # use sign list to extract only signs
 # first some characters in the sign list need to be escaped
 signlist <- escapeRegex(signlist)
-# add white spaces around character strings in signlist
+# add white spaces after character strings in signlist
 # this helps with only extracting full string matches
 signlist <- paste0(signlist,' ')
 # remove 'X' as this is a placeholder for unidentified signs
@@ -122,5 +129,7 @@ head(df)
 
 Safe to file.
 ```{r}
-write.csv(df, file = "~/Github/UpperPalCombinatorics/data/CDLI/UrukV/signs_clean.csv", row.names = F)
+write.csv(df, file = paste("~/Github/UpperPalCombinatorics/data/CDLI/", 
+                      paste(period, "/signs_clean.csv", sep = ""), 
+                      sep =""), row.names = F)
 ```

@@ -24,78 +24,121 @@ library(ggpubr)
 ```
 
 # Load Data
-Load csv file with quantitative feature values for sign sequences per object. Comparative sample: A comparative sample of feature values for languages across the world is dreived from the Text Data Diversity (TeDDi) sample (Moran et al 2022). 
+Load csv file with quantitative feature values for sign sequences per object. Comparative sample: A comparative sample of feature values for languages across the world is derived from the Text Data Diversity (TeDDi) sample (Moran et al 2022). 
+
+## SIGNBASE
 ```{r}
-# SIGNBASE
 # load signbase estimations for strings on objects
 sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/signBase_features.csv")
 # select Aurignacian objects
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ] 
 
 # select columns for direct comparison with TeDDi sample
-sign.data.selected <- select(sign.data, c('archaeological_unit', 'num.char', 'huni.chars', 'hrate.chars', 
+sign.data.selected <- select(sign.data, c('archaeological_unit', 'coding_clean', 
+                                          'num.char', 'huni.chars', 'hrate.chars', 
                                  'ttr.chars', 'rm.chars'))
 # change column names
-colnames(sign.data.selected) <- c('subcorpus','num.char','huni.chars', 'hrate.chars', 
+colnames(sign.data.selected) <- c('subcorpus', 'sequence', 'num.char','huni.chars', 'hrate.chars', 
                          'ttr.chars', 'rm.chars')
+```
 
-# CDLI
+## CDLI
+```{r}
 # read feature values for proto-cuneiform from CDLI
 # Uruk V
-procuneiV.data <- read.csv("~/Github/UpperPalCombinatorics/results/procunei_urukV_features.csv")
+cuneiV.data <- read.csv("~/Github/UpperPalCombinatorics/results/cuneiform_UrukV_features.csv")
 
 # add column with subcorpus information
-procuneiV.data$subcorpus <- rep("Proto-Cuneiform (Uruk V)", nrow(procuneiV.data))
+cuneiV.data$subcorpus <- rep("Cuneiform (Uruk V)", nrow(cuneiV.data))
 
-# select columns for direct comparison with NaLaFi sample
-procuneiV.data.selected <- select(procuneiV.data, c('subcorpus', 'num.char', 'huni.chars', 'hrate.chars', 
-                                 'ttr.chars', 'rm.chars'))
+# select columns for direct comparison with other samples
+cuneiV.data.selected <- select(cuneiV.data, c('subcorpus', 'signs.expand.vec', 
+                                              'num.char', 'huni.chars', 'hrate.chars', 
+                                              'ttr.chars', 'rm.chars'))
+# rename column with sign sequences
+names(cuneiV.data.selected)[names(cuneiV.data.selected) == "signs.expand.vec"] <- "sequence"
+
 # Uruk IV
-procuneiIV.data <- read.csv("~/Github/UpperPalCombinatorics/results/procunei_urukIV_features.csv")
+cuneiIV.data <- read.csv("~/Github/UpperPalCombinatorics/results/cuneiform_UrukIV_features.csv")
 
 # add column with subcorpus information
-procuneiIV.data$subcorpus <- rep("Proto-Cuneiform (Uruk IV)", nrow(procuneiIV.data))
+cuneiIV.data$subcorpus <- rep("Cuneiform (Uruk IV)", nrow(cuneiIV.data))
 
-# select columns for direct comparison with NaLaFi sample
-procuneiIV.data.selected <- select(procuneiIV.data, c('subcorpus', 'num.char', 'huni.chars', 'hrate.chars', 
-                                 'ttr.chars', 'rm.chars'))
+# select columns for direct comparison with other sample
+cuneiIV.data.selected <- select(cuneiIV.data, c('subcorpus', 'signs.expand.vec', 
+                                              'num.char', 'huni.chars', 'hrate.chars', 
+                                              'ttr.chars', 'rm.chars'))
+# rename column with sign sequences
+names(cuneiIV.data.selected)[names(cuneiIV.data.selected) == "signs.expand.vec"] <- "sequence"
 
-# TeDDI
+# Uruk III
+cuneiIII.data <- read.csv("~/Github/UpperPalCombinatorics/results/cuneiform_UrukIII_features.csv")
+
+# add column with subcorpus information
+cuneiIII.data$subcorpus <- rep("Cuneiform (Uruk III)", nrow(cuneiIII.data))
+
+# select columns for direct comparison with other sample
+cuneiIII.data.selected <- select(cuneiIII.data, c('subcorpus', 'signs.expand.vec', 
+                                              'num.char', 'huni.chars', 'hrate.chars', 
+                                              'ttr.chars', 'rm.chars'))
+# rename column with sign sequences
+names(cuneiIII.data.selected)[names(cuneiIII.data.selected) == "signs.expand.vec"] <- "sequence"
+```
+
+## TeDDI
+```{r}
 # read feature values for character sequences of the TeDDi sample
 teddi.data <- read.csv("~/Github/UpperPalCombinatorics/results/teddi_features.csv")
 # add column with subcorpus information
 teddi.data$subcorpus <- rep("TeDDi", nrow(teddi.data))
 # select columns
-teddi.selected <- select(teddi.data, c('subcorpus','num.char','huni.chars', 'hrate.chars', 
+teddi.selected <- select(teddi.data, c('subcorpus','text', 'num.char','huni.chars', 'hrate.chars', 
                            'ttr.chars', 'rm.chars'))
+# rename column with sign sequences
+names(teddi.selected)[names(teddi.selected) == "text"] <- "sequence"
 ```
 
 # Preprocessing
 ```{r}
 # combine the data frames
-estimations.df <- rbind(sign.data.selected, procuneiV.data.selected, 
-                        procuneiIV.data.selected, teddi.selected)
+estimations.df <- rbind(sign.data.selected, cuneiV.data.selected, 
+                        cuneiIV.data.selected, cuneiIII.data.selected,
+                        teddi.selected)
 nrow(estimations.df)
 
 # select sign strings of certain length
-estimations.df <- estimations.df[estimations.df$num.char > 5,]
+#estimations.df <- estimations.df[estimations.df$num.char > 10,]
 
 # select only certain subcorpora for plotting
 estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignacien"|
                                           #estimations.df$subcorpus == "Aurignacien/Gravettian"|
-                                          estimations.df$subcorpus == "Proto-Cuneiform (Uruk V)"|
-                                          estimations.df$subcorpus == "Proto-Cuneiform (Uruk IV)"|  
+                                          estimations.df$subcorpus == "Cuneiform (Uruk V)"|
+                                          #estimations.df$subcorpus == "Cuneiform (Uruk IV)"| 
+                                          #estimations.df$subcorpus == "Cuneiform (Uruk III)"|  
                                           estimations.df$subcorpus == "TeDDi", ]
+```
+# Plots
+
+Get subset of data points to plot labels.
+```{r}
+labels.df <- estimations.df.selected[estimations.df.selected$num.char == 11 &
+                                       estimations.df.selected$subcorpus != "TeDDi" &
+                                       estimations.df.selected$subcorpus != "Cuneiform (Uruk III)",] 
 ```
 
 ## Entropy rate vs. unigram entropy
 ```{r, fig.width = 5, fig.height = 5, warning = FALSE}
-huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y = hrate.chars, 
+huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y =  hrate.chars, 
                                     colour = subcorpus, size = num.char)) + 
   geom_point(alpha = 0.3) +
   #geom_density2d(alpha = .8) +
   labs(x = "Unigram entropy for characters", y = "Entropy rate for characters") +
-  theme(legend.position = c(.8,.2))
+  geom_label_repel(data = labels.df,
+                  aes(label = sequence),
+    position = position_nudge_repel(x = 0, y = 0.5),
+    size = 3,
+    show.legend = FALSE) +
+    theme(legend.position = c(.8, .25))
   #facet_wrap(~subcorpus)
 huni.hrate.chars.plot <- ggMarginal(huni.hrate.chars.plot, groupFill = T, groupColour = T, 
                                   type = "density")
@@ -107,10 +150,13 @@ huni.hrate.chars.plot <- ggMarginal(huni.hrate.chars.plot, groupFill = T, groupC
 ttr.rm.chars.plot <- ggplot(estimations.df.selected, aes(x = ttr.chars, y = rm.chars, 
                                     colour = subcorpus, size = num.char)) + 
   geom_point(alpha = 0.3) +
-  #geom_density2d(alpha = .5) +
+  theme(legend.position = "none") +
   labs(x = "TTR for characters", y = "Repetition rate for characters") +
-  theme(legend.position = "none")
-  #facet_wrap(~subcorpus)
+  geom_label_repel(data = labels.df,
+                  aes(label = sequence),
+    position = position_nudge_repel(x = 0.25, y = 0),
+    size = 3,
+    show.legend = FALSE)
 ttr.rm.chars.plot <- ggMarginal(ttr.rm.chars.plot, groupFill = T, groupColour = T, 
                                   type = "density")
 #ttr.rm.chars.plot
@@ -124,7 +170,7 @@ combined.plot <- grid.arrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2
 ## Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", 
-       combined.plot, dpi = 300, width = 20, height = 10, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 12, height = 6, device = cairo_pdf)
 ```
 
 # Swabian Jura Specific Plots
@@ -208,6 +254,6 @@ combined.plot <- grid.arrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2
 ## Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/writingSystem_plot.pdf", 
-       combined.plot, dpi = 300, width = 20, height = 10, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 25, height = 15, device = cairo_pdf)
 ```
 
