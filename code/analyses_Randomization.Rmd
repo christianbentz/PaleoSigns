@@ -1,0 +1,56 @@
+---
+title: "Analyses Randomization"
+author: "Chris Bentz"
+date: "2/27/2024"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load libraries
+If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
+```{r}
+library(ggplot2)
+library(ggExtra)
+library(ggpubr)
+library(gridExtra)
+```
+
+# Load Data
+Load csv file with quantitative feature values for sign sequences per object. 
+```{r}
+# load signbase estimations for strings on objects
+sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/signBase_features.csv")
+# select Aurignacian objects
+sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ] 
+```
+
+# Plot
+
+## Entropy rate vs. Unigram entropy 
+Entropy rate vs. unigram entropy for the original versus randomized sequences.
+```{r, fig.width = 6, fig.height = 6, warning = FALSE}
+hrate.random.plot <- ggplot(sign.data, aes(x = hrate.chars, y =  hrate.chars.random, 
+                                    size = num.char)) + 
+  geom_point(alpha = 0.3) +
+  theme(legend.position = c(.8, .25)) +
+  labs(x = " Entropy rate for characters (original)", y = "Entropy rate for characters (randomized)")
+hrate.random.plot <- ggMarginal(hrate.random.plot,
+                                  type = "density")
+hrate.random.plot
+```
+
+## Safe complete figure to file
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_signBase_random.pdf", 
+       hrate.random.plot, dpi = 300, width = 6, height = 6, device = cairo_pdf)
+```
+
+# Correlation
+```{r}
+cor(sign.data$hrate.chars, sign.data$hrate.chars.random, method = "pearson")
+```

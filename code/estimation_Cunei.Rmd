@@ -29,7 +29,7 @@ library(Hrate)
 Load the files with the cleaned sequences.
 ```{r}
 # choose period (UrukIII, UrukIV, UrukV)
-period <- "UrukV"
+period <- "UrukIII"
 
 # cuneiform data from CDLI
 cunei.data <- read.csv(paste("~/Github/UpperPalCombinatorics/data/CDLI/", 
