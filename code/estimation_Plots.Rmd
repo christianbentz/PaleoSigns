@@ -113,8 +113,8 @@ nrow(estimations.df)
 estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignacien"|
                                           #estimations.df$subcorpus == "Aurignacien/Gravettian"|
                                           estimations.df$subcorpus == "Cuneiform (Uruk V)"|
-                                          #estimations.df$subcorpus == "Cuneiform (Uruk IV)"| 
-                                          #estimations.df$subcorpus == "Cuneiform (Uruk III)"|  
+                                          estimations.df$subcorpus == "Cuneiform (Uruk IV)"| 
+                                          estimations.df$subcorpus == "Cuneiform (Uruk III)"|  
                                           estimations.df$subcorpus == "TeDDi", ]
 ```
 # Plots
