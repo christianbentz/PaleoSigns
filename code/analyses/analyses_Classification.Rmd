@@ -1,0 +1,31 @@
+---
+title: 'Analyses: Classification'
+author: "Chris Bentz"
+date: "2/28/2024"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Description
+
+# Load Packages
+If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2"). For the Hrate package this is different, since it comes from github. The devtools library needs to be installed, and then the install_github() function is used.
+```{r, message = F}
+# install the latest version of neuralnet with bug fixes: devtools::install_github("bips-hb/neuralnet")
+library(neuralnet)
+library(sigmoid)
+library(caret)
+```
+
+# Load Data
+Load data table with estimated feature values per sequence. 
+```{r}
+# load estimations from stringBase corpus
+estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features_combined.csv")
+#head(features.csv)
+```

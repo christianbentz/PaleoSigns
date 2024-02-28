@@ -1,0 +1,70 @@
+---
+title: 'Analyses: Swabian Aurignacian'
+author: "Chris Bentz"
+date: "2/28/2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Load libraries
+If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
+```{r}
+library(ggplot2)
+library(ggrepel)
+library(ggExtra)
+library(gridExtra)
+library(ggpubr)
+```
+
+# Load Data
+Load feature estimations with meta data for the Aurignacian mobile objects.
+```{r}
+sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/signBase_features.csv")
+# select Aurignacian data
+sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
+```
+
+# Swabian Jura Specific Plots
+Comparisons of different caves of the Swabian Jura.
+
+## Entropy rate vs. unigram entropy
+```{r, fig.width = 5, fig.height = 5, warning = FALSE}
+huni.hrate.chars.plot <- ggplot(sign.data, aes(x = huni.chars, y = hrate.chars, 
+                                    colour = site_name, size = num.char)) + 
+  geom_point(alpha = 0.3) +
+  #geom_density2d(alpha = .8) +
+  labs(x = "Unigram entropy for characters", y = "Entropy rate for characters") +
+  theme(legend.position = c(.8,.2))
+  #facet_wrap(~subcorpus)
+huni.hrate.chars.plot <- ggMarginal(huni.hrate.chars.plot, groupFill = T, groupColour = T, 
+                                  type = "density")
+#huni.hrate.chars.plot
+```
+
+## TTR vs. repetition rate
+```{r, fig.width = 5, fig.height = 5, warning = FALSE}
+ttr.rm.chars.plot <- ggplot(sign.data, aes(x = ttr.chars, y = rm.chars, 
+                                    colour = site_name, size = num.char)) + 
+  geom_point(alpha = 0.3) +
+  #geom_density2d(alpha = .5) +
+  labs(x = "TTR for characters", y = "Repetition rate for characters") +
+  theme(legend.position = "none")
+  #facet_wrap(~subcorpus)
+ttr.rm.chars.plot <- ggMarginal(ttr.rm.chars.plot, groupFill = T, groupColour = T, 
+                                  type = "density")
+#ttr.rm.chars.plot
+```
+
+Combine figures.
+```{r, width = 12, height = 6}
+combined.plot <- grid.arrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2)
+```
+
+## Safe complete figure to file
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_Aurignacian.pdf", 
+       combined.plot, dpi = 300, width = 12, height = 6, device = cairo_pdf)
+```

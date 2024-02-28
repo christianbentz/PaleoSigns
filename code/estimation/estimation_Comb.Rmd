@@ -1,0 +1,122 @@
+---
+title: "Estimations Combined"
+author: ""
+date: "2/28/2024"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Description
+This code loads and combines the different feature value estimations (natural language writing, paleolithic signs, and proto-cuneiform) into one csv file.
+
+## Load libraries
+If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
+```{r}
+#library(stringr)
+library(dplyr)
+```
+
+# Load Data
+Load csv files with quantitative feature values for sign sequences. 
+
+## SIGNBASE
+```{r}
+# load signbase estimations for strings on objects
+sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/signBase_features.csv")
+# select Aurignacian objects
+sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ] 
+
+# select columns for direct comparison with TeDDi sample
+sign.data.selected <- select(sign.data, c('archaeological_unit', 'coding_clean', 
+                                          'num.char', 'huni.chars', 'hrate.chars', 
+                                 'ttr.chars', 'rm.chars'))
+# change column names
+colnames(sign.data.selected) <- c('subcorpus', 'sequence', 'num.char','huni.chars', 'hrate.chars', 
+                         'ttr.chars', 'rm.chars')
+```
+
+## CDLI
+```{r}
+# read feature values for proto-cuneiform from CDLI
+# Uruk V
+cuneiV.data <- read.csv("~/Github/UpperPalCombinatorics/results/cuneiform_UrukV_features.csv")
+
+# add column with subcorpus information
+cuneiV.data$subcorpus <- rep("Cuneiform (Uruk V)", nrow(cuneiV.data))
+
+# select columns for direct comparison with other samples
+cuneiV.data.selected <- select(cuneiV.data, c('subcorpus', 'signs.expand.vec', 
+                                              'num.char', 'huni.chars', 'hrate.chars', 
+                                              'ttr.chars', 'rm.chars'))
+# rename column with sign sequences
+names(cuneiV.data.selected)[names(cuneiV.data.selected) == "signs.expand.vec"] <- "sequence"
+
+# Uruk IV
+cuneiIV.data <- read.csv("~/Github/UpperPalCombinatorics/results/cuneiform_UrukIV_features.csv")
+
+# add column with subcorpus information
+cuneiIV.data$subcorpus <- rep("Cuneiform (Uruk IV)", nrow(cuneiIV.data))
+
+# select columns for direct comparison with other sample
+cuneiIV.data.selected <- select(cuneiIV.data, c('subcorpus', 'signs.expand.vec', 
+                                              'num.char', 'huni.chars', 'hrate.chars', 
+                                              'ttr.chars', 'rm.chars'))
+# rename column with sign sequences
+names(cuneiIV.data.selected)[names(cuneiIV.data.selected) == "signs.expand.vec"] <- "sequence"
+
+# Uruk III
+cuneiIII.data <- read.csv("~/Github/UpperPalCombinatorics/results/cuneiform_UrukIII_features.csv")
+
+# add column with subcorpus information
+cuneiIII.data$subcorpus <- rep("Cuneiform (Uruk III)", nrow(cuneiIII.data))
+
+# select columns for direct comparison with other sample
+cuneiIII.data.selected <- select(cuneiIII.data, c('subcorpus', 'signs.expand.vec', 
+                                              'num.char', 'huni.chars', 'hrate.chars', 
+                                              'ttr.chars', 'rm.chars'))
+# rename column with sign sequences
+names(cuneiIII.data.selected)[names(cuneiIII.data.selected) == "signs.expand.vec"] <- "sequence"
+```
+
+## TeDDI
+```{r}
+# read feature values for character sequences of the TeDDi sample
+teddi.data <- read.csv("~/Github/UpperPalCombinatorics/results/teddi_features.csv")
+# add column with subcorpus information
+teddi.data$subcorpus <- rep("TeDDi", nrow(teddi.data))
+# select columns
+teddi.selected <- select(teddi.data, c('subcorpus','text', 'num.char','huni.chars', 'hrate.chars', 
+                           'ttr.chars', 'rm.chars'))
+# rename column with sign sequences
+names(teddi.selected)[names(teddi.selected) == "text"] <- "sequence"
+```
+
+# Combine
+Combine the different data frames.
+```{r}
+estimations.df <- rbind(sign.data.selected, cuneiV.data.selected, 
+                        cuneiIV.data.selected, cuneiIII.data.selected,
+                        teddi.selected)
+head(estimations.df)
+```
+
+# Simple Stats
+```{r}
+nrow(estimations.df) # number of sequences with feature estimations
+unique(estimations.df$subcorpus) # names of subcorpora
+nrow(estimations.df[estimations.df$subcorpus=="Aurignacien",]) # number of Aurignacien sequences
+nrow(estimations.df[estimations.df$subcorpus=="TeDDi",]) # number of TeDDi (modern writing) sequences
+nrow(estimations.df[estimations.df$subcorpus=="Cuneiform (Uruk V)",]) 
+nrow(estimations.df[estimations.df$subcorpus=="Cuneiform (Uruk IV)",]) 
+nrow(estimations.df[estimations.df$subcorpus=="Cuneiform (Uruk III)",]) 
+```
+
+Write to file
+```{r}
+write.csv(estimations.df, "~/Github/UpperPalCombinatorics/results/features_combined.csv", row.names = F)
+```
