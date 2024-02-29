@@ -39,7 +39,7 @@ selected <- c(subcorpus1, subcorpus2)
 estimations.df <- estimations.df[estimations.df$subcorpus %in% selected, ]
 ```
 
-Select relevant columns of the data frame, i.e. the measures to be included in classification and the ''corpus'' or ''subcorpus'' column.
+Select relevant columns of the data frame, i.e. the measures to be included in classification and the ''subcorpus'' column.
 ```{r}
 estimations.subset <- estimations.df[c("subcorpus",
                                        "huni.chars", 
@@ -56,6 +56,7 @@ estimations.subset <- na.omit(estimations.subset)
 
 # Center and scale the data
 ```{r}
+# first column is subcorpus column, the others are the features
 estimations.scaled <- cbind(estimations.subset[1], scale(estimations.subset[2:ncol(estimations.subset)]))
 ```
 
