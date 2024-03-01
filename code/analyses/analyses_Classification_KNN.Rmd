@@ -10,6 +10,7 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
 ## Description
 k-nearest neighbor analyses of the feature vectors per character sequence (loaded from ~/results/features_combined.csv). The results are stored in ~/results/classifier/.
 
@@ -37,17 +38,7 @@ unique(estimations.df$subcorpus)
 subcorpus1 <- "Cuneiform (Uruk III)"
 subcorpus2 <- "Aurignacien"
 selected <- c(subcorpus1, subcorpus2)
-estimations.df <- estimations.df[estimations.df$subcorpus %in% selected, ]
-```
-
-Select relevant columns of the data frame, i.e. the measures to be included in classification and the ''subcorpus'' column.
-```{r}
-estimations.subset <- estimations.df[c("subcorpus", 
-                                       "huni.chars", 
-                                       "hrate.chars", 
-                                       "ttr.chars", 
-                                       "rm.chars"
-                                       )]
+estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]
 ```
 
 Remove NAs (whole row)
@@ -59,7 +50,7 @@ estimations.subset <- na.omit(estimations.subset)
 ```{r}
 # first column is subcorpus column, the others are the features
 # be aware that this needs to be changed in case of other table format
-estimations.scaled <- cbind(estimations.subset["subcorpus"], 
+estimations.scaled <- cbind(estimations.subset[, c("subcorpus", "sequence", "num.char")], 
                             scale(estimations.subset[, c("huni.chars", "hrate.chars", 
                                                          "ttr.chars", "rm.chars")]))
 ```
@@ -123,13 +114,25 @@ for (k in 1:n){
   local.results.rounded <- round(local.results, 2)
   # print(local.results.rounded)
   knn.results <- rbind(knn.results, local.results.rounded)
+  # give predictions alongside the other information in data frame
+  knn.predictions.df <- cbind(test, predictions.knn)
 }
 print(knn.results)
 ```
 
-Write to file. Note that the file names have to be changed manually here.
+Write to file. 
 ```{r}
+# write results
 write.csv(knn.results, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/KNN/results_KNN_",
+                                              subcorpus1, "_",
+                                              subcorpus2, "_",
+                                              ".csv"
+                                              ), collapse = ""),
+                                      row.names = F)
+
+# write df with predictions for post-hoc analyses
+# note that this writes the predictions only for the last run of the loop, i.e. the highest k
+write.csv(knn.predictions.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/KNN/predictions_KNN_",
                                               subcorpus1, "_",
                                               subcorpus2, "_",
                                               ".csv"
