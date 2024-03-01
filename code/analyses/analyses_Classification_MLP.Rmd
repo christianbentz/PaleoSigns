@@ -1,7 +1,7 @@
 ---
-title: 'Analyses: Classification'
-author: "Chris Bentz"
-date: "2/28/2024"
+title: 'Analyses: Classification with MLP'
+author: ""
+date: "03/01/2024"
 output:
   pdf_document: default
   html_document: default
@@ -26,15 +26,15 @@ library(caret)
 Load data table with estimated feature values per sequence. 
 ```{r}
 # load feature value estimations 
-estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features_combined.csv")
+estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features_combined_test.csv")
 head(estimations.df)
 ```
 
-Exclude subcorpora (if needed).
+Choose subcorpora for binary classification.
 ```{r}
 # choose subcorpora to compare
-subcorpus1 <- "Cuneiform (Uruk III)"
-subcorpus2 <- "Cuneiform (Uruk IV)"
+subcorpus1 <- "Aurignacien"
+subcorpus2 <- "TeDDi"
 selected <- c(subcorpus1, subcorpus2)
 estimations.df <- estimations.df[estimations.df$subcorpus %in% selected, ]
 ```
@@ -57,7 +57,10 @@ estimations.subset <- na.omit(estimations.subset)
 # Center and scale the data
 ```{r}
 # first column is subcorpus column, the others are the features
-estimations.scaled <- cbind(estimations.subset[1], scale(estimations.subset[2:ncol(estimations.subset)]))
+# be aware that this needs to be changed in case of other table format
+estimations.scaled <- cbind(estimations.subset["subcorpus"], 
+                            scale(estimations.subset[, c("huni.chars", "hrate.chars", 
+                                                         "ttr.chars", "rm.chars")]))
 ```
 
 # Create Training and Test Sets
@@ -66,14 +69,14 @@ estimations.scaled <- cbind(estimations.subset[1], scale(estimations.subset[2:nc
 set.seed(1234)
 # Randomly generating our training and test samples with a respective ratio of 2/3 and 1/3
 datasample <- sample(2, nrow(estimations.scaled), replace = TRUE, prob = c(0.67, 0.33))
-# Generate training set
+# Generate training set (select rows randomly by using datasample vector)
 train <- estimations.scaled[datasample == 1, 1:ncol(estimations.scaled)]
 # Generate test set 
 test <- estimations.scaled[datasample == 2, 1:ncol(estimations.scaled)]
 ```
 
 # Implement MLP classifier
-This is partly based on code given at http://uc-r.github.io/ann_classification (last accessed 18.01.2023)
+This is partly based on code given at http://uc-r.github.io/ann_classification (last accessed 18.01.2023). The activation function (tanh), error function (SSE), and backpropagation algorithm (rprop+) are here chosen according to the best model performance reported in Bentz (2023).
 ```{r, message = F, warning = F}
 # Generate list of hidden unit architectures (number of layers and units)
 # Choose number of random architectures
@@ -214,3 +217,7 @@ Visualize the nn with the best weights after training.
 #mlp.plot <- plot(classifier.mlp, rep = 'best', show.weights = F)
 #mlp.plot
 ```
+
+#References
+Bentz, Christian (2023). The Zipfian Challenge: Learning the statistical fingerprint of natural
+languages. CoNLL, Singapore. https://aclanthology.org/2023.conll-1.3/

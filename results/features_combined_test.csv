@@ -1,0 +1,47 @@
+subcorpus,sequence,num.char,huni.chars,hrate.chars,ttr.chars,rm.chars
+Aurignacien,||| ////// _ V,12,1.89624062518029,1.52955628363144,0.416666666666667,0.636363636363636
+Aurignacien,vvvvv,5,0,0.571190309536813,0.2,1
+Aurignacien,vvvv vvvv,9,0.503258334775646,0.906004739982319,0.222222222222222,0.75
+Aurignacien,vvvvvvvvvvvvvv,14,0,0.637954976171292,0.071428571428571,1
+Aurignacien,|||,3,0,0.430827083453526,0.333333333333333,1
+Aurignacien,||||,4,0,0.50708020839343,0.25,1
+Aurignacien,vvvvvv,6,0,0.599129685927236,0.166666666666667,1
+Aurignacien,vvvvvvvv,8,0,0.634341506468835,0.125,1
+Aurignacien,vvvv,4,0,0.50708020839343,0.25,1
+Aurignacien,vvvvvv,6,0,0.599129685927236,0.166666666666667,1
+Aurignacien,||||||| _ ¤¤¤¤¤¤¤¤¤ _ // _ ¤¤¤¤¤¤¤¤¤ _ ||| _ V,36,1.78415912785142,1.39892970723939,0.138888888888889,0.714285714285714
+Aurignacien,||||| _ ¤¤¤¤¤¤¤¤¤¤¤¤¤¤¤ _ ///// _ ||||| _ ¤¤¤¤¤¤¤ _ ||| |||| _ || _ | | || | | | _ lllll | | _ //// _ /// ¤¤¤¤,90,2.34524013039383,1.56626928055031,0.066666666666667,0.573033707865168
+Aurignacien,vvvvvvvv,8,0,0.634341506468835,0.125,1
+Aurignacien,vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv _ vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv,79,0.097940582718174,0.573960494119317,0.025316455696203,0.974358974358974
+Aurignacien,vvvvvvvv _ vvvvvvvvv,18,0.309543429150325,0.879904633950831,0.111111111111111,0.882352941176471
+Aurignacien,v,1,0,0,1,NA
+Aurignacien,v vv vv,7,0.863120568566631,0.734042128859753,0.285714285714286,0.333333333333333
+Aurignacien,v v v vv vv _ v v vv,18,1.19417373425691,1.07762731722105,0.166666666666667,0.176470588235294
+Aurignacien,vvvvvvvv,8,0,0.634341506468835,0.125,1
+Aurignacien,vvvvv,5,0,0.571190309536813,0.2,1
+TeDDi,Giờ sao nữa?,12,3.25162916738782,2.13381161872973,0.833333333333333,0
+TeDDi,"Này, con gái anh bị như thế bao lâu rồi?",40,4.17095059445467,3.03682468306231,0.6,0
+TeDDi,Hin nhiên là vy.,16,3.28063906222957,2.25381448253756,0.6875,0
+TeDDi,"Ooh, thật đáng sợ.",18,3.68354236243323,2.55024883364319,0.777777777777778,0
+TeDDi,xin anh đấy...,14,3.18200581476021,2.12834795027244,0.714285714285714,0.153846153846154
+TeDDi,Để tôi xem vết thương.,22,3.87966400490259,2.74033947729729,0.772727272727273,0
+TeDDi,Tôi không thấy đường!,21,3.78494182743764,2.55553416971309,0.714285714285714,0
+TeDDi,"Oh, không sao, cứ tự nhiên.",27,3.89861285480185,2.76181021334585,0.666666666666667,0
+TeDDi,Anh đến trễ.,12,3.25162916738782,2.16098148108722,0.833333333333333,0
+TeDDi,Con đây bố. nhưng bố cũng đoán là cái gã nhát ké đó... rất sợ phải đi xuống dưới hầm mỏ.,88,4.51386955237691,3.29864091743881,0.420454545454545,0.022988505747126
+TeDDi,Tôi không cần sức mạnh của mình để đề nghị anh ta chuyện đó.,60,4.12727808229366,2.98334286752653,0.45,0
+TeDDi,Giá đó dưới giá thị trường rồi.,31,3.87323582637633,2.68881508886157,0.580645161290323,0
+TeDDi,Anh nghĩ anh có thể thuyết phục Raven thay đổi?,47,4.00276551190003,2.94478962405741,0.48936170212766,0
+TeDDi,Thôi mà anh.,12,3.25162916738782,2.13381161872973,0.833333333333333,0
+TeDDi,Vậy là cậu có cái để mong đợi rồi.,34,3.98423416465249,2.88851593960008,0.617647058823529,0
+TeDDi,mệnh lệnh của ngài là gì?,25,3.58927507071071,2.39494753235393,0.56,0
+TeDDi,Ngươi đấu tranh vì những gì của ngươi.,38,3.99394108043297,2.62493916226001,0.526315789473684,0
+TeDDi,chúng ta sẽ khai chiến.,23,3.62117554291947,2.42955666840842,0.608695652173913,0
+TeDDi,Có nhớ bộ phim tài liệu chúng ta đã làm trước đây không?,56,4.3915654128586,3.159270013781,0.517857142857143,0
+TeDDi,Mày vừa nói gì?,15,3.58989809546429,2.46384394796814,0.866666666666667,0
+TeDDi,Anh ta là anh trai em.,22,3.44286216515547,2.31054994388601,0.590909090909091,0
+TeDDi,"Xin lỗi, chúng tôi chỉ có những chai nhỏ",40,3.69144607116552,2.48610499263627,0.45,0
+TeDDi,"Ati bi igba ti emi ti fi enia jẹ onidajọ lori awọn enia mi Israeli . Ati pẹlu emi o ṣẹgun gbogbo awọn ọta rẹ . Pẹlupẹlu mo ti sọ fun ọ pe , Oluwa yio kọle kan fun ọ .",166,4.16110856751747,2.80125876115158,0.180722891566265,0
+TeDDi,"Ati ninu awọn ọmọ Israeli , ati ninu awọn alufa , ati awọn ọmọ Lefi , ati awọn akọrin , ati awọn adèna , pẹlu awọn Netinimu si goke wá si Jerusalemu li ọdun keje Artasasta ọba .",177,4.06570773937587,2.56565181756029,0.175141242937853,0
+TeDDi,"Nigbana ni o ṣore-ọfẹ fun u , o si wipe , Gbà a kuro ninu ilọ sinu ihò , emi ti ri irapada !",92,4.0757310812159,2.97908754630644,0.326086956521739,0
+TeDDi,"Bayi li Oluwa awọn ọmọ-ogun , Ọlọrun Israeli wi pe , ẹnyin ti ri gbogbo ibi ti emi ti mu wá sori Jerusalemu , ati sori gbogbo ilu Juda ; si wò o , ahoro ni nwọn li oni yi , ẹnikan kò si gbe inu wọn .",199,4.16330428599889,2.77079733742992,0.165829145728643,0
