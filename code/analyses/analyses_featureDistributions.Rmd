@@ -27,14 +27,14 @@ library(ggpubr)
 Load csv file with quantitative feature values for sign sequences per object (paleolithic signs) and tablet (cuneiform). Comparative sample: A comparative sample of feature values for languages across the world is derived from the Text Data Diversity (TeDDi) sample (Moran et al 2022). 
 
 ```{r}
-estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features_combined.csv")
+estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features/features_combined.csv")
 head(estimations.df)
 ```
 
 # Preprocessing
 ```{r}
 # select sign strings of certain length
-estimations.df <- estimations.df[estimations.df$num.char > 10,]
+#estimations.df <- estimations.df[estimations.df$num.char > 1,]
 
 # select only certain subcorpora for plotting
 estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignacien"|

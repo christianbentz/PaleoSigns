@@ -27,7 +27,7 @@ library(caret)
 Load data table with estimated feature values per sequence. 
 ```{r}
 # load feature value estimations 
-estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features_combined.csv")
+estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features/features_combined.csv")
 head(estimations.df)
 ```
 
@@ -35,8 +35,8 @@ Select subcorpora for binary classification.
 ```{r}
 # choose subcorpora to compare 
 unique(estimations.df$subcorpus)
-subcorpus1 <- "Cuneiform (Uruk III)"
-subcorpus2 <- "Aurignacien"
+subcorpus1 <- "Cuneiform (Uruk V)"
+subcorpus2 <- "Cuneiform (Uruk III)"
 selected <- c(subcorpus1, subcorpus2)
 estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]
 ```

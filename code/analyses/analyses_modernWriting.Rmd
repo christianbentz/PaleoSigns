@@ -24,7 +24,7 @@ library(ggpubr)
 # Load Data
 Load feature estimations with meta data for the Aurignacian mobile objects.
 ```{r}
-teddi.data <- read.csv("~/Github/UpperPalCombinatorics/results/teddi_features.csv")
+teddi.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/teddi_features.csv")
 ```
 
 # Preselection

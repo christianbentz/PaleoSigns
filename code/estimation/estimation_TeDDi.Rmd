@@ -125,5 +125,5 @@ teddi.clean.est <- merge(teddi.clean, estimations.df, by = "id")
 
 Safe outputs to file.
 ```{r}
-write.csv(teddi.clean.est, "~/Github/UpperPalCombinatorics/results/teddi_features.csv", row.names = F)
+write.csv(teddi.clean.est, "~/Github/UpperPalCombinatorics/results/features/teddi_features.csv", row.names = F)
 ```

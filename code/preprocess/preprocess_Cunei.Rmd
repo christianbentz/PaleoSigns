@@ -103,7 +103,7 @@ for (i in 1:length(textchunks)){
   # remove the hashtag
   signs <- gsub("#", "", signs)
   # unravel the multiplication syntax to get multiple sign tokens
-  try({ # if the processing fails for a certain row, there will be no output for this row,
+  try(silent = TRUE, { # if the processing fails for a certain row, there will be no output for this row,
   # but the try() function allows the loop to keep running
   for (j in 1:length(signs)){
     sign.syntax <- signs[j]
@@ -130,13 +130,29 @@ for (i in 1:length(textchunks)){
   signs.expand.vec <- c(signs.expand.vec, signs)
 }
 # compile final data frame
-df <- cbind(tablet.id, signs.orig.vec, signs.expand.vec)
-head(df)
+cunei.data <- data.frame(tablet.id, signs.orig.vec, signs.expand.vec)
+# head(cunei.data)
 ```
+
+Remove rows with empty sign codings
+```{r}
+cunei.data <- cunei.data[-which(cunei.data$signs.orig.vec == ""), ]
+```
+
+Add number of cuneiform signs per tablet.
+```{r}
+cunei.data$num.char <- lengths(strsplit(cunei.data$signs.expand.vec, " "))
+```
+
+Select those with at least a given number of cuneiform signs.
+```{r}
+cunei.data <- cunei.data[cunei.data$num.char > 1, ]
+```
+
 
 Safe to file.
 ```{r}
-write.csv(df, file = paste("~/Github/UpperPalCombinatorics/data/CDLI/", 
+write.csv(cunei.data, file = paste("~/Github/UpperPalCombinatorics/data/CDLI/", 
                       paste(period, "/signs_clean.csv", sep = ""), 
                       sep =""), row.names = F)
 ```

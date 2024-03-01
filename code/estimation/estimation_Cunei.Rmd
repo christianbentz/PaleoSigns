@@ -35,8 +35,6 @@ period <- "UrukIII"
 cunei.data <- read.csv(paste("~/Github/UpperPalCombinatorics/data/CDLI/", 
                       paste(period, "/signs_clean.csv", sep = ""), 
                       sep =""))
-# remove rows with empty sign codings
-cunei.data <- cunei.data[-which(cunei.data$signs.orig.vec == ""), ]
 ```
 
 # Cuneiform Estimations
@@ -45,9 +43,9 @@ Estimations of quantitative features for the cuneiform data from CDLI.
 # set counter
 counter = 0
 # initialize dataframe to append results to
-estimations.df <- data.frame(tablet.id = character(0), num.char = numeric(0),
-                             huni.chars = numeric (0), hrate.chars = numeric(0),
-                             ttr.chars = numeric(0), rm.chars = numeric(0)) 
+estimations.df <- data.frame(tablet.id = character(0), huni.chars = numeric (0), 
+                             hrate.chars = numeric(0), ttr.chars = numeric(0), 
+                             rm.chars = numeric(0)) 
 
 # start time
 start_time <- Sys.time()
@@ -61,9 +59,6 @@ for (i in 1:nrow(cunei.data)){
 
   # split strings into cuneiform sign types
   chars <- unlist(strsplit(coding.sample, " "))
-  
-  # get overall number of signs on tablet
-  num.char <- length(chars)
   
   # preprocess the signs with bag-of-words normalization
   # note: this is an important step! Without it, entropy rate estimation will fail
@@ -113,7 +108,7 @@ for (i in 1:nrow(cunei.data)){
   }
   
   # append results to dataframe
-  local.df <- data.frame(tablet.id, num.char, huni.chars, hrate.chars,
+  local.df <- data.frame(tablet.id, huni.chars, hrate.chars,
                          ttr.chars, rm.chars)
   estimations.df <- rbind(estimations.df, local.df)
 }) # end of try()
@@ -133,7 +128,7 @@ cunei.data.est <- merge(cunei.data, estimations.df, by = "tablet.id")
 
 Safe outputs to file.
 ```{r}
-write.csv(cunei.data.est, paste("~/Github/UpperPalCombinatorics/results/cuneiform_", 
+write.csv(cunei.data.est, paste("~/Github/UpperPalCombinatorics/results/features/cuneiform_", 
                       paste(period, "_features.csv", sep = ""), 
                       sep =""), row.names = F)
 ```

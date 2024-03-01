@@ -24,7 +24,7 @@ library(gridExtra)
 Load csv file with quantitative feature values for sign sequences per object. 
 ```{r}
 # load signbase estimations for strings on objects
-sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/signBase_features.csv")
+sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/signBase_features.csv")
 # select Aurignacian objects
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ] 
 ```

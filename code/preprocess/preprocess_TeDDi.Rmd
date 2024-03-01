@@ -53,8 +53,8 @@ teddi.sample <-sample_n(teddi.data, 1000)
 
 # Further Preprocessing
 ```{r}
-# remove lines with less than 10 characters
-teddi.clean <- teddi.sample[nchar(teddi.sample$text) > 10, ]
+# use only lines with at least two characters
+teddi.clean <- teddi.sample[nchar(teddi.sample$text) > 1, ]
 ```
 
 # Simple Stats

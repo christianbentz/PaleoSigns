@@ -26,7 +26,7 @@ library(caret)
 Load data table with estimated feature values per sequence. 
 ```{r}
 # load feature value estimations 
-estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features_combined_test.csv")
+estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features/features_combined_test.csv")
 head(estimations.df)
 ```
 
@@ -200,7 +200,7 @@ print(proc.time)
 
 Write to file.
 ```{r}
-write.csv(results.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/results_MLP_",
+write.csv(results.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/MLP/results_MLP_",
                                               act.fct.name, "_",
                                               err.fct, "_",
                                               algorithm, "_",

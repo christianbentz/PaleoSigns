@@ -22,7 +22,7 @@ library(ggpubr)
 # Load Data
 Load feature estimations with meta data for the Aurignacian mobile objects.
 ```{r}
-sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/signBase_features.csv")
+sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/signBase_features.csv")
 # select Aurignacian data
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
 ```

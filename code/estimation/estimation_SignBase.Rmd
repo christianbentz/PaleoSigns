@@ -140,5 +140,5 @@ sign.data.est <- merge(sign.data, estimations.df, by = "object_id")
 
 Safe outputs to file.
 ```{r}
-write.csv(sign.data.est, "~/Github/UpperPalCombinatorics/results/signBase_features.csv", row.names = F)
+write.csv(sign.data.est, "~/Github/UpperPalCombinatorics/results/features/signBase_features.csv", row.names = F)
 ```
