@@ -1,0 +1,38 @@
+---
+title: 'Analyses: Classification Plots'
+author: "Chris Bentz"
+date: "3/1/2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load libraries
+If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
+```{r}
+library(ggplot2)
+library(ggExtra)
+library(gridExtra)
+library(ggpubr)
+library(ggridges)
+```
+
+# Load Data
+
+```{r}
+performance.mlp <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Aurignacien_Cuneiform (Uruk V)_.csv")
+head(performance.mlp)
+```
+
+# Density Plots
+
+## Accuracy
+Density plot for lengths in number of characters.
+```{r}
+accuracy.plot <- ggplot(performance.mlp, aes(x = accuracy)) + 
+  # add density ridges with quantiles = 2, i.e. median as a line
+  geom_density(alpha = 0.5)
+accuracy.plot
+```

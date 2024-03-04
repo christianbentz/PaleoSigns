@@ -66,12 +66,6 @@ train <- estimations.scaled[datasample == 1, 1:ncol(estimations.scaled)]
 test <- estimations.scaled[datasample == 2, 1:ncol(estimations.scaled)]
 ```
 
-# Baseline
-We here compute a performance baseline by simply predicting the most frequent label for all items in the test set.
-```{r}
-
-```
-
 # Implement MLP classifier
 This is partly based on code given at http://uc-r.github.io/ann_classification (last accessed 18.01.2023). The activation function (tanh), error function (SSE), and backpropagation algorithm (rprop+) are here chosen according to the best model performance reported in Bentz (2023).
 ```{r, message = F, warning = F}
@@ -95,7 +89,8 @@ for (i in 1:arch.no) {
 results.df <- data.frame(hidden.structure = character(0), 
                          hidden.size = numeric(0), hidden.depth = numeric(0),
                          err.fct = character(0), act.fct.name = character(0), 
-                         algorithm = character(0), accuracy = numeric(0),
+                         algorithm = character(0), baseline = numeric(0),
+                         accuracy = numeric(0), accuracy.pvalue = numeric(0), 
                          precision = numeric(0), recall = numeric(0), 
                          f1 = numeric(0)
                          ) 
@@ -170,25 +165,30 @@ for (hidden in hidden.list) {
   cm <- confusionMatrix(as.factor(class.comparison$predicted), 
                       reference = as.factor(class.comparison$observed))
   #print(cm)
-  # get precision, recall, and f1 from the output list of confusionMatrix()
+  # get performance metrics from the output list of confusionMatrix()
+  baseline <- cm$overall['AccuracyNull']
   accuracy <- cm$overall['Accuracy']
+  accuracy.pvalue <- cm$overall['AccuracyPValue']
   f1 <- cm[["byClass"]]["F1"]
   recall <- cm[["byClass"]]["Recall"]
   precision <- cm[["byClass"]]["Precision"]
   
   # unname and round resulting values
+  baseline <- round(unname(baseline), 2)
   accuracy <- round(unname(accuracy), 2)
+  accuracy.pvalue <- round(unname(accuracy.pvalue), 2)
   f1 <- round(unname(f1), 2)
   recall <- round(unname(recall), 2)
   precision <- round(unname(precision), 2)
-  
+
   # append results to dataframe
   hidden.structure <- paste(unlist(hidden), collapse = ",")
   hidden.size <- sum(unlist(hidden))
   hidden.depth <- length(hidden)
   local.df <- data.frame(hidden.structure, hidden.size, 
                          hidden.depth, err.fct, act.fct.name, algorithm, 
-                         accuracy, precision, recall, f1)
+                         baseline, accuracy, accuracy.pvalue,
+                         precision, recall, f1)
   results.df <- rbind(results.df, local.df)
   })
   counter <- counter + 1
@@ -207,7 +207,7 @@ mlp.predictions.df <- cbind(test, mlp.predictions.rd)
 Write to file.
 ```{r}
 # classification results summaries 
-write.csv(results.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/MLP/results_MLP_",
+write.csv(results.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_",
                                               act.fct.name, "_",
                                               err.fct, "_",
                                               algorithm, "_",
@@ -217,7 +217,7 @@ write.csv(results.df, file = paste(c("~/Github/UpperPalCombinatorics/results/cla
                                               ), collapse = ""),
                                       row.names = F)
 # predictions for post-hoc analyses
-write.csv(mlp.predictions.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/MLP/predictions_MLP_",
+write.csv(mlp.predictions.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/MLP/predictions/predictions_MLP_",
                                               act.fct.name, "_",
                                               err.fct, "_",
                                               algorithm, "_",

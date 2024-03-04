@@ -35,8 +35,8 @@ Select subcorpora for binary classification.
 ```{r}
 # choose subcorpora to compare 
 unique(estimations.df$subcorpus)
-subcorpus1 <- "Cuneiform (Uruk V)"
-subcorpus2 <- "Cuneiform (Uruk III)"
+subcorpus1 <- "Cuneiform (Uruk III)"
+subcorpus2 <- "Cuneiform (Uruk IV)"
 selected <- c(subcorpus1, subcorpus2)
 estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]
 ```
@@ -70,14 +70,16 @@ test <- estimations.scaled[datasample == 2, 1:ncol(estimations.scaled)]
 
 # Initialize data frame
 ```{r}
-knn.results <- data.frame(k = numeric(0), accuracy = numeric(0), precision = numeric(0), 
-                             recall = numeric(0), f1 = numeric(0))
+knn.results <- data.frame(k = numeric(0), baseline = numeric(0), 
+                          accuracy = numeric(0), accuracy.pvalue = numeric(0), 
+                          precision = numeric(0), recall = numeric(0), 
+                          f1 = numeric(0))
 ```
 
 # Building knn classifier
 ```{r}
 # choose maximum number of neighbors n
-n = 10
+n = 100
 # run a loop over different numbers of neighbors up to n
 for (k in 1:n){
   # knn estimation of labels
@@ -103,15 +105,27 @@ for (k in 1:n){
   # get confusion matrix
   cm <- confusionMatrix(data = class.comparison$predicted, 
                       reference = as.factor(class.comparison$observed))
-  print(cm)
-  # get precision, recall, and f1 from the output list of confusionMatrix()
+  # print(cm)
+  # get performance metrics from the output list of confusionMatrix()
+  baseline <- cm$overall['AccuracyNull']
   accuracy <- cm$overall['Accuracy']
+  accuracy.pvalue <- cm$overall['AccuracyPValue']
   f1 <- cm[["byClass"]]["F1"]
   recall <- cm[["byClass"]]["Recall"]
   precision <- cm[["byClass"]]["Precision"]
   
+  # unname and round resulting values
+  baseline <- round(unname(baseline), 2)
+  accuracy <- round(unname(accuracy), 2)
+  accuracy.pvalue <- round(unname(accuracy.pvalue), 2)
+  f1 <- round(unname(f1), 2)
+  recall <- round(unname(recall), 2)
+  precision <- round(unname(precision), 2)
+  
   # prepare data frame with results
-  local.results <- data.frame(k, accuracy, precision, recall, f1, row.names = NULL)
+  local.results <- data.frame(k, baseline, accuracy, accuracy.pvalue,
+                              precision, recall, f1, 
+                              row.names = NULL)
   local.results.rounded <- round(local.results, 2)
   # print(local.results.rounded)
   knn.results <- rbind(knn.results, local.results.rounded)
@@ -124,7 +138,7 @@ print(knn.results)
 Write to file. 
 ```{r}
 # write results
-write.csv(knn.results, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/KNN/results_KNN_",
+write.csv(knn.results, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_",
                                               subcorpus1, "_",
                                               subcorpus2, "_",
                                               ".csv"
@@ -133,7 +147,7 @@ write.csv(knn.results, file = paste(c("~/Github/UpperPalCombinatorics/results/cl
 
 # write df with predictions for post-hoc analyses
 # note that this writes the predictions only for the last run of the loop, i.e. the highest k
-write.csv(knn.predictions.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/KNN/predictions_KNN_",
+write.csv(knn.predictions.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/KNN/predictions/predictions_KNN_",
                                               subcorpus1, "_",
                                               subcorpus2, "_",
                                               ".csv"
