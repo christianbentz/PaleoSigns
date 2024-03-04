@@ -26,15 +26,16 @@ library(caret)
 Load data table with estimated feature values per sequence. 
 ```{r}
 # load feature value estimations 
-estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features/features_combined_test.csv")
+estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features/features_combined.csv")
 head(estimations.df)
 ```
 
 Choose subcorpora for binary classification.
 ```{r}
-# choose subcorpora to compare
+# choose subcorpora to compare: "Aurignacien", "TeDDi", "Cuneiform (Uruk V)",
+# "Cuneiform (Uruk IV)", "Cuneiform (Uruk III)".
 subcorpus1 <- "Aurignacien"
-subcorpus2 <- "TeDDi"
+subcorpus2 <- "Cuneiform (Uruk V)"
 selected <- c(subcorpus1, subcorpus2)
 estimations.df <- estimations.df[estimations.df$subcorpus %in% selected, ]
 ```
@@ -152,8 +153,8 @@ for (hidden in hidden.list) {
                            rep = which.min(classifier.mlp$result.matrix[1,]), # Predict response values 
                            # based on the "best" repetition (epoche), i.e. the one with the lowest error.
                            all.units = FALSE)
-  # assign a label according to the rule that the label is "modern writing" 
-  # if the prediction probability is >0.5, else assign "paleolithic". 
+  # assign a label according to the rule that the label is the label of subcorpus1 
+  # if the prediction probability is >0.5, else assign label of subcorpus2. 
   mlp.predictions.rd <- ifelse(mlp.predictions > 0.5, subcorpus1, subcorpus2)
   
   # Model Evaluation

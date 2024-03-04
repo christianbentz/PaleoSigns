@@ -48,12 +48,13 @@ estimations.subset <- na.omit(estimations.subset)
 
 # Center and scale the data
 ```{r}
-# first column is subcorpus column, the others are the features
+# first three columns are meta information, the others are the feature values
 # be aware that this needs to be changed in case of other table format
 estimations.scaled <- cbind(estimations.subset[, c("subcorpus", "sequence", "num.char")], 
                             scale(estimations.subset[, c("huni.chars", "hrate.chars", 
                                                          "ttr.chars", "rm.chars")]))
 ```
+
 # Create Training and Test Sets
 ```{r}
 # Generating seed

@@ -3,8 +3,8 @@ title: "Analyses: Feature Value Distributions"
 author: ""
 date: "23/02/2024"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -21,6 +21,7 @@ library(dplyr)
 library(ggExtra)
 library(gridExtra)
 library(ggpubr)
+library(ggridges)
 ```
 
 # Load Data
@@ -40,17 +41,51 @@ head(estimations.df)
 estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignacien"|
                                           #estimations.df$subcorpus == "Aurignacien/Gravettian"|
                                           estimations.df$subcorpus == "Cuneiform (Uruk V)"|
-                                          #estimations.df$subcorpus == "Cuneiform (Uruk IV)"| 
-                                          #estimations.df$subcorpus == "Cuneiform (Uruk III)"|  
+                                          estimations.df$subcorpus == "Cuneiform (Uruk IV)"| 
+                                          estimations.df$subcorpus == "Cuneiform (Uruk III)"|  
                                           estimations.df$subcorpus == "TeDDi", ]
+```
+
+# Simple Stats
+
+```{r}
+# number of sequences
+nrow(estimations.df.selected)
+# number of rows (i.e. sequences) per subcorpus
+table(estimations.df.selected$subcorpus)
+# get mean values of lengths in characters per subcorpus
+aggregate(estimations.df.selected$num.char~
+            estimations.df.selected$subcorpus, FUN = mean)
+# get median values of lengths in characters per subcorpus
+aggregate(estimations.df.selected$num.char~
+            estimations.df.selected$subcorpus, FUN = median)
 ```
 
 # Density Plots
 
+## Length
+Density plot for lengths in number of characters.
+```{r}
+length.plot <- ggplot(estimations.df.selected, aes(x = num.char, y = subcorpus, 
+                                    fill = subcorpus)) + 
+  # add density ridges with quantiles = 2, i.e. median as a line
+  geom_density_ridges(alpha = 0.5, quantile_lines = TRUE, quantiles = 2) +
+  # limit the x-range 
+  xlim(0, 100)
+length.plot
+```
+
+## Safe complete figure to file
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/lengthPlot_chars.pdf", 
+       length.plot, dpi = 300, width = 5, height = 5, device = cairo_pdf)
+```
+
 Get subset of data points to plot labels.
 ```{r}
-labels.df <- estimations.df.selected[estimations.df.selected$num.char == 11 &
-                                       estimations.df.selected$subcorpus != "TeDDi" &
+labels.df <- estimations.df.selected[estimations.df.selected$num.char > 9 &
+                                       estimations.df.selected$num.char < 11 &
+                                       estimations.df.selected$subcorpus != "Cuneiform (Uruk IV)" &
                                        estimations.df.selected$subcorpus != "Cuneiform (Uruk III)",] 
 ```
 
@@ -100,5 +135,5 @@ combined.plot <- grid.arrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2
 ## Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", 
-       combined.plot, dpi = 300, width = 12, height = 6, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 36, height = 18, device = cairo_pdf)
 ```
