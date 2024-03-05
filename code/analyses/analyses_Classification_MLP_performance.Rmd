@@ -1,6 +1,6 @@
 ---
-title: 'Analyses: Classification Plots'
-author: "Chris Bentz"
+title: 'Analyses: Classification Performance'
+author: ""
 date: "3/1/2024"
 output: html_document
 ---
@@ -17,22 +17,97 @@ library(ggExtra)
 library(gridExtra)
 library(ggpubr)
 library(ggridges)
+library(tidyverse)
 ```
 
 # Load Data
-
 ```{r}
-performance.mlp <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Aurignacien_Cuneiform (Uruk V)_.csv")
-head(performance.mlp)
+# Multi-layer perceptron (MLP)
+
+# Aurignacien vs. Uruk III
+performance.mlp.ACIII <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Aurignacien_Cuneiform (Uruk III).csv")
+performance.mlp.ACIII$comparison <- rep("Aurignacien vs. Uruk III", nrow(performance.mlp.ACIII))
+
+# Aurignacien vs. Uruk IV
+performance.mlp.ACIV <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Aurignacien_Cuneiform (Uruk IV).csv")
+performance.mlp.ACIV$comparison <- rep("Aurignacien vs. Uruk IV", nrow(performance.mlp.ACIV))
+
+# Aurignacien vs. Uruk V
+performance.mlp.ACV <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Aurignacien_Cuneiform (Uruk V).csv")
+performance.mlp.ACV$comparison <- rep("Aurignacien vs. Uruk V", nrow(performance.mlp.ACV))
+
+# Aurignacien vs. TeDDi
+performance.mlp.AT <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Aurignacien_TeDDi.csv")
+performance.mlp.AT$comparison <- rep("Aurignacien vs. TeDDi", nrow(performance.mlp.AT))
+
+# Uruk V vs. TeDDi
+performance.mlp.CVT <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Cuneiform (Uruk V)_TeDDi.csv")
+performance.mlp.CVT$comparison <- rep("Uruk V vs. TeDDi", nrow(performance.mlp.CVT))
+
+# Uruk V vs. Uruk IV
+performance.mlp.CVCIV <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Cuneiform (Uruk V)_Cuneiform (Uruk IV).csv")
+performance.mlp.CVCIV$comparison <- rep("Uruk V vs. Uruk IV", nrow(performance.mlp.CVCIV))
+```
+
+# Bonferroni Correction
+```{r}
+# Aurignacien vs. Uruk III
+performance.mlp.ACIII$acc.pvalue.corrected <- p.adjust(performance.mlp.ACIII$accuracy.pvalue, 
+                                                       method = "bonferroni", n = nrow(performance.mlp.ACIII))
+# Aurignacien vs. Uruk IV
+performance.mlp.ACIV$acc.pvalue.corrected <- p.adjust(performance.mlp.ACIV$accuracy.pvalue, 
+                                                      method = "bonferroni", n = nrow(performance.mlp.ACIV))
+# Aurignacien vs. Uruk V
+performance.mlp.ACV$acc.pvalue.corrected <- p.adjust(performance.mlp.ACV$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.mlp.ACV))
+# Aurignacien vs. Uruk III
+performance.mlp.AT$acc.pvalue.corrected <- p.adjust(performance.mlp.AT$accuracy.pvalue, 
+                                                    method = "bonferroni", n = nrow(performance.mlp.AT))
+# Uruk V vs. TeDDi 
+performance.mlp.CVT$acc.pvalue.corrected <- p.adjust(performance.mlp.CVT$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.mlp.CVT))
+# Uruk V vs. Uruk IV 
+performance.mlp.CVCIV$acc.pvalue.corrected <- p.adjust(performance.mlp.CVCIV$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.mlp.CVCIV))
+```
+
+# Best Models
+```{r}
+# Sort by accuracy (decreasing), and give the model with highest accuracy
+performance.mlp.ACIII[order(-performance.mlp.ACIII$accuracy), ][1,]
+performance.mlp.ACIV[order(-performance.mlp.ACIV$accuracy), ][1,]
+performance.mlp.ACV[order(-performance.mlp.ACV$accuracy), ][1,]
+performance.mlp.AT[order(-performance.mlp.AT$accuracy), ][1,]
+performance.mlp.CVT[order(-performance.mlp.CVT$accuracy), ][1,]
+performance.mlp.CVCIV[order(-performance.mlp.CVCIV$accuracy), ][1,]
+```
+
+# Combine
+Combine into one data frame.
+```{r}
+performance.combined <- rbind(performance.mlp.ACIII, performance.mlp.ACIV,
+                              performance.mlp.ACV, performance.mlp.AT,
+                              performance.mlp.CVT, performance.mlp.CVCIV)
 ```
 
 # Density Plots
 
-## Accuracy
-Density plot for lengths in number of characters.
+## Accuracy Distributions 
+Distributions of accuracies by comparison.
 ```{r}
-accuracy.plot <- ggplot(performance.mlp, aes(x = accuracy)) + 
-  # add density ridges with quantiles = 2, i.e. median as a line
-  geom_density(alpha = 0.5)
+accuracy.plot <- ggplot(performance.combined, aes(x = jitter(accuracy), y = comparison, fill = comparison)) +
+  geom_density_ridges(alpha = 0.5, quantile_lines = TRUE, quantiles = 2) +
+  xlim(0.5,1)
+  #geom_density(alpha = 0.5)
 accuracy.plot
+```
+
+## F1 Distributions 
+Distributions of F1-scores by comparison.
+```{r}
+f1.plot <- ggplot(performance.combined, aes(x = f1, y = fct_reorder(comparison, f1), fill = after_stat(x))) +
+  geom_density_ridges_gradient(alpha = 0.5, quantile_lines = TRUE, quantiles = 2) +
+  scale_fill_viridis_c(name = "F1-Score", option = "C")
+  #geom_density(alpha = 0.5)
+f1.plot
 ```

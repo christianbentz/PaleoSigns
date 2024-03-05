@@ -35,7 +35,7 @@ Choose subcorpora for binary classification.
 # choose subcorpora to compare: "Aurignacien", "TeDDi", "Cuneiform (Uruk V)",
 # "Cuneiform (Uruk IV)", "Cuneiform (Uruk III)".
 subcorpus1 <- "Aurignacien"
-subcorpus2 <- "Cuneiform (Uruk V)"
+subcorpus2 <- "TeDDi"
 selected <- c(subcorpus1, subcorpus2)
 estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]
 ```
@@ -67,22 +67,23 @@ test <- estimations.scaled[datasample == 2, 1:ncol(estimations.scaled)]
 ```
 
 # Implement MLP classifier
-This is partly based on code given at http://uc-r.github.io/ann_classification (last accessed 18.01.2023). The activation function (tanh), error function (SSE), and backpropagation algorithm (rprop+) are here chosen according to the best model performance reported in Bentz (2023).
+This is partly based on code given at http://uc-r.github.io/ann_classification (last accessed 18.01.2023). Theactivation function (tanh), error function (SSE), and backpropagation algorithm (rprop+) are here chosen according to the best model performance for sequences of 100 characters reported in Bentz (2023).
 ```{r, message = F, warning = F}
 # Generate list of hidden unit architectures (number of layers and units)
 # Choose number of random architectures
 arch.no <- 100
 # initialize empty list of hidden unit architectures
 hidden.list <- vector(mode = "list", length = arch.no)
+# set seed for reproducible results
 set.seed(09012020)
 # run loop to generate number of layers and hidden units randomly
 for (i in 1:arch.no) {
   layer.no <- round(runif(1, min = 1, max = 4), 0)
- hidden.units <- round(runif(layer.no, min = 1, max = 5), 0)
+  hidden.units <- round(runif(layer.no, min = 1, max = 5), 0)
   hidden.list[[i]] <- hidden.units
 }
 
-# Manual list of hidden layer structures (for plotting and experimenting)
+# Manual list of architectures for testing 
 # hidden.list <- list(c(4,4))
 
 # initialize dataframe to append results to
@@ -94,10 +95,6 @@ results.df <- data.frame(hidden.structure = character(0),
                          precision = numeric(0), recall = numeric(0), 
                          f1 = numeric(0)
                          ) 
-
-# Custom activation function
-# Note that this function only works with err.fct = 'sse'
-softplus <- function(x) log(1 + exp(x))
 
 # set random seed for reproducibility
 set.seed(123)
@@ -125,7 +122,7 @@ for (hidden in hidden.list) {
                                       "hrate.chars", 
                                       "ttr.chars", 
                                       "rm.chars")],
-                     hidden = hidden,
+                     hidden = hidden, # hidden layer architecture
                      threshold = 0.1, # defaults to 0.01
                      rep = 1, # number of reps in which new initial values are used,
                      # (essentially the same as a for loop)
@@ -138,9 +135,9 @@ for (hidden in hidden.list) {
                      act.fct = act.fct,
                      likelihood = TRUE,
                      lifesign = 'minimal')
-  classifier.mlp
+  # classifier.mlp
   # results matrix (each column represents one repetition)
-  classifier.mlp$result.matrix
+  # classifier.mlp$result.matrix
   
   # Prediction
   # Get prediction using the predict() function
@@ -173,10 +170,10 @@ for (hidden in hidden.list) {
   recall <- cm[["byClass"]]["Recall"]
   precision <- cm[["byClass"]]["Precision"]
   
-  # unname and round resulting values
+  # unname and round resulting values (except for pvalue, 
+  # since this needs to be corrected later)
   baseline <- round(unname(baseline), 2)
   accuracy <- round(unname(accuracy), 2)
-  accuracy.pvalue <- round(unname(accuracy.pvalue), 2)
   f1 <- round(unname(f1), 2)
   recall <- round(unname(recall), 2)
   precision <- round(unname(precision), 2)
@@ -199,12 +196,7 @@ proc.time <- end_time - start_time
 print(proc.time)
 ```
 
-Safe label predictions of the last run alongside the other columns in the test data set.
-```{r}
-mlp.predictions.df <- cbind(test, mlp.predictions.rd)
-```
-
-Write to file.
+Write performance metrics to file.
 ```{r}
 # classification results summaries 
 write.csv(results.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_",
@@ -212,29 +204,37 @@ write.csv(results.df, file = paste(c("~/Github/UpperPalCombinatorics/results/cla
                                               err.fct, "_",
                                               algorithm, "_",
                                               subcorpus1, "_",
-                                              subcorpus2, "_",
+                                              subcorpus2,
                                               ".csv"
                                               ), collapse = ""),
                                       row.names = F)
-# predictions for post-hoc analyses
+```
+
+Safe label predictions alongside the other columns in the test data set. Note that these are the results for the *last run* of the for-loop.
+```{r}
+mlp.predictions.df <- cbind(test, mlp.predictions.rd)
+```
+
+```{r}
+# safe predictions 
 write.csv(mlp.predictions.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/MLP/predictions/predictions_MLP_",
                                               act.fct.name, "_",
                                               err.fct, "_",
                                               algorithm, "_",
                                               subcorpus1, "_",
-                                              subcorpus2, "_",
+                                              subcorpus2,
                                               ".csv"
                                               ), collapse = ""),
                                       row.names = F)
 ```
 
 # Visualize the NN
-Visualize the NN with the best weights after training. Note this is the last run of the for loop through different architectures.
+Visualize the NN with the best weights after training. Note this is the *last run* of the for loop through different architectures.
 ```{r}
 mlp.plot <- plot(classifier.mlp, rep = 'best', show.weights = F)
 mlp.plot
 ```
 
-#References
+# References
 Bentz, Christian (2023). The Zipfian Challenge: Learning the statistical fingerprint of natural
 languages. CoNLL, Singapore. https://aclanthology.org/2023.conll-1.3/
