@@ -1,0 +1,349 @@
+---
+title: 'Analyses: Classification Performance'
+author: ""
+date: "3/1/2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load libraries
+If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
+```{r}
+library(ggplot2)
+library(ggExtra)
+library(gridExtra)
+library(ggpubr)
+library(ggridges)
+library(tidyverse)
+```
+
+# Multi-layer perceptron (MLP)
+
+## Load Data
+```{r}
+# Aurignacien vs. Uruk III
+performance.mlp.ACIII <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Aurignacien_Cuneiform (Uruk III).csv")
+performance.mlp.ACIII$comparison <- rep("Aurignacien vs. Uruk III", nrow(performance.mlp.ACIII))
+
+# Aurignacien vs. Uruk IV
+performance.mlp.ACIV <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Aurignacien_Cuneiform (Uruk IV).csv")
+performance.mlp.ACIV$comparison <- rep("Aurignacien vs. Uruk IV", nrow(performance.mlp.ACIV))
+
+# Aurignacien vs. Uruk V
+performance.mlp.ACV <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Aurignacien_Cuneiform (Uruk V).csv")
+performance.mlp.ACV$comparison <- rep("Aurignacien vs. Uruk V", nrow(performance.mlp.ACV))
+
+# Aurignacien vs. TeDDi
+performance.mlp.AT <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Aurignacien_TeDDi.csv")
+performance.mlp.AT$comparison <- rep("Aurignacien vs. TeDDi", nrow(performance.mlp.AT))
+
+# Uruk V vs. TeDDi
+performance.mlp.CVT <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Cuneiform (Uruk V)_TeDDi.csv")
+performance.mlp.CVT$comparison <- rep("Uruk V vs. TeDDi", nrow(performance.mlp.CVT))
+
+# Uruk V vs. Uruk IV
+performance.mlp.CVCIV <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Cuneiform (Uruk V)_Cuneiform (Uruk IV).csv")
+performance.mlp.CVCIV$comparison <- rep("Uruk V vs. Uruk IV", nrow(performance.mlp.CVCIV))
+
+# Uruk V vs. Uruk III
+performance.mlp.CVCIII <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Cuneiform (Uruk III)_Cuneiform (Uruk V).csv")
+performance.mlp.CVCIII$comparison <- rep("Uruk V vs. Uruk III", nrow(performance.mlp.CVCIII))
+
+# Uruk IV vs. Uruk III
+performance.mlp.CIVCIII <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Cuneiform (Uruk III)_Cuneiform (Uruk IV).csv")
+performance.mlp.CIVCIII$comparison <- rep("Uruk IV vs. Uruk III", nrow(performance.mlp.CIVCIII))
+
+# Uruk IV vs. TeDDi
+performance.mlp.CIVT <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Cuneiform (Uruk IV)_TeDDi.csv")
+performance.mlp.CIVT$comparison <- rep("Uruk IV vs. TeDDi", nrow(performance.mlp.CIVT))
+
+# Uruk III vs. TeDDi
+performance.mlp.CIIIT <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_tanh_sse_rprop+_Cuneiform (Uruk III)_TeDDi.csv")
+performance.mlp.CIIIT$comparison <- rep("Uruk III vs. TeDDi", nrow(performance.mlp.CIIIT))
+```
+
+# Bonferroni Correction
+```{r}
+# Aurignacien vs. Uruk III
+performance.mlp.ACIII$acc.pvalue.corrected <- p.adjust(performance.mlp.ACIII$accuracy.pvalue, 
+                                                       method = "bonferroni", n = nrow(performance.mlp.ACIII))
+# Aurignacien vs. Uruk IV
+performance.mlp.ACIV$acc.pvalue.corrected <- p.adjust(performance.mlp.ACIV$accuracy.pvalue, 
+                                                      method = "bonferroni", n = nrow(performance.mlp.ACIV))
+# Aurignacien vs. Uruk V
+performance.mlp.ACV$acc.pvalue.corrected <- p.adjust(performance.mlp.ACV$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.mlp.ACV))
+# Aurignacien vs. Uruk III
+performance.mlp.AT$acc.pvalue.corrected <- p.adjust(performance.mlp.AT$accuracy.pvalue, 
+                                                    method = "bonferroni", n = nrow(performance.mlp.AT))
+# Uruk V vs. TeDDi 
+performance.mlp.CVT$acc.pvalue.corrected <- p.adjust(performance.mlp.CVT$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.mlp.CVT))
+# Uruk V vs. Uruk IV 
+performance.mlp.CVCIV$acc.pvalue.corrected <- p.adjust(performance.mlp.CVCIV$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.mlp.CVCIV))
+# Uruk V vs. Uruk III
+performance.mlp.CVCIII$acc.pvalue.corrected <- p.adjust(performance.mlp.CVCIII$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.mlp.CVCIII))
+# Uruk IV vs. Uruk III
+performance.mlp.CIVCIII$acc.pvalue.corrected <- p.adjust(performance.mlp.CIVCIII$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.mlp.CIVCIII))
+# Uruk IV vs. TeDDi
+performance.mlp.CIVT$acc.pvalue.corrected <- p.adjust(performance.mlp.CIVT$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.mlp.CIVT))
+# Uruk III vs. TeDDi
+performance.mlp.CIIIT$acc.pvalue.corrected <- p.adjust(performance.mlp.CIIIT$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.mlp.CIIIT))
+```
+
+# Best Models
+```{r}
+# Sort by accuracy (decreasing), and give the model with highest accuracy
+performance.mlp.ACIII[order(-performance.mlp.ACIII$accuracy), ][1,]
+performance.mlp.ACIV[order(-performance.mlp.ACIV$accuracy), ][1,]
+performance.mlp.ACV[order(-performance.mlp.ACV$accuracy), ][1,]
+performance.mlp.AT[order(-performance.mlp.AT$accuracy), ][1,]
+performance.mlp.CVT[order(-performance.mlp.CVT$accuracy), ][1,]
+performance.mlp.CVCIV[order(-performance.mlp.CVCIV$accuracy), ][1,]
+performance.mlp.CVCIII[order(-performance.mlp.CVCIII$accuracy), ][1,]
+performance.mlp.CIVCIII[order(-performance.mlp.CIVCIII$accuracy), ][1,]
+performance.mlp.CIVT[order(-performance.mlp.CIVT$accuracy), ][1,]
+performance.mlp.CIIIT[order(-performance.mlp.CIIIT$accuracy), ][1,]
+```
+
+# Combine
+Combine into one data frame.
+```{r}
+performance.combined <- rbind(performance.mlp.ACIII, performance.mlp.ACIV,
+                              performance.mlp.ACV, performance.mlp.AT,
+                              performance.mlp.CVT, performance.mlp.CVCIV,
+                              performance.mlp.CVCIII, performance.mlp.CIVCIII,
+                              performance.mlp.CIVT, performance.mlp.CIIIT)
+```
+
+# Density Plots
+
+## F1 Distributions 
+Distributions of F1-scores by comparison.
+```{r}
+f1.plot <- ggplot(performance.combined, aes(x = jitter(f1, amount = 0.05), 
+                                            y = fct_reorder(comparison, accuracy), 
+                                            fill = after_stat(x))) +
+  geom_density_ridges_gradient(scale = 1, color = "white") +
+  scale_fill_viridis_c(name = "F1-Score", option = "C") +
+  xlab("F1-Score") +
+  ylab("Comparison") +
+  theme(legend.position = "none")
+  #geom_density(alpha = 0.5)
+f1.plot
+```
+
+## Accuracy Distributions 
+Distributions of accuracies by comparison.
+```{r}
+accuracy.plot <- ggplot(performance.combined, aes(x = jitter(accuracy, amount = 0.05), 
+                                                  y = fct_reorder(comparison, accuracy), 
+                                                  fill = after_stat(x))) +
+  geom_density_ridges_gradient(scale = 1, color = "white") +
+  scale_fill_viridis_c(name = "Accuracy", option = "D") +
+  geom_point(shape = 124, size = 3, aes(x = baseline, y = comparison)) +
+  xlab("Accuracy") +
+  ylab("Comparison") +
+  theme(legend.position = "none",
+        axis.text.y=element_blank())
+accuracy.plot
+```
+
+## P-value Distributions 
+Distributions of p-values by comparison.
+```{r}
+pvalue.plot <- ggplot(performance.combined, aes(x = jitter(acc.pvalue.corrected, amount = 0.05),
+                                                y = fct_reorder(comparison, accuracy),
+                                                fill = after_stat(x))) +
+  geom_density_ridges_gradient(scale = 1, color = "white") +
+  scale_fill_viridis_c(name = "P-value", option = "A") +
+  xlab("p-value") +
+  ylab("Comparison") +
+  theme(legend.position = "none",
+        axis.text.y=element_blank())
+  #geom_density(alpha = 0.5)
+pvalue.plot
+```
+
+## Combine Plots
+```{r, width = 10, height = 5}
+combined.plot <- grid.arrange(f1.plot, accuracy.plot, pvalue.plot, ncol = 3, widths = c(1.5,1,1))
+```
+
+Safe to file.
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot_MLP.pdf", 
+       combined.plot, dpi = 300, width = 10, height = 5, device = cairo_pdf)
+```
+
+# K-Nearest-Neighbors (KNN)
+
+## Load Data
+```{r}
+# Aurignacien vs. Uruk III
+performance.knn.ACIII <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_Aurignacien_Cuneiform (Uruk III).csv")
+performance.knn.ACIII$comparison <- rep("Aurignacien vs. Uruk III", nrow(performance.knn.ACIII))
+
+# Aurignacien vs. Uruk IV
+performance.knn.ACIV <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_Aurignacien_Cuneiform (Uruk IV).csv")
+performance.knn.ACIV$comparison <- rep("Aurignacien vs. Uruk IV", nrow(performance.knn.ACIV))
+
+# Aurignacien vs. Uruk V
+performance.knn.ACV <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_Aurignacien_Cuneiform (Uruk V).csv")
+performance.knn.ACV$comparison <- rep("Aurignacien vs. Uruk V", nrow(performance.knn.ACV))
+
+# Aurignacien vs. TeDDi
+performance.knn.AT <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_Aurignacien_TeDDi.csv")
+performance.knn.AT$comparison <- rep("Aurignacien vs. TeDDi", nrow(performance.knn.AT))
+
+# Uruk V vs. TeDDi
+performance.knn.CVT <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_Cuneiform (Uruk V)_TeDDi.csv")
+performance.knn.CVT$comparison <- rep("Uruk V vs. TeDDi", nrow(performance.knn.CVT))
+
+# Uruk V vs. Uruk IV
+performance.knn.CVCIV <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_Cuneiform (Uruk V)_Cuneiform (Uruk IV).csv")
+performance.knn.CVCIV$comparison <- rep("Uruk V vs. Uruk IV", nrow(performance.knn.CVCIV))
+
+# Uruk V vs. Uruk III
+performance.knn.CVCIII <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_Cuneiform (Uruk V)_Cuneiform (Uruk III).csv")
+performance.knn.CVCIII$comparison <- rep("Uruk V vs. Uruk III", nrow(performance.knn.CVCIII))
+
+# Uruk IV vs. Uruk III
+performance.knn.CIVCIII <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_Cuneiform (Uruk III)_Cuneiform (Uruk IV).csv")
+performance.knn.CIVCIII$comparison <- rep("Uruk IV vs. Uruk III", nrow(performance.knn.CIVCIII))
+
+# Uruk IV vs. TeDDi
+performance.knn.CIVT <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_Cuneiform (Uruk IV)_TeDDi.csv")
+performance.knn.CIVT$comparison <- rep("Uruk IV vs. TeDDi", nrow(performance.knn.CIVT))
+
+# Uruk III vs. TeDDi
+performance.knn.CIIIT <- read.csv("~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_Cuneiform (Uruk III)_TeDDi.csv")
+performance.knn.CIIIT$comparison <- rep("Uruk III vs. TeDDi", nrow(performance.knn.CIIIT))
+```
+
+# Bonferroni Correction
+```{r}
+# Aurignacien vs. Uruk III
+performance.knn.ACIII$acc.pvalue.corrected <- p.adjust(performance.knn.ACIII$accuracy.pvalue, 
+                                                       method = "bonferroni", n = nrow(performance.knn.ACIII))
+# Aurignacien vs. Uruk IV
+performance.knn.ACIV$acc.pvalue.corrected <- p.adjust(performance.knn.ACIV$accuracy.pvalue, 
+                                                      method = "bonferroni", n = nrow(performance.knn.ACIV))
+# Aurignacien vs. Uruk V
+performance.knn.ACV$acc.pvalue.corrected <- p.adjust(performance.knn.ACV$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.knn.ACV))
+# Aurignacien vs. Uruk III
+performance.knn.AT$acc.pvalue.corrected <- p.adjust(performance.knn.AT$accuracy.pvalue, 
+                                                    method = "bonferroni", n = nrow(performance.knn.AT))
+# Uruk V vs. TeDDi 
+performance.knn.CVT$acc.pvalue.corrected <- p.adjust(performance.knn.CVT$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.knn.CVT))
+# Uruk V vs. Uruk IV 
+performance.knn.CVCIV$acc.pvalue.corrected <- p.adjust(performance.knn.CVCIV$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.knn.CVCIV))
+# Uruk V vs. Uruk III
+performance.knn.CVCIII$acc.pvalue.corrected <- p.adjust(performance.knn.CVCIII$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.knn.CVCIII))
+# Uruk IV vs. Uruk III
+performance.knn.CIVCIII$acc.pvalue.corrected <- p.adjust(performance.knn.CIVCIII$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.knn.CIVCIII))
+# Uruk IV vs. TeDDi
+performance.knn.CIVT$acc.pvalue.corrected <- p.adjust(performance.knn.CIVT$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.knn.CIVT))
+# Uruk III vs. TeDDi
+performance.knn.CIIIT$acc.pvalue.corrected <- p.adjust(performance.knn.CIIIT$accuracy.pvalue, 
+                                                     method = "bonferroni", n = nrow(performance.knn.CIIIT))
+```
+
+# Best Models
+```{r}
+# Sort by accuracy (decreasing), and give the model with highest accuracy
+performance.knn.ACIII[order(-performance.knn.ACIII$accuracy), ][1,]
+performance.knn.ACIV[order(-performance.knn.ACIV$accuracy), ][1,]
+performance.knn.ACV[order(-performance.knn.ACV$accuracy), ][1,]
+performance.knn.AT[order(-performance.knn.AT$accuracy), ][1,]
+performance.knn.CVT[order(-performance.knn.CVT$accuracy), ][1,]
+performance.knn.CVCIV[order(-performance.knn.CVCIV$accuracy), ][1,]
+performance.knn.CVCIII[order(-performance.knn.CVCIII$accuracy), ][1,]
+performance.knn.CIVCIII[order(-performance.knn.CIVCIII$accuracy), ][1,]
+performance.knn.CIVT[order(-performance.knn.CIVT$accuracy), ][1,]
+performance.knn.CIIIT[order(-performance.knn.CIIIT$accuracy), ][1,]
+```
+
+# Combine
+Combine into one data frame.
+```{r}
+performance.combined <- rbind(performance.knn.ACIII, performance.knn.ACIV,
+                              performance.knn.ACV, performance.knn.AT,
+                              performance.knn.CVT, performance.knn.CVCIV,
+                              performance.knn.CVCIII, performance.knn.CIVCIII,
+                              performance.knn.CIVT, performance.knn.CIIIT)
+```
+
+# Density Plots
+
+## F1 Distributions 
+Distributions of F1-scores by comparison.
+```{r}
+f1.plot <- ggplot(performance.combined, aes(x = jitter(f1, amount = 0.05), 
+                                            y = fct_reorder(comparison, accuracy), 
+                                            fill = after_stat(x))) +
+  geom_density_ridges_gradient(scale = 1, color = "white") +
+  scale_fill_viridis_c(name = "F1-Score", option = "C") +
+  xlab("F1-Score") +
+  ylab("Comparison") +
+  theme(legend.position = "none")
+  #geom_density(alpha = 0.5)
+f1.plot
+```
+
+## Accuracy Distributions 
+Distributions of accuracies by comparison.
+```{r}
+accuracy.plot <- ggplot(performance.combined, aes(x = jitter(accuracy, amount = 0.05), 
+                                                  y = fct_reorder(comparison, accuracy), 
+                                                  fill = after_stat(x))) +
+  geom_density_ridges_gradient(scale = 1, color = "white") +
+  scale_fill_viridis_c(name = "Accuracy", option = "D") +
+  geom_point(shape = 124, size = 3, aes(x = baseline, y = comparison)) +
+  xlab("Accuracy") +
+  ylab("Comparison") +
+  theme(legend.position = "none",
+        axis.text.y=element_blank())
+accuracy.plot
+```
+
+## P-value Distributions 
+Distributions of p-values by comparison.
+```{r}
+pvalue.plot <- ggplot(performance.combined, aes(x = jitter(acc.pvalue.corrected, amount = 0.05),
+                                                y = fct_reorder(comparison, accuracy),
+                                                fill = after_stat(x))) +
+  geom_density_ridges_gradient(scale = 1, color = "white") +
+  scale_fill_viridis_c(name = "P-value", option = "A") +
+  xlab("p-value") +
+  ylab("Comparison") +
+  theme(legend.position = "none",
+        axis.text.y=element_blank())
+  #geom_density(alpha = 0.5)
+pvalue.plot
+```
+
+## Combine Plots
+```{r, width = 10, height = 5}
+combined.plot <- grid.arrange(f1.plot, accuracy.plot, pvalue.plot, ncol = 3, widths = c(1.5,1,1))
+```
+
+Safe to file.
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot_KNN.pdf", 
+       combined.plot, dpi = 300, width = 10, height = 5, device = cairo_pdf)
+```

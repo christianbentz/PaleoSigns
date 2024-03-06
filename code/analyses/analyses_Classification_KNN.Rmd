@@ -140,7 +140,7 @@ Write to file.
 # write results
 write.csv(knn.results, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_",
                                               subcorpus1, "_",
-                                              subcorpus2, "_",
+                                              subcorpus2,
                                               ".csv"
                                               ), collapse = ""),
                                       row.names = F)
@@ -149,7 +149,7 @@ write.csv(knn.results, file = paste(c("~/Github/UpperPalCombinatorics/results/cl
 # note that this writes the predictions only for the last run of the loop, i.e. the highest k
 write.csv(knn.predictions.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/KNN/predictions/predictions_KNN_",
                                               subcorpus1, "_",
-                                              subcorpus2, "_",
+                                              subcorpus2,
                                               ".csv"
                                               ), collapse = ""),
                                       row.names = F)
