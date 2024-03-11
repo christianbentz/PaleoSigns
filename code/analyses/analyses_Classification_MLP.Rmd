@@ -34,8 +34,8 @@ Choose subcorpora for binary classification.
 ```{r}
 # choose subcorpora to compare: "Aurignacien", "TeDDi", "Cuneiform (Uruk V)",
 # "Cuneiform (Uruk IV)", "Cuneiform (Uruk III)".
-subcorpus1 <- "Aurignacien"
-subcorpus2 <- "TeDDi"
+subcorpus1 <- "TeDDi"
+subcorpus2 <- "Cuneiform (Uruk V)"
 selected <- c(subcorpus1, subcorpus2)
 estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]
 ```
@@ -64,6 +64,8 @@ datasample <- sample(2, nrow(estimations.scaled), replace = TRUE, prob = c(0.67,
 train <- estimations.scaled[datasample == 1, 1:ncol(estimations.scaled)]
 # Generate test set 
 test <- estimations.scaled[datasample == 2, 1:ncol(estimations.scaled)]
+# number of data points in test set
+test.n <- nrow(test)
 ```
 
 # Implement MLP classifier
@@ -93,7 +95,7 @@ results.df <- data.frame(hidden.structure = character(0),
                          algorithm = character(0), baseline = numeric(0),
                          accuracy = numeric(0), accuracy.pvalue = numeric(0), 
                          precision = numeric(0), recall = numeric(0), 
-                         f1 = numeric(0)
+                         f1 = numeric(0), test.n = numeric() 
                          ) 
 
 # set random seed for reproducibility
@@ -185,7 +187,7 @@ for (hidden in hidden.list) {
   local.df <- data.frame(hidden.structure, hidden.size, 
                          hidden.depth, err.fct, act.fct.name, algorithm, 
                          baseline, accuracy, accuracy.pvalue,
-                         precision, recall, f1)
+                         precision, recall, f1, test.n)
   results.df <- rbind(results.df, local.df)
   })
   counter <- counter + 1
@@ -200,9 +202,6 @@ Write performance metrics to file.
 ```{r}
 # classification results summaries 
 write.csv(results.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_",
-                                              act.fct.name, "_",
-                                              err.fct, "_",
-                                              algorithm, "_",
                                               subcorpus1, "_",
                                               subcorpus2,
                                               ".csv"
@@ -218,9 +217,6 @@ mlp.predictions.df <- cbind(test, mlp.predictions.rd)
 ```{r}
 # safe predictions 
 write.csv(mlp.predictions.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/MLP/predictions/predictions_MLP_",
-                                              act.fct.name, "_",
-                                              err.fct, "_",
-                                              algorithm, "_",
                                               subcorpus1, "_",
                                               subcorpus2,
                                               ".csv"
@@ -231,8 +227,8 @@ write.csv(mlp.predictions.df, file = paste(c("~/Github/UpperPalCombinatorics/res
 # Visualize the NN
 Visualize the NN with the best weights after training. Note this is the *last run* of the for loop through different architectures.
 ```{r}
-mlp.plot <- plot(classifier.mlp, rep = 'best', show.weights = F)
-mlp.plot
+#mlp.plot <- plot(classifier.mlp, rep = 'best', show.weights = F)
+#mlp.plot
 ```
 
 # References

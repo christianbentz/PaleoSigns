@@ -87,28 +87,38 @@ f1.plot
 ## Accuracy Distributions 
 Distributions of accuracies by comparison.
 ```{r}
-accuracy.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy, amount = 0.01), 
+accuracy.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy, amount = 0.05), 
                                             y = fct_reorder(comparison, accuracy),
                                             fill = after_stat(x))) + 
-  geom_density_ridges_gradient(scale = 1, color = "white") +
+  geom_density_ridges_gradient(scale = 1, color = "white",
+                               quantile_lines = T, quantiles = 2) +
   scale_fill_viridis_c(name = "Accuracy", option = "D") +
-  geom_point(alpha = 0.2, size = 0.5) +
-  geom_point(shape = 124, size = 4, aes(x = baseline, y = comparison)) +
+  geom_point(shape = 124, alpha = 0.4, size = 1.5) +
+  geom_point(shape = 124, size = 5, aes(x = baseline, y = comparison), color = "red") +
   xlab("Accuracy") +
   ylab("Comparison") +
-  theme(legend.position = "none") 
+  theme(legend.position = "none")
 accuracy.plot
 ```
 
 ## P-value Distributions 
 Distributions of p-values by comparison.
 ```{r}
+# create data frame with number of data points as labels for plot
+label.y <- c(1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5)
+label.x <- c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2)
+label <- c("n =", "n =", "n =", "n=", "n=", "n=", "n=", "n=", "n=", "n=")
+label.df = data.frame(label.x, label.y, label)
+
+# create plot
 pvalue.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy.pvalue.corrected, amount = 0.05), 
                                             y = fct_reorder(comparison, accuracy),
                                             fill = after_stat(x))) + 
-  geom_density_ridges_gradient(scale = 1, color = "white") +
+  geom_density_ridges_gradient(scale = 1, color = "white",
+                               quantile_lines = T, quantiles = 2) +
   scale_fill_viridis_c(name = "p-values", option = "D") +
-  geom_point(alpha = 0.2, size = 0.5) +
+  geom_point(shape = 124, alpha = 0.4, size = 1.5) +
+  geom_text(data = label.df, aes(x = label.x, y = label.y, label = label)) +
   xlab("p-values") +
   theme(legend.position = "none",
         axis.title.y = element_blank(),
@@ -119,13 +129,13 @@ pvalue.plot
 
 ## Combine Plots
 ```{r, width = 10, height = 5}
-combined.plot <- grid.arrange(accuracy.plot, pvalue.plot, ncol = 2, widths = c(1.8,1))
+combined.plot <- grid.arrange(accuracy.plot, pvalue.plot, ncol = 2, widths = c(1,0.5))
 ```
 
 Safe to file.
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot_MLP.pdf", 
-       combined.plot, dpi = 300, width = 10, height = 5, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 8, height = 4, device = cairo_pdf)
 ```
 
 # K-Nearest-Neighbors (KNN)
