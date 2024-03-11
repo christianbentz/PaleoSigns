@@ -95,7 +95,7 @@ results.df <- data.frame(hidden.structure = character(0),
                          algorithm = character(0), baseline = numeric(0),
                          accuracy = numeric(0), accuracy.pvalue = numeric(0), 
                          precision = numeric(0), recall = numeric(0), 
-                         f1 = numeric(0), test.n = numeric() 
+                         f1 = numeric(0), test.n = numeric(0) 
                          ) 
 
 # set random seed for reproducibility

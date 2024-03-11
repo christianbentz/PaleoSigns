@@ -55,8 +55,8 @@ for (file in files.mlp.performance){
                                n = nrow(performance.data))
   # get the subcorpora involved in the binary classification
   filename.parts <- unlist(strsplit(basename(file), "\\_|\\."))
-  subcorpus1 <- filename.parts[6]
-  subcorpus2 <- filename.parts[7]
+  subcorpus1 <- filename.parts[3]
+  subcorpus2 <- filename.parts[4]
   performance.data$comparison <- rep(paste(subcorpus1, "vs.", subcorpus2), 
                                      nrow(performance.data))
   # add to data frame
@@ -70,17 +70,16 @@ head(performance.mlp.combined)
 ### F1 Distributions 
 Distributions of F1-scores by comparison.
 ```{r}
-f1.plot <- ggplot(performance.mlp.combined, aes(x = f1, 
-                                            y = fct_reorder(comparison, accuracy),
+f1.plot <- ggplot(performance.mlp.combined, aes(x = jitter(f1, amount = 0.05), 
+                                            y = fct_reorder(comparison, f1),
                                             fill = after_stat(x))) + 
-  geom_density_ridges_gradient(scale = 2, color = "white",
+  geom_density_ridges_gradient(scale = 1, color = "white",
                                quantile_lines = T, quantiles = 2) +
   scale_fill_viridis_c(name = "F1-Score", option = "D") +
-  geom_point(alpha = 0.2, size = 0.5) +
+  geom_point(shape = 124, alpha = 0.4, size = 1.5) +
   xlab("F1-Score") +
   ylab("Comparison") +
-  #theme_minimal() +
-  theme(legend.position = "none") 
+  theme(legend.position = "none")
 f1.plot
 ```
 
@@ -88,7 +87,7 @@ f1.plot
 Distributions of accuracies by comparison.
 ```{r}
 accuracy.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy, amount = 0.05), 
-                                            y = fct_reorder(comparison, accuracy),
+                                            y = fct_reorder(comparison, f1),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
                                quantile_lines = T, quantiles = 2) +
@@ -97,28 +96,24 @@ accuracy.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy, amoun
   geom_point(shape = 124, size = 5, aes(x = baseline, y = comparison), color = "red") +
   xlab("Accuracy") +
   ylab("Comparison") +
-  theme(legend.position = "none")
+  theme(legend.position = "none",
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank())
 accuracy.plot
 ```
 
 ## P-value Distributions 
 Distributions of p-values by comparison.
 ```{r}
-# create data frame with number of data points as labels for plot
-label.y <- c(1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5, 10.5)
-label.x <- c(0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2)
-label <- c("n =", "n =", "n =", "n=", "n=", "n=", "n=", "n=", "n=", "n=")
-label.df = data.frame(label.x, label.y, label)
-
 # create plot
 pvalue.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy.pvalue.corrected, amount = 0.05), 
-                                            y = fct_reorder(comparison, accuracy),
-                                            fill = after_stat(x))) + 
+                                            y = fct_reorder(comparison, f1))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
                                quantile_lines = T, quantiles = 2) +
   scale_fill_viridis_c(name = "p-values", option = "D") +
   geom_point(shape = 124, alpha = 0.4, size = 1.5) +
-  geom_text(data = label.df, aes(x = label.x, y = label.y, label = label)) +
+  geom_label(aes(x = rep(0.6, nrow(performance.mlp.combined)), y = comparison, 
+                 label = paste("n =", test.n))) +
   xlab("p-values") +
   theme(legend.position = "none",
         axis.title.y = element_blank(),
@@ -128,14 +123,14 @@ pvalue.plot
 ```
 
 ## Combine Plots
-```{r, width = 10, height = 5}
-combined.plot <- grid.arrange(accuracy.plot, pvalue.plot, ncol = 2, widths = c(1,0.5))
+```{r}
+combined.plot <- grid.arrange(f1.plot, accuracy.plot, pvalue.plot, ncol = 3, widths = c(1.2, 0.8, 0.8))
 ```
 
 Safe to file.
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot_MLP.pdf", 
-       combined.plot, dpi = 300, width = 8, height = 4, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 15, height = 5, device = cairo_pdf)
 ```
 
 # K-Nearest-Neighbors (KNN)
@@ -184,28 +179,29 @@ head(performance.knn.combined)
 Distributions of F1-scores by comparison.
 ```{r}
 f1.plot <- ggplot(performance.knn.combined, aes(x = jitter(f1, amount = 0.05), 
-                                            y = fct_reorder(comparison, accuracy), 
-                                            fill = after_stat(x))) +
+                                            y = fct_reorder(comparison, f1),
+                                            fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
                                quantile_lines = T, quantiles = 2) +
-  scale_fill_viridis_c(name = "F1-Score", option = "C") +
+  scale_fill_viridis_c(name = "F1-Score", option = "D") +
+  geom_point(shape = 124, alpha = 0.4, size = 1.5) +
   xlab("F1-Score") +
   ylab("Comparison") +
   theme(legend.position = "none")
-  #geom_density(alpha = 0.5)
 f1.plot
 ```
 
-### Accuracy Distributions 
+## Accuracy Distributions 
 Distributions of accuracies by comparison.
 ```{r}
 accuracy.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy, amount = 0.05), 
-                                                  y = fct_reorder(comparison, accuracy), 
-                                                  fill = after_stat(x))) +
+                                            y = fct_reorder(comparison, f1),
+                                            fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
                                quantile_lines = T, quantiles = 2) +
   scale_fill_viridis_c(name = "Accuracy", option = "D") +
-  geom_point(shape = 124, size = 3, aes(x = baseline, y = comparison)) +
+  geom_point(shape = 124, alpha = 0.4, size = 1.5) +
+  geom_point(shape = 124, size = 5, aes(x = baseline, y = comparison), color = "red") +
   xlab("Accuracy") +
   ylab("Comparison") +
   theme(legend.position = "none",
@@ -214,17 +210,19 @@ accuracy.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy, amoun
 accuracy.plot
 ```
 
-### P-value Distributions 
+## P-value Distributions 
 Distributions of p-values by comparison.
 ```{r}
-pvalue.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy.pvalue.corrected, amount = 0.05),
-                                                y = fct_reorder(comparison, accuracy),
-                                                fill = after_stat(x))) +
+# create plot
+pvalue.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy.pvalue.corrected, amount = 0.05), 
+                                            y = fct_reorder(comparison, f1))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
                                quantile_lines = T, quantiles = 2) +
-  scale_fill_viridis_c(name = "P-value", option = "A") +
-  xlab("p-value") +
-  ylab("Comparison") +
+  scale_fill_viridis_c(name = "p-values", option = "D") +
+  geom_point(shape = 124, alpha = 0.4, size = 1.5) +
+  geom_label(aes(x = rep(0.6, nrow(performance.knn.combined)), y = comparison, 
+                 label = paste("n =", test.n))) +
+  xlab("p-values") +
   theme(legend.position = "none",
         axis.title.y = element_blank(),
         axis.text.y = element_blank())
@@ -233,12 +231,12 @@ pvalue.plot
 ```
 
 ## Combine Plots
-```{r, width = 10, height = 5}
-combined.plot <- grid.arrange(f1.plot, accuracy.plot, pvalue.plot, ncol = 3, widths = c(2,1,1))
+```{r}
+combined.plot <- grid.arrange(f1.plot, accuracy.plot, pvalue.plot, ncol = 3, widths = c(1.2, 0.8, 0.8))
 ```
 
 Safe to file.
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot_KNN.pdf", 
-       combined.plot, dpi = 300, width = 10, height = 5, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 15, height = 5, device = cairo_pdf)
 ```

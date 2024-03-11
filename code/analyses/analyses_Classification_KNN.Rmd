@@ -33,10 +33,10 @@ head(estimations.df)
 
 Select subcorpora for binary classification.
 ```{r}
-# choose subcorpora to compare 
-unique(estimations.df$subcorpus)
-subcorpus1 <- "Cuneiform (Uruk III)"
-subcorpus2 <- "Cuneiform (Uruk IV)"
+# choose subcorpora to compare: "Aurignacien", "TeDDi", "Cuneiform (Uruk V)",
+# "Cuneiform (Uruk IV)", "Cuneiform (Uruk III)".
+subcorpus1 <- "TeDDi"
+subcorpus2 <- "Aurignacien"
 selected <- c(subcorpus1, subcorpus2)
 estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]
 ```
@@ -66,6 +66,8 @@ datasample <- sample(2, nrow(estimations.scaled), replace = TRUE, prob = c(0.67,
 train <- estimations.scaled[datasample == 1, 1:ncol(estimations.scaled)]
 # Generate test set 
 test <- estimations.scaled[datasample == 2, 1:ncol(estimations.scaled)]
+# number of data points in test set
+test.n <- nrow(test)
 ```
 
 # Initialize data frame
@@ -73,13 +75,13 @@ test <- estimations.scaled[datasample == 2, 1:ncol(estimations.scaled)]
 knn.results <- data.frame(k = numeric(0), baseline = numeric(0), 
                           accuracy = numeric(0), accuracy.pvalue = numeric(0), 
                           precision = numeric(0), recall = numeric(0), 
-                          f1 = numeric(0))
+                          f1 = numeric(0), test.n = numeric(0))
 ```
 
 # Building knn classifier
 ```{r}
 # choose maximum number of neighbors n
-n = 100
+n = 10
 # run a loop over different numbers of neighbors up to n
 for (k in 1:n){
   # knn estimation of labels
@@ -114,21 +116,19 @@ for (k in 1:n){
   recall <- cm[["byClass"]]["Recall"]
   precision <- cm[["byClass"]]["Precision"]
   
-  # unname and round resulting values
+  # unname and round resulting values (except for p-values)
   baseline <- round(unname(baseline), 2)
   accuracy <- round(unname(accuracy), 2)
-  accuracy.pvalue <- round(unname(accuracy.pvalue), 2)
   f1 <- round(unname(f1), 2)
   recall <- round(unname(recall), 2)
   precision <- round(unname(precision), 2)
   
   # prepare data frame with results
   local.results <- data.frame(k, baseline, accuracy, accuracy.pvalue,
-                              precision, recall, f1, 
+                              precision, recall, f1, test.n,
                               row.names = NULL)
-  local.results.rounded <- round(local.results, 2)
   # print(local.results.rounded)
-  knn.results <- rbind(knn.results, local.results.rounded)
+  knn.results <- rbind(knn.results, local.results)
   # give predictions alongside the other information in data frame
   knn.predictions.df <- cbind(test, predictions.knn)
 }
