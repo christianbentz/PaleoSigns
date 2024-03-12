@@ -53,9 +53,10 @@ for (i in 1:nrow(sign.data)){
   object_id <- sign.data$object_id[i]
   coding.sample <- as.character(sign.data$coding_clean[i])
   coding.sample.random <- as.character(sign.data$coding_random[i])
-  # remove the white spaces around underscore
-  coding.sample <- gsub(" _ ", "_", coding.sample, fixed = T)
-  coding.sample.random <- gsub(" _ ", "_", coding.sample.random, fixed = T)
+  
+  # remove underscores
+  coding.sample <- gsub(" _ ", " ", coding.sample, fixed = T)
+  coding.sample.random <- gsub(" _ ", " ", coding.sample.random, fixed = T)
   
   # get number of characters
   num.char <- nchar(coding.sample)

@@ -1,4 +1,4 @@
-"subcorpus","sequence","num.char","huni.chars","hrate.chars","ttr.chars","rm.chars","predictions.knn"
+"subcorpus","sequence","num.char","huni.chars","hrate.chars","ttr.chars","rm.chars","mlp.predictions.rd"
 "Aurignacien","|||",3,-2.37497855259038,-2.15517419560969,-0.803491775270708,2.88133145260836,"Aurignacien"
 "Aurignacien","||||||| _ ¤¤¤¤¤¤¤¤¤ _ // _ ¤¤¤¤¤¤¤¤¤ _ ||| _ V",36,-1.00423149412393,-0.942380103399755,-1.53228019894055,1.92116675607115,"Aurignacien"
 "Aurignacien","vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv _ vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv",79,-2.29973203249601,-1.9758632934509,-1.95795589667176,2.79516282599605,"Aurignacien"

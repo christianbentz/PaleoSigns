@@ -1,7 +1,7 @@
 ---
 title: "Stabilization Analyses"
 author: ""
-date: "11/03/2024"
+date: "12/03/2024"
 output: pdf_document
 ---
 
@@ -25,7 +25,7 @@ library(gsubfn)
 library(Hrate)
 ```
 
-## Load Data
+# Load Data
 Read the preprocessed files with character strings per row. 
 ```{r}
 # give file paths to the files to be processed
@@ -36,70 +36,107 @@ cdli.urukIV <- read.csv("~/Github/UpperPalCombinatorics/data/CDLI/UrukIV/signs_c
 cdli.urukIII <- read.csv("~/Github/UpperPalCombinatorics/data/CDLI/UrukIII/signs_clean.csv")
 ```
 
-# Stabilization analysis per file
+# Preprocessing
+```{r}
+# TeDDi
+# select relevant columns
+teddi.selected <- teddi[c("filename", "text","writing_system")]
+# rename columns
+colnames(teddi.selected) <- c("id", "sequence", "subcorpus")
+# add column which identifies the corpus
+teddi.selected$corpus <- rep("TeDDi", nrow(teddi.selected))
+
+# SignBase
+signbase <- signbase[signbase$archaeological_unit == "Aurignacien", ]
+signbase.selected <- signbase[c("object_id", "archaeological_unit", "site_name", "coding_clean")]
+colnames(signbase.selected) <- c("id", "corpus", "subcorpus", "sequence")
+
+# Proto-Cuneiform
+## Uruk V
+cdli.urukV.selected <- cdli.urukV[c("tablet.id", "signs.expand.vec")]
+colnames(cdli.urukV.selected) <- c("id", "sequence")
+cdli.urukV.selected$corpus <- rep("Proto-Cuneiform", nrow(cdli.urukV.selected))
+cdli.urukV.selected$subcorpus <- rep("Uruk V", nrow(cdli.urukV.selected))
+## Uruk IV
+cdli.urukIV.selected <- cdli.urukIV[c("tablet.id", "signs.expand.vec")]
+colnames(cdli.urukIV.selected) <- c("id", "sequence")
+cdli.urukIV.selected$corpus <- rep("Proto-Cuneiform", nrow(cdli.urukIV.selected))
+cdli.urukIV.selected$subcorpus <- rep("Uruk IV", nrow(cdli.urukIV.selected))
+## Uruk III
+cdli.urukIII.selected <- cdli.urukIII[c("tablet.id", "signs.expand.vec")]
+colnames(cdli.urukIII.selected) <- c("id", "sequence")
+cdli.urukIII.selected$corpus <- rep("Proto-Cuneiform", nrow(cdli.urukIII.selected))
+cdli.urukIII.selected$subcorpus <- rep("Uruk III", nrow(cdli.urukIII.selected))
+
+# Combined Data Frame
+data.combined <- rbind(teddi.selected, signbase.selected, cdli.urukV.selected,
+                       cdli.urukIV.selected, cdli.urukIII.selected)
+```
+
+# Stabilization Analysis per Sequence
 ```{r}
 # set counter
 counter = 0
-# set the maximal number of units (n), and the stepsize for stabilization analysis
-# (i.e. in steps of how many units are values calculated?)
-n = 100
+# set the maximal number of characters (max.n), the minimum number (min.n),
+# and the stepsize for stabilization analysis 
+# (i.e. in steps of how many units are values calculated?).
+# Note: it should be the case that min.n >= stepsize
+max.n = 200
+min.n = 100
 stepsize = 10
 # initialize dataframe to append results to
-stabilization.df <- data.frame(filename = character(0), subcorpus = character(0), 
-                               code = character(0), huni.chars = numeric (0), 
-                               hrate.chars = numeric(0), ttr.chars = numeric(0), 
-                               rm.chars = numeric(0), units = numeric(0)) 
+stabilization.df <- data.frame(id = character(0), corpus = character(0), 
+                               subcorpus = character(0), sequence = character(0),
+                               huni.chars = numeric (0), hrate.chars = numeric(0), 
+                               ttr.chars = numeric(0), rm.chars = numeric(0), 
+                               num.char = numeric(0)) 
 # start time
 start_time <- Sys.time()
-for (file in file.list) 
+for (i in 1:nrow(data.combined)) 
 {
-  try({ # if the processing failes for a certain file, there will be no output for this file,
+  try({ # if the processing fails for a certain file, there will be no output for this file,
   # but the try() function allows the loop to keep running  
   
-  # basic processing
-  # loading textfile
-  textfile <- scan(file, what = "char", quote = "", 
-                   comment.char = "", encoding = "UTF-8", sep = "\n" , skip = 7, nmax = 20) 
-  # skip 7 first lines, nmax gives the maximum number of lines to be read,
-  # note that reading more lines will considerably increase processing time.
-  # remove annotations marked by '<>'
-  textfile <- gsub("<.*>","",textfile) 
-  # print(head(textfile))
-  # get filename
-  filename <- basename(file) 
-  #print(filename) # for visual inspection
-  # get subcorpus category
-  subcorpus <- sub("_.*", "", filename)
-  # print(subcorpus) # for visual inspection
-  # get the three letter identification code + the running number
-  code <- substring(substring(filename, regexpr("_", filename) + 1), 1, 8)
+  # get meta information per row
+  row.data <- data.combined[i, ]
+  id <- row.data$id
+  corpus <- row.data$corpus
+  subcorpus <- row.data$subcorpus
+  sequence <- row.data$sequence
+  num.char <- nchar(row.data$sequence)
   
-  # Split into individual characters/signs 
-  # remove tabs and parentheses, as well as star signs `*' and plus signs `+´
-  # note that this might have to be tuned according to the text files included
-  textfile <- str_replace_all(textfile, c("\\\t" = "", "\\(" = "", "\\)" = "", 
-                                       "\\]" = "", "\\[" = "",  "\\}" = "", 
-                                       "\\{" = "", "\\*" = "", "\\+" = ""))
-  # split the textfile into individual utf-8 characters. Note that white spaces are
-  # counted as utf-8 characters here.
-  chars <- unlist(strsplit(textfile, ""))
-  chars <- chars[1:n] # use only maximally n units
-  chars <- chars[!is.na(chars)] # remove NAs for vectors which are already shorter
-  # than n
-  # chars <- chars[chars != " "] # remove white spaces from character vector
+  # if/else statement to distinguish between the proto-cuneiform signs
+  # and individial UTF-8 characters in the other sequences
+  if (corpus == "Proto-Cuneiform"){
+    chars <- unlist(strsplit(sequence, " "))
+  } else {
+    chars <- unlist(strsplit(sequence, ""))
+  }
+   
+  # preprocess text with bag-of-words normalization
+  # note: this is an important step! Without it, entropy rate estimation will fail
+  # to yield realistic results due to issues with processing special characters.
+  chars <- PreprocessText(chars)
+  
+  # maximal length in chars
+  chars <- chars[1:max.n] # use only maximally n units
+  # remove NAs for vectors which are already shorter than max.n
+  chars <- chars[!is.na(chars)] 
+  
   # use "next" statement to exclude files with less than x characters
-  if (length(chars) < 100) {
+  if (length(chars) < min.n) {
     next
   }
+  
   # run loop with stepsizes
   # define the number of units (i.e. characters) used for analyses (note that k is      
   # always either equal to or smaller than n)
   k = length(chars)
-  for (i in 1:(k/stepsize))
+  for (j in 1:(k/stepsize))
   {  
     # unigram entropy estimation
     # define substring of chars vector by stepsize
-    sub.chars <- chars[1:(i*stepsize)]
+    sub.chars <- chars[1:(j*stepsize)]
     # calculate unigram entropy for characters
     chars.df <- as.data.frame(table(sub.chars))
     # print(chars.df)
@@ -119,8 +156,8 @@ for (file in file.list)
     # calculate the number of adjacent repetitions
     r = 0
     if (length(sub.chars) > 1){
-      for (j in 1:(length(sub.chars)-1)){
-        if (sub.chars[j] == sub.chars[j+1]){
+      for (m in 1:(length(sub.chars)-1)){
+        if (sub.chars[m] == sub.chars[m+1]){
           r = r + 1
         } else {
           r = r + 0
@@ -133,13 +170,14 @@ for (file in file.list)
     }
     
     # append results to dataframe
-    local.df <- data.frame(filename, subcorpus, code, huni.chars, hrate.chars, 
-                           ttr.chars, rm.chars, units = i*stepsize)
+    local.df <- data.frame(id, corpus, subcorpus, sequence,
+                           huni.chars, hrate.chars, 
+                           ttr.chars, rm.chars, num.char = j*stepsize)
     stabilization.df <- rbind(stabilization.df, local.df)
   }
   # counter
   counter <- counter + 1
-  # print(counter)
+  print(counter)
   })
 }
 end_time <- Sys.time()
@@ -151,68 +189,76 @@ head(stabilization.df)
 
 ## Unigram entropy characters
 ```{r, fig.width = 20, fig.height = 20, warning = FALSE}
-huni.chars.plot <- ggplot(stabilization.df, aes(x = units, y = huni.chars,
-                                                colour = subcorpus)) + 
-  geom_line(alpha = 0.8, size  = 1.5) +
+huni.chars.plot <- ggplot(stabilization.df, aes(x = num.char, y = huni.chars,
+                                                color = subcorpus)) + 
+  geom_point(alpha = 0.3, size  = 2) +
+  geom_smooth() +
   theme(legend.position = "bottom") +
   labs(x = "number of characters", y = "unigram entropy for characters") +
-  facet_wrap(~code)
+  facet_wrap(~id)
 huni.chars.plot
 ```
 
 ## Safe figure to file
 ```{r, fig.width = 20, fig.height = 20}
-ggsave("~/Github/NaLaFi/figures/stabilization_huni_chars.pdf", huni.chars.plot, dpi = 300, 
+ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_huni_chars.pdf", huni.chars.plot, dpi = 300, 
+       width = 20, height = 20, 
        scale = 1, device = cairo_pdf)
 ```
 
 ## Entropy rate characters
 ```{r, fig.width = 20, fig.height = 20, warning = FALSE}
-hrate.chars.plot <- ggplot(stabilization.df, aes(x = units, y = hrate.chars,
-                                                colour = subcorpus)) + 
-  geom_line(alpha = 0.8, size  = 1.5) +
+hrate.chars.plot <- ggplot(stabilization.df, aes(x = num.char, y = hrate.chars,
+                                                colour = corpus)) + 
+  geom_point(alpha = 0.3, size  = 2) +
+  geom_smooth() +
   theme(legend.position = "bottom") +
   labs(x = "number of characters", y = "entropy rate for characters") + 
-  facet_wrap(~code)
+  facet_wrap(~id)
 hrate.chars.plot
 ```
 
 ## Safe figure to file
 ```{r, fig.width = 20, fig.height = 20}
-ggsave("~/Github/NaLaFi/figures/stabilization_hrate_chars.pdf", hrate.chars.plot, dpi = 300, 
+ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_hrate_chars.pdf", hrate.chars.plot, dpi = 300, 
+       width = 20, height = 20, 
        scale = 1, device = cairo_pdf)
 ```
 
 ## TTR characters
 ```{r, fig.width = 20, fig.height = 20, warning = FALSE}
-ttr.chars.plot <- ggplot(stabilization.df, aes(x = units, y = ttr.chars,
-                                                colour = subcorpus)) + 
-  geom_line(alpha = 0.8, size  = 1.5) +
+ttr.chars.plot <- ggplot(stabilization.df, aes(x = num.char, y = ttr.chars,
+                                                colour = corpus)) + 
+  geom_point(alpha = 0.3, size  = 2) +
+  geom_smooth() +
   theme(legend.position = "bottom") +
   labs(x = "number of characters", y = "TTR for characters") +
-  facet_wrap(~code)
+  facet_wrap(~id)
 ttr.chars.plot
 ```
 
 ## Safe figure to file
 ```{r, fig.width = 20, fig.height = 20}
-ggsave("~/Github/NaLaFi/figures/stabilization_ttr_chars.pdf", ttr.chars.plot, dpi = 300, 
+ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_ttr_chars.pdf", ttr.chars.plot, dpi = 300, 
+       width = 20, height = 20, 
        scale = 1, device = cairo_pdf)
 ```
 
 ## Repetition rate characters
 ```{r, fig.width = 20, fig.height = 20, warning = FALSE}
-rm.chars.plot <- ggplot(stabilization.df, aes(x = units, y = rm.chars,
-                                                colour = subcorpus)) + 
-  geom_line(alpha = 0.8, size  = 1.5) +
+rm.chars.plot <- ggplot(stabilization.df, aes(x = num.char, y = rm.chars,
+                                                colour = corpus)) + 
+  geom_point(alpha = 0.3, size  = 2) +
+  geom_smooth() +
   theme(legend.position = "bottom") +
   labs(x = "number of characters", y = "RM for characters") +
-  facet_wrap(~code)
+  facet_wrap(~id)
 rm.chars.plot
 ```
 
 ## Safe figure to file
 ```{r, fig.width = 20, fig.height = 20}
-ggsave("~/Github/NaLaFi/figures/stabilization_rm_chars.pdf", rm.chars.plot, dpi = 300, 
+ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_rm_chars.pdf", rm.chars.plot, dpi = 300,
+       width = 20, height = 20, 
        scale = 1, device = cairo_pdf)
 ```
