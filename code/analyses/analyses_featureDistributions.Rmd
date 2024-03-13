@@ -14,6 +14,9 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
 ```{r}
+library(devtools)
+#install_github("vqv/ggbiplot")
+library(ggbiplot)
 library(stringr)
 library(ggplot2)
 library(ggrepel)
@@ -136,4 +139,56 @@ combined.plot <- grid.arrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", 
        combined.plot, dpi = 300, width = 36, height = 18, device = cairo_pdf)
+```
+
+# Principal Component Analysis (PCA)
+
+Compute principal components.
+```{r}
+pca <- prcomp(estimations.df.selected[c("huni.chars",
+                                       "hrate.chars",
+                                       "ttr.chars",
+                                       "rm.chars")],
+             center = TRUE,
+             scale. = TRUE)
+print(pca)
+summary(pca)
+```
+
+Screeplot with loadings of principal components.
+```{r}
+# compute total variance
+variance = pca $sdev^2 / sum(pca $sdev^2)
+ 
+# Scree plot
+qplot(c(1:4), variance) + 
+  geom_line() + 
+  geom_col(alpha = 0.5) +
+  geom_point(size=4)+
+  xlab("Principal Component") + 
+  ylab("Variance Explained") +
+  ggtitle("Scree Plot") +
+  ylim(0, 1)
+```
+
+Bi-plot with ggplot.
+```{r}
+biplot <- ggbiplot(pca,
+              obs.scale = 1,
+              var.scale = 1,
+              groups = estimations.df.selected$subcorpus,
+              ellipse = TRUE,
+              circle = TRUE,
+              #ellipse.prob = 0.68, # NULL = 0.68
+              alpha = 0.3) +
+  scale_color_discrete(name = '') + 
+  theme(legend.direction = 'horizontal',
+               legend.position = 'top')
+print(biplot)
+```
+
+## Safe complete figure to file
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/pca_biplot.pdf", 
+       biplot, dpi = 300, height = 20, width = 25, device = cairo_pdf)
 ```
