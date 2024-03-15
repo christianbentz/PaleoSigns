@@ -187,6 +187,15 @@ library(tidyverse)</code></pre>
 ## ✖ dplyr::filter()  masks stats::filter()
 ## ✖ dplyr::lag()     masks stats::lag()
 ## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+<pre class="r"><code># mixed effects
+library(lme4)</code></pre>
+<pre><code>## Loading required package: Matrix
+## 
+## Attaching package: &#39;Matrix&#39;
+## 
+## The following objects are masked from &#39;package:tidyr&#39;:
+## 
+##     expand, pack, unpack</code></pre>
 </div>
 <div id="load-data" class="section level1">
 <h1>Load Data</h1>
@@ -200,6 +209,9 @@ sign.data &lt;- sign.data[sign.data$archaeological_unit == &quot;Aurignacien&quo
 <pre class="r"><code># select the statistical feature to look at
 feature.name &lt;- &quot;huni.chars&quot;
 feature.values &lt;- get(feature.name, sign.data)</code></pre>
+<p>Add columns for object volume and dates.</p>
+<pre class="r"><code>sign.data$volume &lt;- (sign.data$length_mm*sign.data$width_mm*sign.data$depth)/1000
+sign.data$date &lt;- as.numeric(substr(sign.data$date_bp_min, 1, 5)) </code></pre>
 </div>
 <div id="properties-of-objects" class="section level1">
 <h1>Properties of Objects</h1>
@@ -273,8 +285,6 @@ preservation.plot</code></pre>
 </div>
 <div id="volume-of-object" class="section level2">
 <h2>Volume of Object</h2>
-<p>Create volume column from length, width and depth column.</p>
-<pre class="r"><code>sign.data$volume &lt;- (sign.data$length_mm*sign.data$width_mm*sign.data$depth)/1000</code></pre>
 <pre class="r"><code># create plot
 volume.plot &lt;- ggplot(sign.data, aes(x = feature.values, y = volume)) +
   geom_point(alpha = 0.5, size = 2) +
@@ -292,8 +302,6 @@ volume.plot</code></pre>
 </div>
 <div id="date" class="section level2">
 <h2>Date</h2>
-<p>Create volume column from length, width and depth column.</p>
-<pre class="r"><code>sign.data$date &lt;- as.numeric(substr(sign.data$date_bp_min, 1, 5)) </code></pre>
 <pre class="r"><code># create plot
 date.plot &lt;- ggplot(sign.data, aes(x = feature.values, y = date)) +
   geom_point(alpha = 0.5, size = 2) +
@@ -325,6 +333,65 @@ date.plot</code></pre>
 <p>Safe complete figure to file</p>
 <pre class="r"><code>ggsave(&quot;~/Github/UpperPalCombinatorics/figures/combinedPlot_Aurignacian.pdf&quot;, 
        combined.plot, dpi = 300, width = 16, height = 8, device = cairo_pdf)</code></pre>
+</div>
+</div>
+<div id="mixed-effects-model" class="section level1">
+<h1>Mixed-Effects Model</h1>
+<div id="maximal-model" class="section level2">
+<h2>Maximal model</h2>
+<p>According to Barr et al. (2013) it is preferable to fit a “maximal” model, i.e. including all possible random intercepts and slopes.</p>
+<pre class="r"><code>max.model &lt;- lm(feature.values ~ object_type + material + volume + date + preservation, 
+               data = sign.data, REML = F)</code></pre>
+<pre><code>## Warning: In lm.fit(x, y, offset = offset, singular.ok = singular.ok, ...) :
+##  extra argument &#39;REML&#39; will be disregarded</code></pre>
+<pre class="r"><code>summary(max.model)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = feature.values ~ object_type + material + volume + 
+##     date + preservation, data = sign.data, REML = F)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.47491 -0.47591 -0.09821  0.38392  1.59140 
+## 
+## Coefficients:
+##                                     Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)                        2.687e+00  1.257e+00   2.137   0.0340 *
+## object_typeawl                     1.621e-01  5.865e-01   0.276   0.7826  
+## object_typebâton percé            -9.045e-01  6.044e-01  -1.496   0.1363  
+## object_typefigurine anthropomoph  -4.946e-01  8.096e-01  -0.611   0.5420  
+## object_typefigurine anthropomorph  6.773e-01  6.186e-01   1.095   0.2750  
+## object_typefigurine undet.        -4.839e-01  6.166e-01  -0.785   0.4336  
+## object_typefigurine zoomorph       3.982e-01  5.584e-01   0.713   0.4767  
+## object_typeflute                  -6.866e-01  6.042e-01  -1.136   0.2573  
+## object_typepersonal ornament      -5.402e-01  5.563e-01  -0.971   0.3328  
+## object_typeplaquette               9.480e-01  8.204e-01   1.156   0.2494  
+## object_typepossible figurine      -2.259e-01  5.863e-01  -0.385   0.7004  
+## object_typepossible flute         -7.388e-01  5.932e-01  -1.246   0.2145  
+## object_typerod/bâton              -1.341e-03  5.866e-01  -0.002   0.9982  
+## object_typespatula/lissoir        -4.622e-01  5.798e-01  -0.797   0.4264  
+## object_typetube                   -1.136e+00  7.872e-01  -1.443   0.1508  
+## object_typetube/flute             -6.075e-01  5.891e-01  -1.031   0.3038  
+## object_typeundetermined           -3.352e-01  5.668e-01  -0.591   0.5549  
+## materialantler                    -1.127e+00  7.221e-01  -1.561   0.1203  
+## materialbone                      -8.136e-01  6.475e-01  -1.257   0.2105  
+## materialfossil                    -1.116e+00  8.825e-01  -1.264   0.2078  
+## materialivory                     -9.438e-01  6.342e-01  -1.488   0.1385  
+## materialsandstone                 -2.229e+00  8.782e-01  -2.538   0.0120 *
+## volume                             8.427e-03  3.742e-03   2.252   0.0255 *
+## date                              -2.121e-05  2.598e-05  -0.817   0.4153  
+## preservationcomplete              -5.502e-02  2.808e-01  -0.196   0.8449  
+## preservationfragmented            -1.472e-01  1.601e-01  -0.920   0.3590  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.5792 on 181 degrees of freedom
+##   (4 observations deleted due to missingness)
+## Multiple R-squared:  0.3773, Adjusted R-squared:  0.2913 
+## F-statistic: 4.387 on 25 and 181 DF,  p-value: 2.026e-09</code></pre>
+<pre class="r"><code>AIC(max.model) </code></pre>
+<pre><code>## [1] 387.5401</code></pre>
+<pre class="r"><code>#isSingular(max.model) </code></pre>
 </div>
 </div>
 

@@ -19,6 +19,8 @@ library(gridExtra)
 library(ggpubr)
 library(ggridges)
 library(tidyverse)
+# mixed effects
+library(lme4)
 ```
 
 # Load Data
@@ -34,6 +36,12 @@ sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
 # select the statistical feature to look at
 feature.name <- "huni.chars"
 feature.values <- get(feature.name, sign.data)
+```
+
+Add columns for object volume and dates.
+```{r}
+sign.data$volume <- (sign.data$length_mm*sign.data$width_mm*sign.data$depth)/1000
+sign.data$date <- as.numeric(substr(sign.data$date_bp_min, 1, 5)) 
 ```
 
 # Properties of Objects
@@ -103,11 +111,6 @@ preservation.plot
 ```
 
 ## Volume of Object
-Create volume column from length, width and depth column.
-```{r}
-sign.data$volume <- (sign.data$length_mm*sign.data$width_mm*sign.data$depth)/1000
-```
-
 ```{r}
 # create plot
 volume.plot <- ggplot(sign.data, aes(x = feature.values, y = volume)) +
@@ -120,11 +123,6 @@ volume.plot
 ```
 
 ## Date
-Create volume column from length, width and depth column.
-```{r}
-sign.data$date <- as.numeric(substr(sign.data$date_bp_min, 1, 5)) 
-```
-
 ```{r}
 # create plot
 date.plot <- ggplot(sign.data, aes(x = feature.values, y = date)) +
@@ -149,4 +147,17 @@ Safe complete figure to file
 ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_Aurignacian.pdf", 
        combined.plot, dpi = 300, width = 16, height = 8, device = cairo_pdf)
 ```
+
+# Mixed-Effects Model
+
+## Maximal model
+According to Barr et al. (2013) it is preferable to fit a "maximal" model, i.e. including all possible random intercepts and slopes.
+```{r}
+max.model <- lm(feature.values ~ object_type + material + volume + date + preservation, 
+               data = sign.data, REML = F)
+summary(max.model)
+AIC(max.model) 
+#isSingular(max.model) 
+```
+
 
