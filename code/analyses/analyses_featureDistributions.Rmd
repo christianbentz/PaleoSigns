@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
 ```{r}
-library(devtools)
+#library(devtools)
 #install_github("vqv/ggbiplot")
 library(ggbiplot)
 library(stringr)
@@ -25,6 +25,7 @@ library(ggExtra)
 library(gridExtra)
 library(ggpubr)
 library(ggridges)
+library(GGally)
 ```
 
 # Load Data
@@ -78,7 +79,7 @@ length.plot <- ggplot(estimations.df.selected, aes(x = num.char, y = subcorpus,
 length.plot
 ```
 
-## Safe complete figure to file
+Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/lengthPlot_chars.pdf", 
        length.plot, dpi = 300, width = 5, height = 5, device = cairo_pdf)
@@ -86,10 +87,19 @@ ggsave("~/Github/UpperPalCombinatorics/figures/lengthPlot_chars.pdf",
 
 Get subset of data points to plot labels.
 ```{r}
-labels.df <- estimations.df.selected[estimations.df.selected$num.char > 9 &
-                                       estimations.df.selected$num.char < 11 &
+# how many data points with a given sequence length?
+table(estimations.df.selected$num.char)
+
+# choose subset of data points for labelling
+labels.df <- estimations.df.selected[estimations.df.selected$num.char > 11 &
+                                       estimations.df.selected$num.char < 13 &
                                        estimations.df.selected$subcorpus != "Cuneiform (Uruk IV)" &
                                        estimations.df.selected$subcorpus != "Cuneiform (Uruk III)",] 
+
+random.numbers <- sample(1:nrow(estimations.df.selected), 1000)
+labels.df <- estimations.df.selected[random.numbers, ]
+labels.df <- labels.df[labels.df$num.char > 4 &
+                       labels.df$num.char < 6, ]
 ```
 
 ## Entropy rate vs. unigram entropy
@@ -131,15 +141,32 @@ ttr.rm.chars.plot <- ggMarginal(ttr.rm.chars.plot, groupFill = T, groupColour = 
 ```
 
 Combine figures.
-```{r, width = 20, height = 10}
+```{r, fig.width = 16, fig.height = 8}
 combined.plot <- grid.arrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2)
 ```
 
-## Safe complete figure to file
+Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", 
-       combined.plot, dpi = 300, width = 36, height = 18, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 16, height = 8, device = cairo_pdf)
 ```
+
+# Correlation Plot
+Correlation plots for the statistical feature values.
+```{r, fig.width = 12, fig.height = 12}
+cor.plot <- ggpairs(estimations.df.selected, columns = c("num.char", "huni.chars", "hrate.chars",
+                               "ttr.chars","rm.chars"), 
+        aes(color = subcorpus,
+            alpha = 0.5))
+cor.plot
+```
+
+Safe complete figure to file.
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/correlation_plot.pdf", 
+       cor.plot, dpi = 300, width = 12, height = 12, device = cairo_pdf)
+```
+
 
 # Principal Component Analysis (PCA)
 
@@ -187,8 +214,8 @@ biplot <- ggbiplot(pca,
 print(biplot)
 ```
 
-## Safe complete figure to file
+Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/pca_biplot.pdf", 
-       biplot, dpi = 300, height = 20, width = 25, device = cairo_pdf)
+       biplot, dpi = 300, device = cairo_pdf)
 ```

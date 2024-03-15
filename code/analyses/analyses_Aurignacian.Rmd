@@ -1,6 +1,6 @@
 ---
 title: 'Analyses: Swabian Aurignacian'
-author: "Chris Bentz"
+author: ""
 date: "2/28/2024"
 output: html_document
 ---
@@ -17,6 +17,8 @@ library(ggrepel)
 library(ggExtra)
 library(gridExtra)
 library(ggpubr)
+library(ggridges)
+library(tidyverse)
 ```
 
 # Load Data
@@ -27,44 +29,124 @@ sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/signBase_
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
 ```
 
-# Swabian Jura Specific Plots
-Comparisons of different caves of the Swabian Jura.
-
-## Entropy rate vs. unigram entropy
-```{r, fig.width = 5, fig.height = 5, warning = FALSE}
-huni.hrate.chars.plot <- ggplot(sign.data, aes(x = huni.chars, y = hrate.chars, 
-                                    colour = site_name, size = num.char)) + 
-  geom_point(alpha = 0.3) +
-  #geom_density2d(alpha = .8) +
-  labs(x = "Unigram entropy for characters", y = "Entropy rate for characters") +
-  theme(legend.position = c(.8,.2))
-  #facet_wrap(~subcorpus)
-huni.hrate.chars.plot <- ggMarginal(huni.hrate.chars.plot, groupFill = T, groupColour = T, 
-                                  type = "density")
-#huni.hrate.chars.plot
+# Select Feature
+```{r}
+# select the statistical feature to look at
+feature.name <- "huni.chars"
+feature.values <- get(feature.name, sign.data)
 ```
 
-## TTR vs. repetition rate
-```{r, fig.width = 5, fig.height = 5, warning = FALSE}
-ttr.rm.chars.plot <- ggplot(sign.data, aes(x = ttr.chars, y = rm.chars, 
-                                    colour = site_name, size = num.char)) + 
-  geom_point(alpha = 0.3) +
-  #geom_density2d(alpha = .5) +
-  labs(x = "TTR for characters", y = "Repetition rate for characters") +
+# Properties of Objects
+
+## Object Type (Carrier)
+```{r}
+# create plot
+objectType.plot <- ggplot(sign.data, aes(x = feature.values, 
+                                            y = fct_reorder(object_type, feature.values),
+                                            fill = after_stat(x))) +
+  geom_density_ridges_gradient(scale = 1, color = "white",
+                               quantile_lines = T, quantiles = 2) +
+  scale_fill_viridis_c(name = feature.name, option = "D") +
+  geom_point(shape = 124, alpha = 0.7, size = 2) +
+  xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
+  ylab("Object-Type (Carrier)") +
   theme(legend.position = "none")
-  #facet_wrap(~subcorpus)
-ttr.rm.chars.plot <- ggMarginal(ttr.rm.chars.plot, groupFill = T, groupColour = T, 
-                                  type = "density")
-#ttr.rm.chars.plot
+objectType.plot
 ```
 
+## Material
+```{r}
+# create plot
+material.plot <- ggplot(sign.data, aes(x = feature.values, 
+                                            y = fct_reorder(material, feature.values),
+                                            fill = after_stat(x))) +
+  geom_density_ridges_gradient(scale = 1, color = "white",
+                               quantile_lines = T, quantiles = 2) +
+  scale_fill_viridis_c(name = feature.name, option = "D") +
+  geom_point(shape = 124, alpha = 0.7, size = 2) +
+  xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
+  ylab("Material") +
+  theme(legend.position = "none")
+material.plot
+```
+
+## Cave Site
+```{r}
+# create plot
+site.plot <- ggplot(sign.data, aes(x = feature.values, 
+                                            y = fct_reorder(site_name, feature.values),
+                                            fill = after_stat(x))) +
+  geom_density_ridges_gradient(scale = 1, color = "white",
+                               quantile_lines = T, quantiles = 2) +
+  scale_fill_viridis_c(name = feature.name, option = "D") +
+  geom_point(shape = 124, alpha = 0.7, size = 2) +
+  xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
+  ylab("Cave Site") +
+  theme(legend.position = "none")
+site.plot
+```
+
+## Preservation
+```{r}
+# create plot
+preservation.plot <- ggplot(sign.data, aes(x = feature.values, 
+                                            y = fct_reorder(preservation, feature.values),
+                                            fill = after_stat(x))) +
+  geom_density_ridges_gradient(scale = 1, color = "white",
+                               quantile_lines = T, quantiles = 2) +
+  scale_fill_viridis_c(name = feature.name, option = "D") +
+  geom_point(shape = 124, alpha = 0.7, size = 2) +
+  xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
+  ylab("Preservation") +
+  theme(legend.position = "none")
+preservation.plot
+```
+
+## Volume of Object
+Create volume column from length, width and depth column.
+```{r}
+sign.data$volume <- (sign.data$length_mm*sign.data$width_mm*sign.data$depth)/1000
+```
+
+```{r}
+# create plot
+volume.plot <- ggplot(sign.data, aes(x = feature.values, y = volume)) +
+  geom_point(alpha = 0.5, size = 2) +
+  #geom_label_repel(aes(label = object_type)) +
+  geom_smooth(method = "lm") +
+  xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
+  ylab("Volume (cm^3)")
+volume.plot
+```
+
+## Date
+Create volume column from length, width and depth column.
+```{r}
+sign.data$date <- as.numeric(substr(sign.data$date_bp_min, 1, 5)) 
+```
+
+```{r}
+# create plot
+date.plot <- ggplot(sign.data, aes(x = feature.values, y = date)) +
+  geom_point(alpha = 0.5, size = 2) +
+  #geom_label_repel(aes(label = object_type)) +
+  geom_smooth(method = "lm") +
+  xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
+  ylab("Date (BP, min)")
+date.plot
+```
+
+## Figures Combined
 Combine figures.
-```{r, width = 12, height = 6}
-combined.plot <- grid.arrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2)
+```{r, fig.width = 16, fig.height = 8}
+combined.plot <- grid.arrange(objectType.plot, material.plot, site.plot,
+                              preservation.plot, volume.plot,
+                              date.plot, ncol = 3)
 ```
 
-## Safe complete figure to file
+Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_Aurignacian.pdf", 
-       combined.plot, dpi = 300, width = 12, height = 6, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 16, height = 8, device = cairo_pdf)
 ```
+
