@@ -1,10 +1,10 @@
 ---
 title: 'Analyses: Classification with KNN'
 author: ""
-date: "01/03/2024"
+date: "28/03/2024"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,7 +12,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Description
-k-nearest neighbor analyses of the feature vectors per character sequence (loaded from ~/results/features_combined.csv). The results are stored in ~/results/classifier/.
+K-Nearest Neighbor classification of the feature vectors per character sequence (loaded from ~/results/features_combined.csv). The results are stored in ~/results/classifier/. KNN is strictly speaking not a machine "learning" algorithm. Given a data point in the test set, it simply takes the k-nearest neighbors (in the "training" set) of this data point, and assigns the majority label of these to it. See figure below. 
+
+In the context of the current analyses, there are four relevant dimensions (instead of two as in the example below), namely, the TTR, unigram entropy, entropy rate, and repetition rate for the respective sequences. 
+
+```{r foo, out.width="100%", fig.cap="Workings of the KNN algorithm, taken from https://ourcodingclub.github.io/tutorials/machine-learning/."}
+knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/knn.jpg")
+```
 
 ## Load Packages
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
@@ -35,8 +41,8 @@ Select subcorpora for binary classification.
 ```{r}
 # choose subcorpora to compare: "Aurignacien", "TeDDi", "Cuneiform (Uruk V)",
 # "Cuneiform (Uruk IV)", "Cuneiform (Uruk III)".
-subcorpus1 <- "Cuneiform (Uruk III)"
-subcorpus2 <- "Cuneiform (Uruk IV)"
+subcorpus1 <- "TeDDi"
+subcorpus2 <- "Aurignacien"
 selected <- c(subcorpus1, subcorpus2)
 estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]
 ```
@@ -46,7 +52,8 @@ Remove NAs (whole row)
 estimations.subset <- na.omit(estimations.subset)
 ```
 
-# Center and scale the data
+# Normalization
+Center and scale the data
 ```{r}
 # first three columns are meta information, the others are the feature values
 # be aware that this needs to be changed in case of other table format
@@ -55,7 +62,7 @@ estimations.scaled <- cbind(estimations.subset[, c("subcorpus", "sequence", "num
                                                          "ttr.chars", "rm.chars")]))
 ```
 
-# Create Training and Test Sets
+# Training and Test Sets
 ```{r}
 # Generating seed
 set.seed(1234)
@@ -70,7 +77,8 @@ test <- estimations.scaled[datasample == 2, 1:ncol(estimations.scaled)]
 test.n <- nrow(test)
 ```
 
-# Initialize data frame
+# Building KNN Classifier
+Initialize data frame for storing results.
 ```{r}
 knn.results <- data.frame(k = numeric(0), baseline = numeric(0), 
                           accuracy = numeric(0), accuracy.pvalue = numeric(0), 
@@ -78,7 +86,7 @@ knn.results <- data.frame(k = numeric(0), baseline = numeric(0),
                           f1 = numeric(0), test.n = numeric(0))
 ```
 
-# Building knn classifier
+Run KNN classification.
 ```{r}
 # choose maximum number of neighbors n
 n = 10

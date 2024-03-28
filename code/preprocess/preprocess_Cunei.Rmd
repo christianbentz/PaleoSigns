@@ -148,9 +148,9 @@ Remove rows with empty sign codings
 cunei.data <- cunei.data[-which(cunei.data$signs.orig.vec == ""), ]
 ```
 
-Select those with at least a given number of cuneiform signs. Note that sign transliterations have typically more than three UTF-8 characters per sign.
+Select those with at least a given number of cuneiform signs. 
 ```{r}
-cunei.data <- cunei.data[nchar(cunei.data$signs.expand.vec) > 3, ]
+cunei.data <- cunei.data[lengths(strsplit(cunei.data$signs.expand.vec, " ")) > 1, ]
 ```
 
 Give head of final data frame for illustration purposes.

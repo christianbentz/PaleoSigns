@@ -282,7 +282,7 @@ head(estimations.df)</code></pre>
 <div id="simple-stats" class="section level1">
 <h1>Simple Stats</h1>
 <pre class="r"><code>nrow(estimations.df) # number of sequences with feature estimations</code></pre>
-<pre><code>## [1] 3076</code></pre>
+<pre><code>## [1] 3031</code></pre>
 <pre class="r"><code>unique(estimations.df$subcorpus) # names of subcorpora</code></pre>
 <pre><code>## [1] &quot;Aurignacien&quot;          &quot;Cuneiform (Uruk V)&quot;   &quot;Cuneiform (Uruk IV)&quot; 
 ## [4] &quot;Cuneiform (Uruk III)&quot; &quot;TeDDi&quot;</code></pre>
@@ -293,9 +293,9 @@ head(estimations.df)</code></pre>
 <pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Cuneiform (Uruk V)&quot;,]) </code></pre>
 <pre><code>## [1] 111</code></pre>
 <pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Cuneiform (Uruk IV)&quot;,]) </code></pre>
-<pre><code>## [1] 886</code></pre>
+<pre><code>## [1] 859</code></pre>
 <pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Cuneiform (Uruk III)&quot;,]) </code></pre>
-<pre><code>## [1] 873</code></pre>
+<pre><code>## [1] 855</code></pre>
 <p>Write to file</p>
 <pre class="r"><code>write.csv(estimations.df, &quot;~/Github/UpperPalCombinatorics/results/features/features_combined.csv&quot;, row.names = F)</code></pre>
 </div>

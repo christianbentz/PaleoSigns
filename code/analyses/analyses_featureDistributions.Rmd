@@ -1,7 +1,7 @@
 ---
 title: "Analyses: Feature Value Distributions"
 author: ""
-date: "23/02/2024"
+date: "28/03/2024"
 output:
   html_document: default
   pdf_document: default
@@ -181,12 +181,13 @@ Screeplot with loadings of principal components.
 ```{r}
 # compute total variance
 variance = pca $sdev^2 / sum(pca $sdev^2)
+PCs <- paste("PC", c(1:4), sep = "")
+pca.df <- data.frame(PCs, variance)
  
 # Scree plot
-qplot(c(1:4), variance) + 
-  geom_line() + 
+ggplot(pca.df, aes(x = PCs, y = variance)) + 
   geom_col(alpha = 0.5) +
-  geom_point(size=4)+
+  geom_point(size = 4)+
   xlab("Principal Component") + 
   ylab("Variance Explained") +
   ggtitle("Scree Plot") +

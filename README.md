@@ -26,5 +26,15 @@ Estimation:
 - estimation_Cunei.Rmd: Estimates quantitative features (entropy, entropy rate, TTR, repetition rate) for each sequence of characters in the Proto-Cuneifrorm data from CDLI. The results are output to results/features/cuneiform_<period>_features.csv.
 - estimations_Comb.Rmd: This code combines the different data frame formats of the individual feature estimations (TeDDi, SignBase, CDLI) into one data frame with common column names for later processing. The combined file is output to results/features/features_combined.csv.
 
+Main Analyses:
+- analyses_featureDistributions.Rmd: Analyses of feature value distributions per type of subcorpus, i.e. modern writing (TeDDi), proto-cuneiform (CDLI), and paleolithic signs (SignBase). This includes density plots for the four features (TTR, entropy rate, unigram entropy, and repetition rate), correlation plots between these features, and a PCA analysis with visualization.
+- analyses_Classification_KNN.Rmd: k-nearest-neighbors classification of sequences into groups (Aurignacien, UrukV-UrukIII, and TeDDi) by using the feature values per sequence. The code outputs classification results (accuracy, F1-score, etc.) as well as actual predicted and observed labels for post hoc analyses. Output files are written to results/classifier/KNN.
+analyses_Classification_MLP.Rmd: Multi-Layer-Perceptron classification of sequences into groups (Aurignacien, UrukV-UrukIII, and TeDDi) by using the feature values per sequence. The code outputs classification results (accuracy, F1-score, etc.) as well as actual predicted and observed labels for post hoc analyses. Output files are written to results/classifier/MLP.
+
+Secondary Analyses:
+
+
+
 References
+
 Bentz, C. (2023). The Zipfian Challenge: Learning the statistical fingerprint of natural languages. In: Proceedings of the 27th Conference on Computational Natural Language Learning (CoNLL 2023). 
