@@ -1,10 +1,10 @@
 ---
 title: "Randomization"
 author: ''
-date: "28/02/2024"
+date: "28/03/2024"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,7 +12,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Description
-This file enables concatenation and randomization of sign strings which occur on different parts of an object (indicated by underscore `_'). We do not know the order of these strings (if any), hence, if we want to combine them, they need to be randomized.
+This file enables concatenation and randomization of sign strings which occur on different parts of a paleolithic object (indicated by underscore `_'). In the case of paleolithic sequences, we do not know the order of these respective strings (if any), hence, if we want to analyse them as one combined sequence, they need to be randomized. Note that this is not applicable to modern day written languages, as the order of strings of characters (e.g. words) is meaningful. Randomization of strings would artificially introduce randomness where order is intended. Arguably, the same holds for proto-cuneiform writing. There are particular orders with which proto-cuneiform signs were imprinted onto a tablet, i.e. a kind of "syntax", cf. the following statement in Englund (1998), p. 79:
+
+"Number sign sequences within discrete notations are, as might be expected, very rigid and follow a definite numerical `syntax’. Within text entries, moreover, the position of numerical notations relative to ideographic notations is fairly rigid."
+
+Again, randomization would destroy this syntax and artificially introduce randomness where order was intended by the scribes.  
+
+## References
+Englund (1998). Texts from the Late Uruk period. In Bauer et al. (Eds.), Späturuk-Zeit und Frühdynastische Zeit.
 
 # Session Info
 Give the session info (reduced).
@@ -58,8 +65,10 @@ for (i in 1:nrow(sign.data)){
 
 # add column with randomized order to data frame
 sign.data$coding_random <- coding.random
+```
 
-# safe to file
+Safe to file.
+```{r}
 write.csv(sign.data, "~/Github/UpperPalCombinatorics/data/signBase/signBase_randomized.csv", row.names = F)
 ```
 

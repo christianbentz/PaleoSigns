@@ -1,10 +1,10 @@
 ---
 title: "Proto-Cuneiform Preprocessing"
 author: ''
-date: "27/02/2024"
+date: "28/03/2024"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,7 +12,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Description
-This file enables preprocessing of cuneiform tablet transliterations, these can be downloaded from CDLI (https://cdli.mpiwg-berlin.mpg.de/search). The extraction of proto-cuneiform sign codings is done with the sign lists provided by CDLI. In their syntax, repetitions of signs are indicated by a number followed by the sign type in parentheses, e.g. 1(N01), 3(N01), 5(N14), etc. This is here expanded to yield individual sign tokens, e.g. N01 N01 N01, etc. We also include signs which are followed by '#' (broken but identifiable signs), but we exclude signs followed by '?' (questionable). 
+This file enables preprocessing of cuneiform tablet transliterations, these can be downloaded from CDLI (https://cdli.mpiwg-berlin.mpg.de/search). The extraction of proto-cuneiform sign codings is done with the sign lists provided by CDLI. In their syntax, repetitions of signs are indicated by a number followed by the sign type in parentheses, e.g. 6(N34) 1(N45) 3(N14) 5(N01), SZE~a (see Figure below). This is here expanded to yield individual sign tokens, e.g. N34 N34 ... N34 N45 N14 N14 N14, etc. We also include signs which are followed by '#' (broken but identifiable signs), but we exclude signs followed by '?' (questionable). We here only consider the periods "Uruk V", "Uruk IV", and "Uruk III", as these are typically seen as the proto-cuneiform periods, i.e. before genuine writing of spoken Sumerian developed. 
+
+```{r foo, out.width="100%", fig.cap="Example of a Proto-Cuneiform tablet and transliteration from the CDLI database. Citation for this entry: “MS 3147/2 Artifact Entry.” 2004. Cuneiform Digital Library Initiative (CDLI). December 15, 2004. https://cdli.ucla.edu/P252157."}
+knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/tablet.png")
+```
 
 # Session Info
 Give the session info (reduced).
@@ -31,10 +35,10 @@ library(readr)
 ```
 
 # Load Transliteration and Sign List
-Loading transliterations and sign lists from CDLI. Note that different datasets can be loaded by choosing the period as a character string below. 
+Loading transliterations and sign lists from CDLI (locally stored in the github repo under data/CDLI). Note that different datasets have to be loaded by choosing the period as a character string below. 
 ```{r}
 # choose period (UrukIII, UrukIV, UrukV)
-period <- "UrukIII"
+period <- "UrukV"
 
 # transliteration as text file with line breaks 
 translit.file = paste("~/Github/UpperPalCombinatorics/data/CDLI/", 
@@ -44,12 +48,16 @@ textlines <- scan(translit.file, what = "char", quote = "", comment.char = "",
                    encoding = "UTF-8", sep = "\n" , skip = 0)
 # load transliteration as single character string 
 textstring <- read_file(translit.file)
+# give beginning for illustration purposes
+head(textlines)
 # load sign list
 signlist.file = paste("~/Github/UpperPalCombinatorics/data/CDLI/", 
                       paste(period, "/signlist.txt", sep = ""), 
                       sep ="")
 signlist <- scan(signlist.file, what = "char", quote = "", comment.char = "", 
                    encoding = "UTF-8", sep = "\n" , skip = 0)
+# give beginning of signlist
+head(signlist)
 ```
 
 # Process Transliteration
@@ -63,6 +71,8 @@ length(tablet.id)
 tablet.id <- gsub(pattern = "\\&", "", tablet.id)
 # get just the ID
 tablet.id <- substr(tablet.id, 1, 7)
+# give beginning of tablet ID vector
+head(tablet.id)
 ```
 
 Extract and concatenate the transliterations.
@@ -131,7 +141,6 @@ for (i in 1:length(textchunks)){
 }
 # compile final data frame
 cunei.data <- data.frame(tablet.id, signs.orig.vec, signs.expand.vec)
-# head(cunei.data)
 ```
 
 Remove rows with empty sign codings
@@ -139,16 +148,15 @@ Remove rows with empty sign codings
 cunei.data <- cunei.data[-which(cunei.data$signs.orig.vec == ""), ]
 ```
 
-Add number of cuneiform signs per tablet.
+Select those with at least a given number of cuneiform signs. Note that sign transliterations have typically more than three UTF-8 characters per sign.
 ```{r}
-cunei.data$num.char <- lengths(strsplit(cunei.data$signs.expand.vec, " "))
+cunei.data <- cunei.data[nchar(cunei.data$signs.expand.vec) > 3, ]
 ```
 
-Select those with at least a given number of cuneiform signs.
+Give head of final data frame for illustration purposes.
 ```{r}
-cunei.data <- cunei.data[cunei.data$num.char > 1, ]
+head(cunei.data)
 ```
-
 
 Safe to file.
 ```{r}

@@ -1,24 +1,30 @@
 # UpperPalCombinatorics
 
-This repository contains data and code to work on the statistical properties of Upper Paleolithic geometric signs.
+This repository contains data and code to work on the statistical properties of Upper Paleolithic geometric signs of the Swabian Aurignacian.
 
 ## Data
 
 - signBase: Codings for geometric signs on Upper Paleolithic objects are given as csv file in data/signBase/.
-- nalafi: Comparative sample of diverse languages and other symbol systems are given in data/nalafi_signs/.
+- TeDDi: Comparative sample of diverse languages and other symbol systems are given in data/TeDDi/.
+- Proto-Cuneiform: Samples of transliterated sign strings of proto-cuneiform periods is given in data/CDLI/.
 
 ## Code
 
 The code should be run in the following order:
 
 Preprocessing:
-- preprocessing.Rmd: Removal of empty lines (without sign codings) from the original files, as well as removal of special characters and non-discrete strings. This outputs a file with cleaned codings. 
+- preprocess_TeDDi.Rmd: preprocessing of the TeDDi sample lines with raw text. This outputs a predefined number of randomly sampled TeDDi raw text lines to data/TeDDi/final_sample.csv.
+- preprocess_SignBase.Rmd: preprocessing of sign sequences from www.signbase.org. The clean sequences are output to data/signBase/signBase_clean.csv.
+- preprocess_Cunei.Rmd: preprocessing of sign sequences from CDLI. This code needs to be run separately for each proto-cuneiform period. The clean sequences are output for example to data/CDLI/UrukV/signs_clean.csv. 
 
 Randomization:
-- randomization.Rmd: Provides code for randomizing sign strings found on objects.
+- randomization.Rmd: Provides code for randomizing sign strings found on paleolithic objects. As discussed in the file, this does not apply to modern writing and proto-cuneiform writing. The randomized output is added to the original file with cleaned sign codings as a separate column, and then safed under data/signBase/signBase_randomized.csv. 
 
 Estimation:
-- estimations.Rmd: Estimates quantitative features (entropy, entropy rate, TTR, repetition rate) for each sequence of signs provided as output by the preprocessing and randomization files above. The output is a csv file with these feature values per sample of sign sequences (one in each row).
+- estimation_TeDDi.Rmd: Estimates quantitative features (entropy, entropy rate, TTR, repetition rate) for each sequence of characters in the TeDDi lines sample. The results are output to results/features/teddi_features.csv.
+- estimation_SignBase.Rmd: Estimates quantitative features (entropy, entropy rate, TTR, repetition rate) for each sequence of characters in the SignBase data. The results are output to results/features/signBase_features.csv.
+- estimation_Cunei.Rmd: Estimates quantitative features (entropy, entropy rate, TTR, repetition rate) for each sequence of characters in the Proto-Cuneifrorm data from CDLI. The results are output to results/features/cuneiform_<period>_features.csv.
+- estimations_Comb.Rmd: This code combines the different data frame formats of the individual feature estimations (TeDDi, SignBase, CDLI) into one data frame with common column names for later processing. The combined file is output to results/features/features_combined.csv.
 
 References
 Bentz, C. (2023). The Zipfian Challenge: Learning the statistical fingerprint of natural languages. In: Proceedings of the 27th Conference on Computational Natural Language Learning (CoNLL 2023). 

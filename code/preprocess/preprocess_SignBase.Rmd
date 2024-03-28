@@ -1,10 +1,10 @@
 ---
 title: "Preprocessing for SignBase Sequences"
 author: ''
-date: "19/2/2024"
+date: "28/03/2024"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Description
-This file enables preprocessing of upper-paleolithic sign sequences as published at https://www.signbase.org. The csv file with latest objects and sign codings can be downloaded from there.
+This file enables preprocessing of Upper-Paleolithic sign sequences as published at https://www.signbase.org. The csv file with latest objects and sign codings can be downloaded from there. The file used for the analyses here is also given in the github repo under data/signBase/.
 
 # Session Info
 Give the session info (reduced).
@@ -41,7 +41,7 @@ sign.data <- subset(sign.data, select = -c(id, comments, short_description, refe
 sign.data <- sign.data[!sign.data$sign_coding == "", ]
 ```
 
-Remove UTF8 characters which do not represent actual signs on the objects, i.e "punctuation".
+Remove UTF-8 characters which do not represent actual signs on the objects, i.e annotations. A table with these distinctions is also provided at www.signbase.org. 
 ```{r}
 # remove some special characters 
 coding.clean <- gsub('[!?]', '', sign.data$sign_coding)

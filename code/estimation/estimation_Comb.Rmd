@@ -1,10 +1,10 @@
 ---
 title: "Estimations Combined"
 author: ""
-date: "2/28/2024"
+date: "28/03/2024"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,12 +12,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Description
-This code loads and combines the different feature value estimations (natural language writing, paleolithic signs, and proto-cuneiform) into one csv file.
+This code loads and combines the different feature value estimations (natural language writing, paleolithic signs, and proto-cuneiform) into one csv file. For example, the different names for sign sequences (e.g. "text", "sign.expand.vec") are now under one column "sequence".
 
 ## Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
 ```{r}
-#library(stringr)
 library(dplyr)
 ```
 

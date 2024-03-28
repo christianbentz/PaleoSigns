@@ -1,20 +1,25 @@
 ---
-title: "Estimations of Quantitative Features for TeDDi sample"
+title: "Estimations of Quantitative Features for TeDDi Sample"
 author: ""
-date: "23/02/2024"
+date: "28/03/2024"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Description
-This file contains the code for estimating the feature values (TTR, unigram entropy, entropy rate, repetition rate) per character sequence in TeDDi sample lines.
+# Description
+This file contains the code for estimating the feature values (TTR, unigram entropy, entropy rate, repetition rate) per character sequence in TeDDi sample lines. These features where tested on a wider sample of linguistic and non-linguistic sign sequences in Bentz (2023). The repetition measure was tested also in Sproat (2014). 
 
-## Load libraries
+## References
+Bentz, C. (2023). The Zipfian Challenge: Learning the statistical fingerprint of natural languages. In Proceedings of the 27th Conference on Computational Natural Language Learning (CoNLL), pp. 27-37.
+
+Sproat, R. (2014). A statistical comparison of written language and nonlinguistic symbol systems. Language, 457-481.
+
+# Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2"). For the Hrate package this is different, since it comes from github. The devtools library needs to be installed, and then the install_github() function is used.
 ```{r}
 library(stringr)
@@ -62,8 +67,7 @@ for (i in 1:nrow(teddi.clean)){
   chars <- PreprocessText(chars)
   
   # unigram entropy estimation
-  # calculate unigram entropy for characters (note that this is the same
-  # for random ordering of chracter strings)
+  # calculate unigram entropy for characters
   chars.df <- as.data.frame(table(chars))
   # print(chars.df)
   huni.chars <- entropy(chars.df$Freq, method = "ML", unit = "log2")
@@ -80,12 +84,10 @@ for (i in 1:nrow(teddi.clean)){
     hrate.chars = "NA"
   }
   
-  # calculate type-token ratio (ttr) 
-  # note that this is the same for random ordering of strings
+  # calculate type-token ratio (TTR)
   ttr.chars <- nrow(chars.df)/sum(chars.df$Freq)
   
   # calculate repetition measure according to Sproat (2014)
-  # note that this is the same for random ordering of strings
   # the maximum number of adjacent repetitions "R" possible is the sum of frequency counts minus 1. 
   R <- sum(chars.df$Freq)-1 
   # calculate the number of adjacent repetitions "r"
@@ -115,7 +117,6 @@ counter <- counter + 1
 }
 end_time <- Sys.time()
 end_time - start_time
-#estimations.df
 ```
 
 Merge estimations with original file
@@ -123,7 +124,15 @@ Merge estimations with original file
 teddi.clean.est <- merge(teddi.clean, estimations.df, by = "id")
 ```
 
+Give head of estimation data frame (selected columns) for visual checking of the output data structure.
+```{r}
+head(teddi.clean.est[c("id", "text", "language_name_wals", "num.char", "huni.chars", 
+                       "hrate.chars", "ttr.chars", "rm.chars")])
+```
+
 Safe outputs to file.
 ```{r}
 write.csv(teddi.clean.est, "~/Github/UpperPalCombinatorics/results/features/teddi_features.csv", row.names = F)
 ```
+
+

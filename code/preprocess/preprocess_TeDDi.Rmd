@@ -1,10 +1,10 @@
 ---
 title: "Preprocessing TeDDi Sample"
-author: "Chris Bentz"
-date: "2/26/2024"
+author: ""
+date: "28/03/2024"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -17,7 +17,7 @@ This file enables preprocessing of the TeDDi sample natural language text materi
 head -1 line.csv > line_sample.csv
 perl -ne 'print if (rand() < .01)' line.csv >> line_sample.csv
 
-This randomly samples 10% of the overall around 20 million text lines.
+This randomly samples 10% of the overall around 20 million text lines. This downsampling is necessary, since otherwise loading the data into R for further processing is not feasible.
 
 # Session Info
 Give the session info (reduced).
@@ -61,11 +61,11 @@ teddi.clean <- teddi.sample[nchar(teddi.sample$text) > 1, ]
 Some simple stats of the textual data here sampled from TeDDi.
 ```{r}
 # lines of text
-nrow(teddi.sample)
+nrow(teddi.clean)
 # unique ISO codes (i.e. languages)
-unique(teddi.sample$iso639_3)
+unique(teddi.clean$iso639_3)
 # writing systems
-unique(teddi.sample$writing_system)
+unique(teddi.clean$writing_system)
 ```
 
 Write to file.

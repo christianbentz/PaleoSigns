@@ -1,10 +1,10 @@
 ---
 title: "Estimations of Quantitative Features for SignBase Objects"
 author: ""
-date: "23/02/2024"
+date: "28/03/2024"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,7 +12,12 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## Description
-This file contains the code for estimating the feature values (TTR, unigram entropy, entropy rate, repetition rate) per sign sequence on objects.
+This file contains the code for estimating the feature values (TTR, unigram entropy, entropy rate, repetition rate) per sign sequence on paleolithic objects from the Swabian Aurignacian. These features where tested on a wider sample of linguistic and non-linguistic sign sequences in Bentz (2023). The repetition measure was tested also in Sproat (2014). 
+
+## References
+Bentz, C. (2023). The Zipfian Challenge: Learning the statistical fingerprint of natural languages. In Proceedings of the 27th Conference on Computational Natural Language Learning (CoNLL), pp. 27-37.
+
+Sproat, R. (2014). A statistical comparison of written language and nonlinguistic symbol systems. Language, 457-481.
 
 ## Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2"). For the Hrate package this is different, since it comes from github. The devtools library needs to be installed, and then the install_github() function is used.
@@ -55,6 +60,8 @@ for (i in 1:nrow(sign.data)){
   coding.sample.random <- as.character(sign.data$coding_random[i])
   
   # remove underscores
+  # note: underscores will impact the feature values as they occur very often
+  # arguably, leaving underscores in will artificially decrease the unigram entropy, for example.
   coding.sample <- gsub(" _ ", " ", coding.sample, fixed = T)
   coding.sample.random <- gsub(" _ ", " ", coding.sample.random, fixed = T)
   
@@ -134,9 +141,15 @@ end_time - start_time
 #estimations.df
 ```
 
-Merge estimations with original file
+Merge estimations with original file.
 ```{r}
 sign.data.est <- merge(sign.data, estimations.df, by = "object_id")
+```
+
+Give head of estimation data frame (selected columns) for visual checking of the output data structure. Note that "coding_clean" gives the sequences with underscores.
+```{r}
+head(sign.data.est[c("object_id", "coding_clean", "num.char", "huni.chars", 
+                       "hrate.chars", "ttr.chars", "rm.chars")])
 ```
 
 Safe outputs to file.

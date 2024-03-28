@@ -90,16 +90,11 @@ Get subset of data points to plot labels.
 # how many data points with a given sequence length?
 table(estimations.df.selected$num.char)
 
-# choose subset of data points for labelling
-labels.df <- estimations.df.selected[estimations.df.selected$num.char > 11 &
-                                       estimations.df.selected$num.char < 13 &
+# choose subset of data points for labeling
+labels.df <- estimations.df.selected[estimations.df.selected$num.char > 9 &
+                                       estimations.df.selected$num.char < 11 &
                                        estimations.df.selected$subcorpus != "Cuneiform (Uruk IV)" &
-                                       estimations.df.selected$subcorpus != "Cuneiform (Uruk III)",] 
-
-random.numbers <- sample(1:nrow(estimations.df.selected), 1000)
-labels.df <- estimations.df.selected[random.numbers, ]
-labels.df <- labels.df[labels.df$num.char > 4 &
-                       labels.df$num.char < 6, ]
+                                       estimations.df.selected$subcorpus != "Cuneiform (Uruk III)", ]
 ```
 
 ## Entropy rate vs. unigram entropy

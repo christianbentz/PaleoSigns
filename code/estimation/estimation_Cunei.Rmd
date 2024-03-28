@@ -1,20 +1,26 @@
 ---
 title: "Estimations of Quantitative Features for Cuneiform Tablets"
 author: ""
-date: "27/02/2024"
+date: "28/03/2024"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Description
-This file contains the code for estimating the feature values (TTR, unigram entropy, entropy rate, repetition rate) per sign sequence on cuneiform tablets from CDLI.
+# Description
+This file contains the code for estimating the feature values (TTR, unigram entropy, entropy rate, repetition rate) per sign sequence on proto-cuneiform tablets from CDLI. These features where tested on a wider sample of linguistic and non-linguistic sign sequences in Bentz (2023). The repetition measure was tested also in Sproat (2014). 
 
-## Load libraries
+## References
+Bentz, C. (2023). The Zipfian Challenge: Learning the statistical fingerprint of natural languages. In Proceedings of the 27th Conference on Computational Natural Language Learning (CoNLL), pp. 27-37.
+
+Sproat, R. (2014). A statistical comparison of written language and nonlinguistic symbol systems. Language, 457-481.
+
+
+# Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2"). For the Hrate package this is different, since it comes from github. The devtools library needs to be installed, and then the install_github() function is used.
 ```{r}
 library(stringr)
@@ -26,7 +32,7 @@ library(Hrate)
 ```
 
 # Load files
-Load the files with the cleaned sequences.
+Load the files with the cleaned sequences. A period needs to be chosen here. Hence, the code needs to be run for periods separately.
 ```{r}
 # choose period (UrukIII, UrukIV, UrukV)
 period <- "UrukV"
@@ -43,8 +49,9 @@ Estimations of quantitative features for the cuneiform data from CDLI.
 # set counter
 counter = 0
 # initialize dataframe to append results to
-estimations.df <- data.frame(tablet.id = character(0), huni.chars = numeric (0), 
-                             hrate.chars = numeric(0), ttr.chars = numeric(0), 
+estimations.df <- data.frame(tablet.id = character(0), num.char = numeric(0),
+                             huni.chars = numeric (0), hrate.chars = numeric(0), 
+                             ttr.chars = numeric(0), 
                              rm.chars = numeric(0)) 
 
 # start time
@@ -58,10 +65,15 @@ for (i in 1:nrow(cunei.data)){
   coding.sample <- as.character(cunei.data$signs.expand.vec[i])
 
   # remove underscores
+  # note: underscores will impact the feature values as they occur very often
+  # arguably, leaving underscores in will artificially decrease the unigram entropy, for example.
   coding.sample <- gsub(" _ ", " ", coding.sample)
   
   # split strings into cuneiform sign types
   chars <- unlist(strsplit(coding.sample, " "))
+  
+  # get number of "characters", i.e. proto-cuneiform signs in this case
+  num.char <- length(chars)
   
   # preprocess the signs with bag-of-words normalization
   # note: this is an important step! Without it, entropy rate estimation will fail
@@ -69,8 +81,7 @@ for (i in 1:nrow(cunei.data)){
   chars <- PreprocessText(chars)
   
   # unigram entropy estimation
-  # calculate unigram entropy for characters (note that this is the same
-  # for random ordering of chracter strings)
+  # calculate unigram entropy for characters
   chars.df <- as.data.frame(table(chars))
   # print(chars.df)
   huni.chars <- entropy(chars.df$Freq, method = "ML", unit = "log2")
@@ -86,12 +97,10 @@ for (i in 1:nrow(cunei.data)){
   } else {
     hrate.chars = "NA"
   }
-  # calculate type-token ratio (ttr) 
-  # note that this is the same for random ordering of strings
+  # calculate type-token ratio (TTR) 
   ttr.chars <- nrow(chars.df)/sum(chars.df$Freq)
   
   # calculate repetition measure according to Sproat (2014)
-  # note that this is the same for random ordering of strings
   # the maximum number of adjacent repetitions "R" possible is the sum of frequency counts minus 1. 
   R <- sum(chars.df$Freq)-1 
   # calculate the number of adjacent repetitions "r"
@@ -111,7 +120,7 @@ for (i in 1:nrow(cunei.data)){
   }
   
   # append results to dataframe
-  local.df <- data.frame(tablet.id, huni.chars, hrate.chars,
+  local.df <- data.frame(tablet.id, num.char, huni.chars, hrate.chars,
                          ttr.chars, rm.chars)
   estimations.df <- rbind(estimations.df, local.df)
 }) # end of try()
@@ -121,12 +130,17 @@ counter <- counter + 1
 }
 end_time <- Sys.time()
 end_time - start_time
-#estimations.df
 ```
 
 Merge estimations with original file
 ```{r}
 cunei.data.est <- merge(cunei.data, estimations.df, by = "tablet.id")
+```
+
+Give head of estimation data frame (selected columns) for visual checking of the output data structure.
+```{r}
+head(cunei.data.est[c("tablet.id", "signs.orig.vec", "num.char", "huni.chars", 
+                       "hrate.chars", "ttr.chars", "rm.chars")])
 ```
 
 Safe outputs to file.
