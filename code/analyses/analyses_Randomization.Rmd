@@ -1,15 +1,18 @@
 ---
-title: "Analyses Randomization"
-author: "Chris Bentz"
+title: "Randomization Analyses"
+author: ""
 date: "2/27/2024"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# Description
+This file provides code to estimate to what extend randomized sign sequences deviate from the original sequences given in SignBase in terms of the quantitative features. This is necessary since the order of strings into sequences (strings are delimited by underscore in SignBase) is arbitrary. Note that randomization does only affect the entropy rate calculated over the sign characters in sequences. All the other measures (TTR, unigram entropy, repetition measure) yield the same values for randomized sequences.  
 
 ## Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
@@ -31,8 +34,8 @@ sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
 
 # Plot
 
-## Entropy rate vs. Unigram entropy 
-Entropy rate vs. unigram entropy for the original versus randomized sequences.
+## Entropy rate 
+Entropy rate for the original versus randomized sequences (i.e. strings of sign characters where randomized).
 ```{r, fig.width = 6, fig.height = 6, warning = FALSE}
 hrate.random.plot <- ggplot(sign.data, aes(x = hrate.chars, y =  hrate.chars.random, 
                                     size = num.char)) + 

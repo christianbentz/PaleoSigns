@@ -8,8 +8,10 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+# Description
+This file enables post-hoc analyses of the performance values (accuracy, F1-scores) of the KNN and MLP classifications. It provides density distributions for the performance metrics. 
 
-## Load libraries
+# Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
 ```{r}
 library(ggplot2)
@@ -70,7 +72,7 @@ head(performance.mlp.combined)
 ### F1 Distributions 
 Distributions of F1-scores by comparison.
 ```{r}
-f1.plot <- ggplot(performance.mlp.combined, aes(x = jitter(f1, amount = 0.05), 
+f1.plot <- ggplot(performance.mlp.combined, aes(x = jitter(f1, amount = 0.01), 
                                             y = fct_reorder(comparison, f1),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -86,8 +88,8 @@ f1.plot
 ## Accuracy Distributions 
 Distributions of accuracies by comparison.
 ```{r}
-accuracy.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy, amount = 0.05), 
-                                            y = fct_reorder(comparison, f1),
+accuracy.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy, amount = 0.01), 
+                                            y = fct_reorder(comparison, accuracy),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
                                quantile_lines = T, quantiles = 2) +
@@ -96,9 +98,7 @@ accuracy.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy, amoun
   geom_point(shape = 124, size = 5, aes(x = baseline, y = comparison), color = "red") +
   xlab("Accuracy") +
   ylab("Comparison") +
-  theme(legend.position = "none",
-        axis.title.y = element_blank(),
-        axis.text.y = element_blank())
+  theme(legend.position = "none")
 accuracy.plot
 ```
 
@@ -106,8 +106,8 @@ accuracy.plot
 Distributions of p-values by comparison.
 ```{r}
 # create plot
-pvalue.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy.pvalue.corrected, amount = 0.05), 
-                                            y = fct_reorder(comparison, f1))) + 
+pvalue.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy.pvalue.corrected, amount = 0.01), 
+                                            y = fct_reorder(comparison, accuracy))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
                                quantile_lines = T, quantiles = 2) +
   scale_fill_viridis_c(name = "p-values", option = "D") +
@@ -124,7 +124,7 @@ pvalue.plot
 
 ## Combine Plots
 ```{r}
-combined.plot <- grid.arrange(f1.plot, accuracy.plot, pvalue.plot, ncol = 3, widths = c(1.2, 0.8, 0.8))
+combined.plot <- grid.arrange(accuracy.plot, pvalue.plot, ncol = 2, widths = c(1.2, 0.8))
 ```
 
 Safe to file.
@@ -178,7 +178,7 @@ head(performance.knn.combined)
 ### F1 Distributions 
 Distributions of F1-scores by comparison.
 ```{r}
-f1.plot <- ggplot(performance.knn.combined, aes(x = jitter(f1, amount = 0.05), 
+f1.plot <- ggplot(performance.knn.combined, aes(x = jitter(f1, amount = 0.01), 
                                             y = fct_reorder(comparison, f1),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -194,7 +194,7 @@ f1.plot
 ## Accuracy Distributions 
 Distributions of accuracies by comparison.
 ```{r}
-accuracy.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy, amount = 0.05), 
+accuracy.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy, amount = 0.01), 
                                             y = fct_reorder(comparison, f1),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -204,9 +204,7 @@ accuracy.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy, amoun
   geom_point(shape = 124, size = 5, aes(x = baseline, y = comparison), color = "red") +
   xlab("Accuracy") +
   ylab("Comparison") +
-  theme(legend.position = "none",
-        axis.title.y = element_blank(),
-        axis.text.y = element_blank())
+  theme(legend.position = "none")
 accuracy.plot
 ```
 
@@ -214,8 +212,8 @@ accuracy.plot
 Distributions of p-values by comparison.
 ```{r}
 # create plot
-pvalue.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy.pvalue.corrected, amount = 0.05), 
-                                            y = fct_reorder(comparison, f1))) + 
+pvalue.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy.pvalue.corrected, amount = 0.01), 
+                                            y = fct_reorder(comparison, accuracy))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
                                quantile_lines = T, quantiles = 2) +
   scale_fill_viridis_c(name = "p-values", option = "D") +
@@ -232,7 +230,7 @@ pvalue.plot
 
 ## Combine Plots
 ```{r}
-combined.plot <- grid.arrange(f1.plot, accuracy.plot, pvalue.plot, ncol = 3, widths = c(1.2, 0.8, 0.8))
+combined.plot <- grid.arrange(accuracy.plot, pvalue.plot, ncol = 2, widths = c(1.2, 0.8))
 ```
 
 Safe to file.

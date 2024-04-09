@@ -1,8 +1,10 @@
 ---
 title: "Stabilization Analyses"
-author: ""
+author: ''
 date: "12/03/2024"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include=FALSE}
@@ -177,7 +179,7 @@ for (i in 1:nrow(data.combined))
   }
   # counter
   counter <- counter + 1
-  print(counter)
+  #print(counter)
   })
 }
 end_time <- Sys.time()
@@ -190,7 +192,7 @@ head(stabilization.df)
 ## Unigram entropy characters
 ```{r, fig.width = 20, fig.height = 20, warning = FALSE}
 huni.chars.plot <- ggplot(stabilization.df, aes(x = num.char, y = huni.chars,
-                                                color = subcorpus)) + 
+                                                color = corpus)) + 
   geom_point(alpha = 0.3, size  = 2) +
   geom_smooth() +
   theme(legend.position = "bottom") +

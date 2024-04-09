@@ -19,8 +19,6 @@ library(gridExtra)
 library(ggpubr)
 library(ggridges)
 library(tidyverse)
-# mixed effects
-library(lme4)
 ```
 
 # Load Data
@@ -34,7 +32,7 @@ sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
 # Select Feature
 ```{r}
 # select the statistical feature to look at
-feature.name <- "huni.chars"
+feature.name <- "hrate.chars"
 feature.values <- get(feature.name, sign.data)
 ```
 
@@ -148,16 +146,13 @@ ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_Aurignacian.pdf",
        combined.plot, dpi = 300, width = 16, height = 8, device = cairo_pdf)
 ```
 
-# Mixed-Effects Model
-
-## Maximal model
-According to Barr et al. (2013) it is preferable to fit a "maximal" model, i.e. including all possible random intercepts and slopes.
+# Linear Model
+Fit linear model with feature values as response variable, and meta information (e.g. volume, type of object, etc.) as predictor variables.
 ```{r}
-max.model <- lm(feature.values ~ object_type + material + volume + date + preservation, 
+linear.model <- lm(feature.values ~ object_type + material + volume + date + preservation + site_name, 
                data = sign.data, REML = F)
-summary(max.model)
-AIC(max.model) 
-#isSingular(max.model) 
+summary(linear.model)
+AIC(linear.model) 
 ```
 
 
