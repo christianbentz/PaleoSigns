@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 # Description
-This file enables post-hoc analyses of the performance values (accuracy, F1-scores) of the KNN and MLP classifications. It provides density distributions for the performance metrics. 
+This file enables post-hoc analyses of the performance values (accuracy, F1-scores, p-values) of the KNN and MLP classifications. It provides density distributions for these performance metrics. 
 
 # Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
@@ -105,32 +105,29 @@ accuracy.plot
 ## P-value Distributions 
 Distributions of p-values by comparison.
 ```{r}
+# map p-values to either 0 or 1 with the alpha criterion
+performance.mlp.combined$accuracy.pvalue.corrected <- 
+  ifelse(performance.mlp.combined$accuracy.pvalue.corrected < 0.05, "< 0.05", "> 0.05")
+
 # create plot
-pvalue.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy.pvalue.corrected, amount = 0.01), 
-                                            y = fct_reorder(comparison, accuracy))) + 
-  geom_density_ridges_gradient(scale = 1, color = "white",
-                               quantile_lines = T, quantiles = 2) +
-  scale_fill_viridis_c(name = "p-values", option = "D") +
-  geom_point(shape = 124, alpha = 0.4, size = 1.5) +
-  geom_label(aes(x = rep(0.6, nrow(performance.mlp.combined)), y = comparison, 
-                 label = paste("n =", test.n))) +
-  xlab("p-values") +
-  theme(legend.position = "none",
-        axis.title.y = element_blank(),
-        axis.text.y = element_blank())
-  #geom_density(alpha = 0.5)
+pvalue.plot <- ggplot(performance.mlp.combined, aes(y = fct_reorder(comparison, accuracy), 
+                                                    fill = as.factor(accuracy.pvalue.corrected))) + 
+  geom_bar(position = "fill") +
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank()) +
+  scale_fill_discrete(name = "p-values")
 pvalue.plot
 ```
 
 ## Combine Plots
 ```{r}
-combined.plot <- grid.arrange(accuracy.plot, pvalue.plot, ncol = 2, widths = c(1.2, 0.8))
+combined.plot <- grid.arrange(accuracy.plot, pvalue.plot, ncol = 2, widths = c(2, 1))
 ```
 
 Safe to file.
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot_MLP.pdf", 
-       combined.plot, dpi = 300, width = 15, height = 5, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 10, height = 3, device = cairo_pdf)
 ```
 
 # K-Nearest-Neighbors (KNN)
@@ -195,7 +192,7 @@ f1.plot
 Distributions of accuracies by comparison.
 ```{r}
 accuracy.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy, amount = 0.01), 
-                                            y = fct_reorder(comparison, f1),
+                                            y = fct_reorder(comparison, accuracy),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
                                quantile_lines = T, quantiles = 2) +
