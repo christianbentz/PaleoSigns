@@ -1,13 +1,16 @@
 ---
 title: 'Analyses: Swabian Aurignacian'
 author: ""
-date: "2/28/2024"
+date: "4/11/2024"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# Description
+This file enables analyses of feature values for sequences on Swabian Aurgnacian objects (entropy rate, TTR, repetition rate, unigram entropy) as a function of meta information (object type, volume, cave site, etc.). 
 
 # Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
@@ -19,6 +22,9 @@ library(gridExtra)
 library(ggpubr)
 library(ggridges)
 library(tidyverse)
+library(performance)
+library(see)
+library(MASS)
 ```
 
 # Load Data
@@ -29,17 +35,48 @@ sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/signBase_
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
 ```
 
+# Preprocessing
+Add columns for object volume and dates.
+```{r}
+# volume in cm^3 (mm multiplications divided by 1000)
+sign.data$volume <- (sign.data$length_mm*sign.data$width_mm*sign.data$depth)/1000
+sign.data$date <- as.numeric(substr(sign.data$date_bp_min, 1, 5)) 
+```
+
+# Collapse Factors
+Collapse some factors of meta information which are uncommon and/or related. Note that using the factor levels as is will lead to problems with model fitting, since there are sometimes very few data points per level.
+```{r}
+# material
+table(sign.data$material)
+# object_type
+table(sign.data$object_type)
+
+# material: collapse manually
+sign.data$material <- fct_collapse(sign.data$material,
+             ivory = "ivory",
+             antler = "antler",
+             bone = "bone",
+             other_level = "other")
+
+# object_type: collapse manually
+sign.data$object_type <- fct_collapse(sign.data$object_type,
+             figurine_anthropomorph = c("figurine anthropomorph",
+                          "plaquette"), 
+             # note: the "plaquette" is the so-called Adorant with an anthropomorph figure on it.
+             figurine_zoomorph = c("figurine zoomorph"),
+             tool = c("antler object", "awl", "bâton percé",
+                      "rod/bâton", "spatula/lissoir"),
+             tube_flute = c("flute", "tube", "possible flute", "tube/flute"),
+             personal_ornament = c("personal ornament"),
+             other_level = "other")
+```
+
+
 # Select Feature
 ```{r}
 # select the statistical feature to look at
 feature.name <- "hrate.chars"
 feature.values <- get(feature.name, sign.data)
-```
-
-Add columns for object volume and dates.
-```{r}
-sign.data$volume <- (sign.data$length_mm*sign.data$width_mm*sign.data$depth)/1000
-sign.data$date <- as.numeric(substr(sign.data$date_bp_min, 1, 5)) 
 ```
 
 # Properties of Objects
@@ -109,11 +146,11 @@ preservation.plot
 ```
 
 ## Volume of Object
-```{r}
+```{r, warning = F}
 # create plot
 volume.plot <- ggplot(sign.data, aes(x = feature.values, y = volume)) +
   geom_point(alpha = 0.5, size = 2) +
-  #geom_label_repel(aes(label = object_type)) +
+  geom_label_repel(aes(label = object_type)) +
   geom_smooth(method = "lm") +
   xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
   ylab("Volume (cm^3)")
@@ -134,7 +171,7 @@ date.plot
 
 ## Figures Combined
 Combine figures.
-```{r, fig.width = 16, fig.height = 8}
+```{r, fig.width = 16, fig.height = 8, warning = F, message = F}
 combined.plot <- grid.arrange(objectType.plot, material.plot, site.plot,
                               preservation.plot, volume.plot,
                               date.plot, ncol = 3)
@@ -146,13 +183,40 @@ ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_Aurignacian.pdf",
        combined.plot, dpi = 300, width = 16, height = 8, device = cairo_pdf)
 ```
 
-# Linear Model
-Fit linear model with feature values as response variable, and meta information (e.g. volume, type of object, etc.) as predictor variables.
+# Linear Models
+We here fit a linear model with feature values (e.g. entropy rates) as response variable, and meta information (e.g. volume, type of object, material etc.) as predictor variables. Some of the predictors are numerical (e.g. volume) while others are categorical (e.g. material, object_type). Arguably, a linear multiple regression model is appropriate since each object and its respective sequence of signs can be seen as an independent data point. Of course, it is theoretically possible, though very unlikely, that the same paleolithic person has produced a subset of the objects. However, there is no way of knowing this with certainty. Hence, there is no clear evidence for "repeated measures" as in controlled experiments with humans (with subjects and items, cf. Baayen, 2014) -- which would require a mixed-effects structure. 
+
 ```{r}
+# model with object type as predictor
 linear.model <- lm(feature.values ~ object_type + material + volume + date + preservation + site_name, 
-               data = sign.data, REML = F)
+               data = sign.data)
+```
+
+## Model Summaries
+```{r}
 summary(linear.model)
 AIC(linear.model) 
 ```
+
+Interpretation: In the model summary above, the reference level for object_type is "tool". Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average c. 0.4 bits/sign *higher* than the once found on objects classified as tools. A similar effect occurs for zoomorph figurines which carry c. 0.3 bits/sign more information than tools. Inversely, entropy rates of sequences on tubes and flutes are c. 0.2 bits/sign *lower* than on tools, and those on personal ornaments c. 0.3 bits/sign lower. All of these differences are significant at the p < 0.05 level. Moreover, there is a small but significant positive effect of the volume of an object on the entropy rate, namely, it increases by c. 0.004 bits/sign with each cubic centimeter of volume. Lastly, the objects from Hohlenstein-Stadel cave have a higher average entropy rate (c. 0.9 bits/sign) than the once from Geissenklösterle (reference level). However, there are only two objects from Hohlenstein-Stadel -- one of them being the famous "lion-human".    
+
+\newpage
+
+## Checking of Model Assumptions
+```{r, fig.height = 10, fig.width = 10}
+check_model(linear.model)
+```
+
+## Shapiro-Wilk Test for Normality of Residuals
+```{r}
+shapiro.test(rstandard(linear.model))
+```
+
+Interpretation: There is a slight deviation from linearity and homogeneity of variance for the residuals (first two panels above), though this is due to just one or two data points deviating for the highest fitted values. There are no overly influential observations, and no collinearity between predictors (middle panels above). There is a slight positive skew visible in the distribution of the residuals, cf. the last two panels. However, the Shapiro-Wilk test for normality gives a p-value > 0.05, meaning that the distribution does not significantly deviate from the expectation of a normal distribution (null hypothesis).
+
+# References
+Baayen, R. H. (2008). Analyzing Linguistic Data. A Practical Introduction to Statistics Using R. Cambridge: Cambridge University Press.
+
+Baayen, H. (2014). Multivariate Statistics. In: Podesva, R. J. & Sharma, D. (eds.), Research methods in linguistics. Cambridge: Cambridge University Press, p. 337-373.
 
 
