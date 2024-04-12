@@ -60,11 +60,11 @@ sign.data$material <- fct_collapse(sign.data$material,
 
 # object_type: collapse manually
 sign.data$object_type <- fct_collapse(sign.data$object_type,
-             figurine_anthropomorph = c("figurine anthropomorph",
+             figurine_anthropomorph = c("figurine anthropomorph", "figurine anthropomoph",
                           "plaquette"), 
              # note: the "plaquette" is the so-called Adorant with an anthropomorph figure on it.
              figurine_zoomorph = c("figurine zoomorph"),
-             tool = c("antler object", "awl", "bâton percé",
+             tool = c("awl", "bâton percé",
                       "rod/bâton", "spatula/lissoir"),
              tube_flute = c("flute", "tube", "possible flute", "tube/flute"),
              personal_ornament = c("personal ornament"),
@@ -75,7 +75,7 @@ sign.data$object_type <- fct_collapse(sign.data$object_type,
 # Select Feature
 ```{r}
 # select the statistical feature to look at
-feature.name <- "hrate.chars"
+feature.name <- "num.char"
 feature.values <- get(feature.name, sign.data)
 ```
 

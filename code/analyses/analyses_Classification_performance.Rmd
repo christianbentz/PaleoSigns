@@ -1,15 +1,83 @@
 ---
 title: 'Analyses: Classification Performance'
-author: ""
+author: ''
 date: "3/1/2024"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 # Description
-This file enables post-hoc analyses of the performance values (accuracy, F1-scores, p-values) of the KNN and MLP classifications. It provides density distributions for these performance metrics. 
+This file enables post-hoc analyses of the performance values (F1-scores, accuracies, p-values) of the KNN and MLP classifications. It provides density distributions for these performance metrics.
+
+Note: The metrics are derived by using the confusionMatrix() function of the caret package. See the code files in analyses_Classification_KNN.Rmd and analyses_Classification_MLP.Rmd for the actual implementation. In the case of a two class classification problem (e.g. Aurignacien vs. Uruk V), a confusion matrix might look as in the example below.
+
+```{r foo, out.width="25%", fig.cap="Table. Confusion matrix as given in the confusionMatrix() documentation."}
+knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/confusionMatrix.png")
+```
+
+The accuracy is then calculated as  
+
+\begin{equation}
+accuracy = \frac{A + D}{A + D + B + C}.
+\end{equation}
+
+The function also provides the so-called "no information rate" baseline, which corresponds to the accuracy achieved by simply always choosing the most frequent class label in the test set. For example, for the classification of Aurignacien vs. Uruk V Proto-Cuneiform, there are 96 sequences overall, of which 60 are Aurignacien sequences, and 36 are Uruk V Proto-Cuneiform sequences (examples of predictions of the last model run with the observed values are given in the folder results/classifier/MLP/predictions). Thus, the baseline in this case is 
+
+\begin{equation}
+accuracy.baseline = \frac{60}{96} = 0.625.
+\end{equation}
+
+Note that this baseline is marked with a red vertical line in the accuracy plots given below. Moreover, the confusionMatrix() function provides a p-value for a one-sided binomial test (via binom.test) for whether the actual accuracy value of the model is significantly higher than the baseline (cf. Kuhn, 2008, p. 15). Assuming a binomial distribution for random draws of two outcomes (e.g. 0 and 1 typically, or class labels UrukV and Aurignacien in our case) we have the null hypothesis and alternative hypotesis given as
+
+\begin{equation}
+H_0: p = p_0
+\end{equation}
+
+and 
+
+\begin{equation}
+H_1: p > p_0
+\end{equation}
+
+respectively (cf. Hollander et al., 2013, pp. 11). Where $p_0$ in our case represents the "no information rate" baseline, and p is the probability (in this case relative frequency) with which a given model identifies the correct class label. In the example given earlier, we have 96 sequences, i.e. $n = 96$ trials of classification. The expected value (mean) of successes (here termed $B$) under the null hypothesis ($p_0 = 0.625$) is
+
+\begin{equation}
+E_{p0}(B) = n\times p_0 = 96 \times 0.625 = 60, 
+\end{equation}
+
+and the variance is 
+
+\begin{equation}
+\sigma^2_{p0}(B) = n \times p_0(1-p_0) = 96 \times 0.625 \times 0.375 = 22.5.
+\end{equation}
+
+The standardized version of B is then
+
+\begin{equation}
+B^* = \frac{B - E_{p0}(B)}{\sqrt{\sigma^2_{p0}(B)}}.
+\end{equation}
+
+Under $H_0$ the standardized $B^*$ is assumed to follow a normal binomial distribution $\mathcal{N}(0,1)$. We can then identify a z-score given an $\alpha$-level of our choice, which the actual $B^*$ we calculate from the data would have to surpass to reject $H_0$. With the common $\alpha = 0.05$, we have $z_{\alpha} = 1.645$.
+
+As a worked example, in one of the runs of an MLP architecture classifying Aurignacien and Uruk V sequences the success rate of was 75. In this case we would have:
+
+\begin{equation}
+B^* = \frac{B - E_{p0}(B)}{\sqrt{\sigma^2_{p0}(B)}} = \frac{75 - 60}{\sqrt{22.5}} = 3.16
+\end{equation}
+
+Hence, $B^* > z_{\alpha}$, and we would reject $H_0$, meaning that the MLP classification is significantly better than the "no information rate" baseline. The model has learned (from the training set) to distinguish between these sequences, and is better than a method which would simply choose the most frequent label in the test set. 
+
+
+# References
+
+Hollander, M., Wolfe, D. A., & Chicken, E. (2013). Nonparametric statistical methods. John Wiley & Sons.
+
+Kuhn, M. (2008). Building predictive models in R using the caret package. Journal of statistical software, 28, 1-26.
+
 
 # Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
@@ -20,6 +88,7 @@ library(gridExtra)
 library(ggpubr)
 library(ggridges)
 library(tidyverse)
+library(data.table)
 ```
 
 # Multi-layer perceptron (MLP)
@@ -67,12 +136,18 @@ for (file in files.mlp.performance){
 head(performance.mlp.combined)
 ```
 
+Select comparisons to further analyse.
+```{r}
+# select only comparisons involving the Aurignacien
+performance.mlp.combined <- performance.mlp.combined[performance.mlp.combined$comparison %like% "Aurignacien", ]
+```
+
 ## Density Plots
 
 ### F1 Distributions 
 Distributions of F1-scores by comparison.
 ```{r}
-f1.plot <- ggplot(performance.mlp.combined, aes(x = jitter(f1, amount = 0.01), 
+f1.plot <- ggplot(performance.mlp.combined, aes(x = jitter(f1, amount = 0), 
                                             y = fct_reorder(comparison, f1),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -88,7 +163,7 @@ f1.plot
 ## Accuracy Distributions 
 Distributions of accuracies by comparison.
 ```{r}
-accuracy.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy, amount = 0.01), 
+accuracy.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy, amount = 0), 
                                             y = fct_reorder(comparison, accuracy),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -105,14 +180,14 @@ accuracy.plot
 ## P-value Distributions 
 Distributions of p-values by comparison.
 ```{r}
-# map p-values to either 0 or 1 with the alpha criterion
+# get split between cases where p < 0.05 and p > 0.05
 performance.mlp.combined$accuracy.pvalue.corrected <- 
   ifelse(performance.mlp.combined$accuracy.pvalue.corrected < 0.05, "< 0.05", "> 0.05")
 
 # create plot
 pvalue.plot <- ggplot(performance.mlp.combined, aes(y = fct_reorder(comparison, accuracy), 
-                                                    fill = as.factor(accuracy.pvalue.corrected))) + 
-  geom_bar(position = "fill") +
+                                                    fill = as.factor(accuracy.pvalue.corrected))) +
+  geom_bar(stat = "count", position = "fill") +
   theme(axis.title.y = element_blank(),
         axis.text.y = element_blank()) +
   scale_fill_discrete(name = "p-values")
@@ -127,7 +202,7 @@ combined.plot <- grid.arrange(accuracy.plot, pvalue.plot, ncol = 2, widths = c(2
 Safe to file.
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot_MLP.pdf", 
-       combined.plot, dpi = 300, width = 10, height = 3, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 10, height = 2, device = cairo_pdf)
 ```
 
 # K-Nearest-Neighbors (KNN)
@@ -170,12 +245,18 @@ for (file in files.knn.performance){
 head(performance.knn.combined)
 ```
 
+Select comparisons to further analyse.
+```{r}
+# select only comparisons involving the Aurignacien
+performance.knn.combined <- performance.knn.combined[performance.knn.combined$comparison %like% "Aurignacien", ]
+```
+
 ## Density Plots
 
 ### F1 Distributions 
 Distributions of F1-scores by comparison.
 ```{r}
-f1.plot <- ggplot(performance.knn.combined, aes(x = jitter(f1, amount = 0.01), 
+f1.plot <- ggplot(performance.knn.combined, aes(x = jitter(f1, amount = 0), 
                                             y = fct_reorder(comparison, f1),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -191,7 +272,7 @@ f1.plot
 ## Accuracy Distributions 
 Distributions of accuracies by comparison.
 ```{r}
-accuracy.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy, amount = 0.01), 
+accuracy.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy, amount = 0), 
                                             y = fct_reorder(comparison, accuracy),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -208,30 +289,27 @@ accuracy.plot
 ## P-value Distributions 
 Distributions of p-values by comparison.
 ```{r}
+# get split between cases where p < 0.05 and p > 0.05
+performance.knn.combined$accuracy.pvalue.corrected <- 
+  ifelse(performance.knn.combined$accuracy.pvalue.corrected < 0.05, "< 0.05", "> 0.05")
+
 # create plot
-pvalue.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy.pvalue.corrected, amount = 0.01), 
-                                            y = fct_reorder(comparison, accuracy))) + 
-  geom_density_ridges_gradient(scale = 1, color = "white",
-                               quantile_lines = T, quantiles = 2) +
-  scale_fill_viridis_c(name = "p-values", option = "D") +
-  geom_point(shape = 124, alpha = 0.4, size = 1.5) +
-  geom_label(aes(x = rep(0.6, nrow(performance.knn.combined)), y = comparison, 
-                 label = paste("n =", test.n))) +
-  xlab("p-values") +
-  theme(legend.position = "none",
-        axis.title.y = element_blank(),
-        axis.text.y = element_blank())
-  #geom_density(alpha = 0.5)
+pvalue.plot <- ggplot(performance.knn.combined, aes(y = fct_reorder(comparison, accuracy), 
+                                                    fill = as.factor(accuracy.pvalue.corrected))) +
+  geom_bar(stat = "count", position = "fill") +
+  theme(axis.title.y = element_blank(),
+        axis.text.y = element_blank()) +
+  scale_fill_discrete(name = "p-values")
 pvalue.plot
 ```
 
 ## Combine Plots
 ```{r}
-combined.plot <- grid.arrange(accuracy.plot, pvalue.plot, ncol = 2, widths = c(1.2, 0.8))
+combined.plot <- grid.arrange(accuracy.plot, pvalue.plot, ncol = 2, widths = c(2, 1))
 ```
 
 Safe to file.
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot_KNN.pdf", 
-       combined.plot, dpi = 300, width = 15, height = 5, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 10, height = 2, device = cairo_pdf)
 ```
