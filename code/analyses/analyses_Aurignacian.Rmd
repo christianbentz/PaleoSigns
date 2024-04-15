@@ -71,11 +71,10 @@ sign.data$object_type <- fct_collapse(sign.data$object_type,
              other_level = "other")
 ```
 
-
 # Select Feature
 ```{r}
 # select the statistical feature to look at
-feature.name <- "num.char"
+feature.name <- "hrate.chars"
 feature.values <- get(feature.name, sign.data)
 ```
 
@@ -198,7 +197,7 @@ summary(linear.model)
 AIC(linear.model) 
 ```
 
-Interpretation: In the model summary above, the reference level for object_type is "tool". Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average c. 0.4 bits/sign *higher* than the once found on objects classified as tools. A similar effect occurs for zoomorph figurines which carry c. 0.3 bits/sign more information than tools. Inversely, entropy rates of sequences on tubes and flutes are c. 0.2 bits/sign *lower* than on tools, and those on personal ornaments c. 0.3 bits/sign lower. All of these differences are significant at the p < 0.05 level. Moreover, there is a small but significant positive effect of the volume of an object on the entropy rate, namely, it increases by c. 0.004 bits/sign with each cubic centimeter of volume. Lastly, the objects from Hohlenstein-Stadel cave have a higher average entropy rate (c. 0.9 bits/sign) than the once from Geissenklösterle (reference level). However, there are only two objects from Hohlenstein-Stadel -- one of them being the famous "lion-human".    
+Interpretation: In the model summary above, the reference level for object_type is "tool". Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average c. 0.32 bits/sign *higher* than the once found on objects classified as tools. A similar effect occurs for zoomorph figurines which carry c. 0.3 bits/sign more information than tools. Inversely, entropy rates of sequences on tubes and flutes are c. 0.21 bits/sign *lower* than on tools, and those on personal ornaments c. 0.28 bits/sign lower. All of these differences are significant at the p < 0.05 level. Moreover, there is a small but significant positive effect of the volume of an object on the entropy rate, namely, it increases by c. 0.004 bits/sign with each cubic centimeter of volume. Lastly, the objects from Hohlenstein-Stadel cave have a higher average entropy rate (c. 0.9 bits/sign) than the once from Geissenklösterle (reference level). However, there are only two objects from Hohlenstein-Stadel -- one of them being the famous "lion-man", another one a personal ornament (pendant).    
 
 \newpage
 
@@ -219,4 +218,4 @@ Baayen, R. H. (2008). Analyzing Linguistic Data. A Practical Introduction to Sta
 
 Baayen, H. (2014). Multivariate Statistics. In: Podesva, R. J. & Sharma, D. (eds.), Research methods in linguistics. Cambridge: Cambridge University Press, p. 337-373.
 
-
+---
