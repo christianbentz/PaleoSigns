@@ -13,7 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 # Description
 This file enables post-hoc analyses of the performance values (F1-scores, accuracies, p-values) of the KNN and MLP classifications. It provides density distributions for these performance metrics.
 
-Note: The metrics are derived by using the confusionMatrix() function of the caret package. See the code files in analyses_Classification_KNN.Rmd and analyses_Classification_MLP.Rmd for the actual implementation. In the case of a two class classification problem (e.g. Aurignacien vs. Uruk V), a confusion matrix might look as in the example below.
+# Preliminaries: Performance Metrics
+The performance metrics are derived by using the confusionMatrix() function of the caret package. See the code files in analyses_Classification_KNN.Rmd and analyses_Classification_MLP.Rmd for the actual implementation. In the case of a two class classification problem (e.g. Aurignacien vs. Uruk V), a confusion matrix might look as in the example below.
 
 ```{r foo, out.width="25%", fig.cap="Table. Confusion matrix as given in the confusionMatrix() documentation."}
 knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/confusionMatrix.png")
@@ -63,7 +64,7 @@ B^* = \frac{B - E_{p0}(B)}{\sqrt{\sigma^2_{p0}(B)}}.
 
 Under $H_0$ the standardized $B^*$ is assumed to follow a normal binomial distribution $\mathcal{N}(0,1)$. We can then identify a z-score given an $\alpha$-level of our choice, which the actual $B^*$ we calculate from the data would have to surpass to reject $H_0$. With the common $\alpha = 0.05$, we have $z_{\alpha} = 1.645$.
 
-As a worked example, in one of the runs of an MLP architecture classifying Aurignacien and Uruk V sequences the success rate of was 75. In this case we would have:
+As a worked example, in one of the runs of an MLP architecture classifying Aurignacien and Uruk V sequences the success rate is 75. In this case, we have:
 
 \begin{equation}
 B^* = \frac{B - E_{p0}(B)}{\sqrt{\sigma^2_{p0}(B)}} = \frac{75 - 60}{\sqrt{22.5}} = 3.16
@@ -71,12 +72,34 @@ B^* = \frac{B - E_{p0}(B)}{\sqrt{\sigma^2_{p0}(B)}} = \frac{75 - 60}{\sqrt{22.5}
 
 Hence, $B^* > z_{\alpha}$, and we would reject $H_0$, meaning that the MLP classification is significantly better than the "no information rate" baseline. The model has learned (from the training set) to distinguish between these sequences, and is better than a method which would simply choose the most frequent label in the test set. 
 
+Apart from the accuracy, we also report the $F_\beta$-score, which can be generally defined as:
 
-# References
+\begin{equation}
+F_\beta = \frac{(1 + \beta^2) \times precision \times recall}{(\beta^2 \times precision) + recall}. 
+\end{equation}
 
-Hollander, M., Wolfe, D. A., & Chicken, E. (2013). Nonparametric statistical methods. John Wiley & Sons.
+In the confusionMatrix() function the special case $\beta^2 = 1$ is implemented, thus giving an $F_1$-score as
 
-Kuhn, M. (2008). Building predictive models in R using the caret package. Journal of statistical software, 28, 1-26.
+\begin{equation}
+F_1 = \frac{2 \times precision \times recall}{precision + recall}. 
+\end{equation}
+
+
+Furthermore, precision is defined as
+
+\begin{equation}
+precision = \frac{A}{A + B},
+\end{equation}
+
+and recall as 
+
+\begin{equation}
+recall = \frac{A}{A + C}.
+\end{equation}
+
+In other words, precision measures how often the positive class (also called "Event" in the documentation) is correctly predicted (true positives) in relation to the overall number of times this class is predicted by the model (true positives + false positives). In other words, how often is the classifier correct when it predicts the positive class? The recall, on the other hand, measures how often the positive class is correctly predicted (true positives) in relation to the overall number of "actually observed" instances of this class in the test set (true positives + false negatives). In other words, how often does the model "find" or "recall" the correct class? 
+
+The F-score is then a harmonized mean over prediction and recall. The rational behind this is to make the results more robust in the face of imbalances in terms of the distribution of class labels in the test set. 
 
 
 # Load libraries
@@ -89,6 +112,7 @@ library(ggpubr)
 library(ggridges)
 library(tidyverse)
 library(data.table)
+library(caret)
 ```
 
 # Multi-layer perceptron (MLP)
@@ -100,6 +124,8 @@ files.mlp.performance <- list.files(path = "~/Github/UpperPalCombinatorics/resul
 ```
 
 ## Preprocessing
+P-value adjustment for multiple comparisons: In case of multiple testing, we need account for the fact that the likelihood of finding a significant result by chance increases with the number of statistical tests executed. One of the most conservative methods to account for this is the so-called Bonferroni correction, i.e. multiplying the p-values with the number of tests. This method is appropriate when tests are independent of one another (cf. MacDonald 2014, p. 254-260). In our case, each test for each sequence can be seen as an independent trial. We therefore apply this conservative Bonferroni method (see also the descriptions in the vignette invoked by the command “?p.adjust()”).
+
 ```{r}
 # initialize empty data frame
 performance.mlp.combined <- data.frame(hidden.structure = character(0), 
@@ -144,6 +170,8 @@ performance.mlp.combined <- performance.mlp.combined[performance.mlp.combined$co
 
 ## Density Plots
 
+Density distributions of accuracies and F1-scores by comparison. Note: the ordering of "comparisons" according to either F1-scores or accuracies should be consistent across the panels. 
+
 ### F1 Distributions 
 Distributions of F1-scores by comparison.
 ```{r}
@@ -161,7 +189,6 @@ f1.plot
 ```
 
 ## Accuracy Distributions 
-Distributions of accuracies by comparison.
 ```{r}
 accuracy.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy, amount = 0), 
                                             y = fct_reorder(comparison, accuracy),
@@ -195,14 +222,14 @@ pvalue.plot
 ```
 
 ## Combine Plots
-```{r}
+```{r, fig.width = 10, fig.height = 3}
 combined.plot <- grid.arrange(accuracy.plot, pvalue.plot, ncol = 2, widths = c(2, 1))
 ```
 
 Safe to file.
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot_MLP.pdf", 
-       combined.plot, dpi = 300, width = 10, height = 2, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 10, height = 3, device = cairo_pdf)
 ```
 
 # K-Nearest-Neighbors (KNN)
@@ -304,12 +331,23 @@ pvalue.plot
 ```
 
 ## Combine Plots
-```{r}
+```{r, fig.width = 10, fig.height = 3}
 combined.plot <- grid.arrange(accuracy.plot, pvalue.plot, ncol = 2, widths = c(2, 1))
 ```
 
 Safe to file.
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot_KNN.pdf", 
-       combined.plot, dpi = 300, width = 10, height = 2, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 10, height = 3, device = cairo_pdf)
 ```
+
+# References
+
+Hollander, M., Wolfe, D. A., & Chicken, E. (2013). Nonparametric statistical methods. John Wiley & Sons.
+
+Kuhn, M. (2008). Building predictive models in R using the caret package. Journal of Statistical Software, 28, 1-26.
+
+McDonald, J.H. (2014). Handbook of Biological Statistics (3rd ed.). Sparky House Publishing, Baltimore,
+Maryland. online at http://www.biostathandbook.com
+
+----
