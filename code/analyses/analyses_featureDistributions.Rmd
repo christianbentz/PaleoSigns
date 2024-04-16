@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Description
-This file provides functionality for plotting feature value distributions in density plots. It also contains code for PCA analyses given the values of the four statistical features (entropy rate, unigram entropy, TTR, and repetition rate.)
+This file provides functionality for plotting feature value distributions in density plots. It also contains code for PCA analyses given the values of the four statistical features (entropy rate, unigram entropy, TTR, and repetition rate).
 
 ## Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
@@ -48,7 +48,7 @@ head(estimations.df)
 estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignacien"|
                                           #estimations.df$subcorpus == "Aurignacien/Gravettian"|
                                           estimations.df$subcorpus == "Cuneiform (Uruk V)"|
-                                          #estimations.df$subcorpus == "Cuneiform (Uruk IV)"| 
+                                          estimations.df$subcorpus == "Cuneiform (Uruk IV)"| 
                                           estimations.df$subcorpus == "Cuneiform (Uruk III)"|  
                                           estimations.df$subcorpus == "TeDDi", ]
 ```
@@ -170,6 +170,9 @@ ggsave("~/Github/UpperPalCombinatorics/figures/correlation_plot.pdf",
 
 
 # Principal Component Analysis (PCA)
+Since we have overall four dimensions of statistical values derived from the sign sequences (unigram entropy, entropy rate, TTR, repetition rate), we can first use a principal component analysis to reduce the number of dimensions to the first two principal components. This allows us to see the clustering of data points in two dimensional space. 
+
+Note that we here use PCA as a data visualization and exploration tool, rather than in an inferential sense (cf. Jolliffe and Cadima, 2016, p. 2). For drawing statistical inferences we rather employ statistical analyses of classification outputs (see analyses_Classification_performance.Rmd).
 
 Compute principal components.
 ```{r}
@@ -207,7 +210,7 @@ biplot <- ggbiplot(pca,
               var.scale = 1,
               groups = estimations.df.selected$subcorpus,
               ellipse = TRUE,
-              circle = TRUE,
+              circle = FALSE,
               #ellipse.prob = 0.68, # NULL = 0.68
               alpha = 0.3) +
   scale_color_discrete(name = '') + 
@@ -216,8 +219,16 @@ biplot <- ggbiplot(pca,
 print(biplot)
 ```
 
+Interpretation: The first two principal components together preserve 94.6% of the original variance in the four variables. PC1 mainly reflects the opposition between repetition rate and entropy (both unigram and rate). Unigram entropy and entropy rate are highly positively correlated (similar vector directions) and have a positive loading on PC1. Modern writing systems fall into the high entropy area, while proto-cuneiform systems tend to have high repetition rates, and low entropies similar to the Aurignacian sequences of signs. TTR is mostly orthogonal to the other three measures and loads mainly on PC2. Aurignacian and Uruk V signs tend to have low TTR, while modern writing systems display a wide range of TTRs (depending on the character inventories).
+
+The normal data ellipse for the Aurignacian sign sequences fully overlaps with the one for the earliest Proto-Cuneiform period (Uruk V), whereas the later two Proto-Cuneiform periods (Uruk IV and Uruk III) start to "move closer" and overlap with the TeDDi (modern writing) ellipse. 
+
 Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/pca_biplot.pdf", 
        biplot, dpi = 300, device = cairo_pdf)
 ```
+
+# References 
+
+Jolliffe, I. T., & Cadima, J. (2016). Principal component analysis: a review and recent developments. Philosophical transactions of the royal society A: Mathematical, Physical and Engineering Sciences, 374(2065), 20150202.
