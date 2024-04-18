@@ -1,0 +1,115 @@
+---
+title: "Swabian Aurignacian Map"
+author: ""
+date: "4/18/2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Libraries
+
+```{r cars}
+#install.packages("remotes")
+#remotes::install_github("tylermorganwall/rayshader")
+#remotes::install_github("tylermorganwall/rayimage")
+
+library(rayshader)
+library(raster)
+library(osmdata)
+library(dplyr)
+library(ggplot2)
+library(ggmap)
+library(plot3D)
+```
+
+# Map Data
+Get the map data from open street map (OSM)
+```{r}
+# Create bounding box manually by defining latitudes and longitudes
+# A 2x2 matrix
+achtal_bb <- matrix(data = c(9.73, 9.78, 48.38, 48.43),
+                    nrow = 2,
+                    byrow = TRUE)
+# Update column and row names
+colnames(achtal_bb) <- c("min", "max")
+rownames(achtal_bb) <- c("x", "y")
+# Print the matrix to the console
+achtal_bb
+
+# list the features of OSM data
+available_features()
+available_tags(feature = "water")
+
+# create query and get features from OSM
+achtal <- opq(achtal_bb) %>%
+  add_osm_feature(key = "highway", 
+                  value = c("motorway", "primary", "secondary")) %>%
+  osmdata_sf()
+print(achtal)
+#View(achtal$osm_points)
+```
+
+```{r}
+# Create the plot object, using the osm_lines element of achtal
+# street_plot <- ggplot() +
+#   geom_sf(data = achtal$osm_lines,
+#           inherit.aes = FALSE,
+#           color = "black",
+#           size = 0.2)
+# # Print the plot
+# street_plot
+```
+
+```{r}
+#Here, I load a map with the raster package.
+loadzip = tempfile() 
+download.file("https://tylermw.com/data/dem_01.tif.zip", loadzip)
+localtif = raster::raster(unzip(loadzip, "dem_01.tif"))
+unlink(loadzip)
+
+#And convert it to a matrix:
+elmat = raster_to_matrix(localtif)
+
+#We use another one of rayshader's built-in textures:
+elmat %>%
+  sphere_shade(texture = "desert") %>%
+  plot_map()
+
+elmat %>%
+  sphere_shade(texture = "desert") %>%
+  add_water(detect_water(elmat), color = "desert") %>%
+  add_shadow(ray_shade(elmat, zscale = 3), 0.5) %>%
+  add_shadow(ambient_shade(elmat), 0) %>%
+  plot_3d(elmat, zscale = 10, fov = 0, theta = 135, zoom = 0.75, phi = 45, windowsize = c(1000, 800))
+Sys.sleep(0.2)
+render_snapshot()
+render_scalebar(limits=c(0, 5, 10),label_unit = "km",position = "W", y=50,
+                scale_length = c(0.33,1))
+```
+
+```{r}
+xmin_long= -95
+xmax_long= -30
+ymin_lat= -60
+ymax_lat= 20
+
+ii <- which(Hypsometry$x > xmin_long & Hypsometry$x < xmax_long)
+jj <- which(Hypsometry$y > ymin_lat & Hypsometry$y < ymax_lat)
+
+# par(mfrow = c(1, 1))
+# Actual bathymetry, 4 times increased resolution, with contours
+pmat <- persp3D(z=Hypsometry$z[ii,jj], bty = "n",ticktype = "simple",alpha=0.6,
+             #box=FALSE, 
+             #scale=FALSE, 
+             xlab="longitude",ylab="latitude",zlab = "altitude", clab = "altitude", 
+             expand = 0.05, d = 2, phi = 60, theta = 40, resfac = 5,
+             zlim = c(-4000,6000), 
+             colkey = list(side = 2, length = 0.5), 
+             contour = list(col = "dark grey", side = c("z")),
+             plot=T)
+```
+
+
