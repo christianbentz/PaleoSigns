@@ -1,0 +1,175 @@
+---
+title: "SignBase: Maps for Aurignacian Sites"
+author: ""
+date: ""
+output:
+  html_document: default
+  pdf_document: default
+R version: R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
+Linux version: Ubuntu 18.04.3 LTS
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(message = FALSE)
+```
+
+# Load libraries
+Load the following packages. If these are not yet installed use install.packages("") to install them.
+```{r}
+library(ggmap)
+library(plyr)
+library(gridExtra)
+library(tidyverse)
+library(ggpubr)
+```
+
+# Load data
+Run this code to load the file with data on Aurignacian objects.
+```{r}
+objects <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-04-22.csv")
+nrow(objects)
+# Select Aurignacian objects from Swabian Jura Caves
+objects <- objects[objects$archaeological_unit == "Aurignacien" &
+                     objects$site_name == "Vogelherd" |
+                     objects$site_name == "Hohle Fels" |
+                     objects$site_name == "Geissenklösterle" |
+                     objects$site_name == "Hohlenstein-Stadel", ]
+nrow(objects)
+```
+# Preprocessing
+
+Create data frame with object counts per site.
+```{r}
+sites <- count(objects, site_name)
+colnames(sites) <- c("site_name", "number_of_objects")
+```
+
+# Collapse Factors
+Collapse some factors of meta information which are uncommon and/or related. 
+```{r}
+# material
+table(objects$material)
+# object_type
+table(objects$object_type)
+
+# material: collapse manually
+objects$material <- fct_collapse(objects$material,
+             ivory = "ivory",
+             antler = "antler",
+             bone = "bone",
+             other_level = "other")
+
+# object_type: collapse manually
+objects$object_type <- fct_collapse(objects$object_type,
+             figurine_anthropomorph = c("figurine anthropomorph", "figurine anthropomoph",
+                          "plaquette"), 
+             # note: the "plaquette" is the so-called Adorant with an anthropomorph figure on it.
+             figurine_zoomorph = c("figurine zoomorph"),
+             tool = c("awl", "bâton percé",
+                      "rod/bâton", "spatula/lissoir"),
+             tube_flute = c("flute", "tube", "possible flute", "tube/flute"),
+             personal_ornament = c("personal ornament"),
+             other_level = "other")
+```
+
+## ggmap with OBJECT locations
+Set API key. 
+```{r}
+register_stadiamaps(key = "c56e7665-ab34-4608-8730-428e35d2766e", write = FALSE)
+register_google(key = "AIzaSyDVDHFLK0KnDoxuRfEauKSzvU1Udxu92RY")
+```
+
+Load stamenmap of Swabian Jura locations. 
+```{r}
+# Achtal and Lonetal
+map <- get_stadiamap(bbox = c(left = 9.7, bottom = 48.35, right = 10.25, top = 48.6), 
+                         zoom = 12, maptype = c("stamen_terrain"), crop = TRUE, messaging = FALSE,
+                         urlonly = FALSE, force = FALSE,
+                         where = tempdir())
+ggmap(map)
+
+# Achtal
+map.achtal <- get_map(location = c(lon = 9.76473, lat = 48.39075), 
+                         zoom = 14, maptype = "satellite", source = "google")
+ggmap(map.achtal)
+
+# Lonetal
+map.lonetal <- get_map(location = c(lon = 10.185, lat = 48.5546), 
+                         zoom = 15, maptype = "satellite", source = "google")
+ggmap(map.lonetal)
+
+```
+
+Plot a map of Europe with each object and its location, and the densities of objects. Note that the object locations need to be jittered, otherwise they would just be overplotted for all objects of the same site.
+```{r}
+# Achtal + Lonetal
+object.density.map <- ggmap(map) +
+  stat_density2d(data = objects,
+                 aes(x = longitude, y = latitude, fill = ..level..),
+                 alpha = 0.3, size = 0.1,
+                 geom = "polygon") +
+  geom_density2d(data = objects, 
+                 aes(x = longitude, y = latitude), size = 0.3, colour = "white") +
+  scale_fill_gradient(low = "yellow", high= "red") +
+  geom_point(data = objects,
+             aes(jitter(longitude, amount = 0.005), jitter(latitude, amount = 0.005)), 
+             size = 0.2)  +
+  theme(legend.position = "none") 
+  #geom_text(x = -3, y = 51.5, label = "b)", size = 7) +
+  #annotate("segment", x = 10, xend = 12.2, y = 48.5, yend = 46, colour = "black") +
+  #annotate("text", x = 16, y = 46, label = "Swabian Jura", colour = "black")
+object.density.map
+```
+
+Plot a map of the Achtal.
+```{r}
+# Achtal
+object.map.achtal <- ggmap(map.achtal) +
+  geom_point(data = objects,
+             aes(jitter(longitude, amount = 0.005), jitter(latitude, amount = 0.005), 
+                 color = material,
+                 shape = object_type), 
+             size = 2)  +
+  geom_segment(aes(x = 9.772222, y = 48.398333, xend = 9.754103, yend = 48.379117), color = "white",
+               linetype = 3) +
+  annotate("text", x = 9.768, y = 48.389, label = "2.5 km", colour = "white") +
+  annotate("segment", x = 9.772222, xend = 9.75, y = 48.398333, yend = 48.4, colour = "white") +
+  annotate("text", x = 9.75, y = 48.401, label = "Geissenklösterle", colour = "white") +
+  annotate("segment", x = 9.754103, xend = 9.75, y = 48.379117, yend = 48.39, colour = "white") +
+  annotate("text", x = 9.75, y = 48.391, label = "Hohle Fels", colour = "white") 
+object.map.achtal
+```
+
+Plot a map of the Lonetal.
+```{r}
+# Lonetal
+object.map.lonetal <- ggmap(map.lonetal) +
+  geom_point(data = objects,
+             aes(jitter(longitude, amount = 0.003), jitter(latitude, amount = 0.002), 
+                 color = material,
+                 shape = object_type), 
+             size = 1) +
+  geom_segment(aes(x = 10.194, y = 48.559, xend = 10.17255, yend = 48.54975), color = "white",
+               linetype = 3) +
+  annotate("text", x = 10.185, y = 48.554, label = "1.9 km", colour = "white") +
+  annotate("segment", x = 10.194, xend = 10.182, y = 48.559, yend = 48.560, colour = "white") +
+  annotate("text", x = 10.182, y = 48.5605, label = "Vogelherd", colour = "white") +
+  annotate("segment", x = 10.17255, xend = 10.18, y = 48.54975, yend = 48.550, colour = "white") +
+  annotate("text", x = 10.185, y = 48.550, label = "Hohlenstein-Stadel", colour = "white") 
+object.map.lonetal
+```
+
+
+## Put both maps together in one panel plot
+```{r, fig.width = 15, fig.height = 7.5}
+maps.combined <- ggarrange(object.map.achtal, object.map.lonetal, ncol = 2)
+maps.combined
+```
+
+Safe complete figure to file
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/maps/maps_combined.pdf", 
+       maps.combined, dpi = 300, width = 15, height = 7.5, device = cairo_pdf)
+```
+
