@@ -12,8 +12,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Load Libraries
 
 ```{r cars}
-#install.packages("remotes")
-#remotes::install_github("tylermorganwall/rayshader")
+install.packages("remotes")
+remotes::install_github("tylermorganwall/rayshader")
 #remotes::install_github("tylermorganwall/rayimage")
 
 library(rayshader)

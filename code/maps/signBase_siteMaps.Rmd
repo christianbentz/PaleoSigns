@@ -22,6 +22,7 @@ library(plyr)
 library(gridExtra)
 library(tidyverse)
 library(ggpubr)
+library(ggrepel)
 ```
 
 # Load data
@@ -62,7 +63,7 @@ objects$material <- fct_collapse(objects$material,
 
 # object_type: collapse manually
 objects$object_type <- fct_collapse(objects$object_type,
-             figurine_anthropomorph = c("figurine anthropomorph", "figurine anthropomoph",
+             figurine_anthropomorph = c("figurine anthropomorph",
                           "plaquette"), 
              # note: the "plaquette" is the so-called Adorant with an anthropomorph figure on it.
              figurine_zoomorph = c("figurine zoomorph"),
@@ -124,32 +125,53 @@ object.density.map
 
 Plot a map of the Achtal.
 ```{r}
+# separate datasets per cave site
+objects.gkl <- objects[objects$site_name == "Geissenklösterle", ]
+# Order by a given column (e.g. object_type)
+objects.gkl.ordered <- objects.gkl[order(objects.gkl$object_type), ]
+
 # Achtal
 object.map.achtal <- ggmap(map.achtal) +
-  geom_point(data = objects,
-             aes(jitter(longitude, amount = 0.005), jitter(latitude, amount = 0.005), 
-                 color = material,
-                 shape = object_type), 
-             size = 2)  +
-  geom_segment(aes(x = 9.772222, y = 48.398333, xend = 9.754103, yend = 48.379117), color = "white",
+  # stat_density2d(data = objects,
+  #                aes(x = longitude, y = latitude, fill = ..level..),
+  #                alpha = 0.3, size = 0.1,
+  #                geom = "polygon") +
+  # geom_density2d(data = objects, 
+  #               aes(x = longitude, y = latitude), size = 0.3, colour = "white") +
+  #scale_fill_gradient(low = "yellow", high= "red") +
+  # geom_point(data = objects,
+  #           aes(jitter(longitude, amount = 0.005), jitter(latitude, amount = 0.005),
+  #               color = material,
+  #               shape = object_type),
+  #           size = 2)  +
+  annotate("segment", x = 9.772222, y = 48.398333, xend = 9.754103, yend = 48.379117, color = "white",
                linetype = 3) +
   annotate("text", x = 9.768, y = 48.389, label = "2.5 km", colour = "white") +
   annotate("segment", x = 9.772222, xend = 9.75, y = 48.398333, yend = 48.4, colour = "white") +
   annotate("text", x = 9.75, y = 48.401, label = "Geissenklösterle", colour = "white") +
   annotate("segment", x = 9.754103, xend = 9.75, y = 48.379117, yend = 48.39, colour = "white") +
-  annotate("text", x = 9.75, y = 48.391, label = "Hohle Fels", colour = "white") 
+  annotate("text", x = 9.75, y = 48.391, label = "Hohle Fels", colour = "white")
 object.map.achtal
 ```
 
 Plot a map of the Lonetal.
 ```{r}
+# separate datasets per cave site
+objects.vhc <- objects[objects$site_name == "Vogelherd", ]
+# Order by a given column (e.g. object_type)
+objects.vhc.ordered <- objects.vhc[order(objects.vhc$object_type), ]
+
+objects.hss <- objects[objects$site_name == "Hohlenstein-Stadel", ]
+# Order by a given column (e.g. object_type)
+objects.hss.ordered <- objects.hss[order(objects.hss$object_type), ]
+
 # Lonetal
 object.map.lonetal <- ggmap(map.lonetal) +
-  geom_point(data = objects,
-             aes(jitter(longitude, amount = 0.003), jitter(latitude, amount = 0.002), 
-                 color = material,
-                 shape = object_type), 
-             size = 1) +
+  # geom_point(data = objects,
+  #            aes(jitter(longitude, amount = 0.003), jitter(latitude, amount = 0.002), 
+  #                color = material,
+  #                shape = object_type), 
+  #            size = 1) +
   geom_segment(aes(x = 10.194, y = 48.559, xend = 10.17255, yend = 48.54975), color = "white",
                linetype = 3) +
   annotate("text", x = 10.185, y = 48.554, label = "1.9 km", colour = "white") +
