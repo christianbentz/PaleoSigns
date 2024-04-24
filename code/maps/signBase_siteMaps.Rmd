@@ -23,6 +23,10 @@ library(gridExtra)
 library(tidyverse)
 library(ggpubr)
 library(ggrepel)
+library(scatterplot3d)
+library(googleway)
+library(rgl)
+library(plotly)
 ```
 
 # Load data
@@ -108,7 +112,7 @@ Plot a map of Europe with each object and its location, and the densities of obj
 object.density.map <- ggmap(map) +
   stat_density2d(data = objects,
                  aes(x = longitude, y = latitude, fill = ..level..),
-                 alpha = 0.3, size = 0.1,
+                 alpha = 0.1, size = 0.1,
                  geom = "polygon") +
   geom_density2d(data = objects, 
                  aes(x = longitude, y = latitude), size = 0.3, colour = "white") +
@@ -116,10 +120,15 @@ object.density.map <- ggmap(map) +
   geom_point(data = objects,
              aes(jitter(longitude, amount = 0.005), jitter(latitude, amount = 0.005)), 
              size = 0.2)  +
-  theme(legend.position = "none") 
-  #geom_text(x = -3, y = 51.5, label = "b)", size = 7) +
-  #annotate("segment", x = 10, xend = 12.2, y = 48.5, yend = 46, colour = "black") +
-  #annotate("text", x = 16, y = 46, label = "Swabian Jura", colour = "black")
+  theme(legend.position = "none") +
+  ggtitle("Swabian Jura") +
+  annotate("segment", x = 10.18, xend = 10, y = 48.559, yend = 48.559, colour = "black") +
+  annotate("text", x = 10, y = 48.57, label = "Lone Valley", colour = "black") +
+  annotate("segment", x = 9.77, xend = 9.85, y = 48.385, yend = 48.385, colour = "black") +
+  annotate("text", x = 9.85, y = 48.395, label = "Ach Valley", colour = "black") +
+  annotate("text", x = 10, y = 48.41, label = "Ulm", colour = "black") +
+  annotate("segment", x = 10.18, xend = 9.77, y = 48.559, yend = 48.385, colour = "black", linetype = 3) +
+   annotate("text", x = 10.02, y = 48.47, label = "c. 35 km", colour = "black")
 object.density.map
 ```
 
@@ -139,11 +148,12 @@ object.map.achtal <- ggmap(map.achtal) +
   # geom_density2d(data = objects, 
   #               aes(x = longitude, y = latitude), size = 0.3, colour = "white") +
   #scale_fill_gradient(low = "yellow", high= "red") +
-  # geom_point(data = objects,
-  #           aes(jitter(longitude, amount = 0.005), jitter(latitude, amount = 0.005),
-  #               color = material,
-  #               shape = object_type),
-  #           size = 2)  +
+  geom_point(data = objects,
+             aes(jitter(longitude, amount = 0.005), jitter(latitude, amount = 0.005),
+                 color = object_type),
+             size = 2)  +
+  ggtitle("Ach Valley") +
+  theme(legend.position = c(.75, .2)) +
   annotate("segment", x = 9.772222, y = 48.398333, xend = 9.754103, yend = 48.379117, color = "white",
                linetype = 3) +
   annotate("text", x = 9.768, y = 48.389, label = "2.5 km", colour = "white") +
@@ -167,13 +177,18 @@ objects.hss.ordered <- objects.hss[order(objects.hss$object_type), ]
 
 # Lonetal
 object.map.lonetal <- ggmap(map.lonetal) +
-  # geom_point(data = objects,
-  #            aes(jitter(longitude, amount = 0.003), jitter(latitude, amount = 0.002), 
-  #                color = material,
-  #                shape = object_type), 
-  #            size = 1) +
+  geom_point(data = objects.vhc,
+             aes(jitter(longitude, amount = 0.003), jitter(latitude, amount = 0.003),
+                 color = object_type),
+             size = 2) +
+  geom_point(data = objects.hss,
+             aes(jitter(longitude, amount = 0.001), jitter(latitude, amount = 0.001),
+                 color = object_type),
+             size = 2) +
   geom_segment(aes(x = 10.194, y = 48.559, xend = 10.17255, yend = 48.54975), color = "white",
                linetype = 3) +
+  theme(legend.position = "none") +
+  ggtitle("Lone Valley") +
   annotate("text", x = 10.185, y = 48.554, label = "1.9 km", colour = "white") +
   annotate("segment", x = 10.194, xend = 10.182, y = 48.559, yend = 48.560, colour = "white") +
   annotate("text", x = 10.182, y = 48.5605, label = "Vogelherd", colour = "white") +
@@ -184,14 +199,64 @@ object.map.lonetal
 
 
 ## Put both maps together in one panel plot
-```{r, fig.width = 15, fig.height = 7.5}
-maps.combined <- ggarrange(object.map.achtal, object.map.lonetal, ncol = 2)
+```{r, fig.width = 18, fig.height = 7}
+maps.combined <- ggarrange(object.density.map, object.map.achtal, object.map.lonetal, ncol = 3, widths = c(1.5,1,1))
 maps.combined
 ```
 
 Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/maps/maps_combined.pdf", 
-       maps.combined, dpi = 300, width = 15, height = 7.5, device = cairo_pdf)
+       maps.combined, dpi = 300, width = 18, height = 7, device = cairo_pdf)
 ```
+
+# 3D Plot
+```{r}
+# set google API key
+# set_key("AIzaSyDVDHFLK0KnDoxuRfEauKSzvU1Udxu92RY")
+# 
+# ## elevation data for the Achtal
+# achtal.df <- data.frame(lat = sample(9740:9790, 50, replace = F)/1000,
+#                  lon = sample(48370:48420, 50, replace = F)/1000)
+# 
+# achtal.df <- google_elevation(df_locations = achtal.df,
+#                        location_type = "individual",
+#                        samples = 100,
+#                        simplify = TRUE)
+# 
+# df <- data.frame(achtal.df$results$location$lng,
+#                    achtal.df$results$location$lat,
+#                    achtal.df$results$elevation)
+# 
+# colnames(df) <- c("longitude", "latitude", "elevation")
+# 
+# s3d <- scatterplot3d(x = achtal.df$results$location$lng, 
+#                      y = achtal.df$results$location$lat, 
+#                      z = achtal.df$results$elevation, 
+#                      type = "p", 
+#                      pch = 1, 
+#                      highlight.3d = TRUE, 
+#                      cex.symbols = 0.5, 
+#                      box = FALSE,
+#                      grid = FALSE,
+#                      xlab = "Longitude",
+#                      ylab = "Latitude",
+#                      zlab = "Elevation")
+# print(s3d)
+# 
+# achtal.plot <- plot_ly(x = achtal.df$results$location$lng, 
+#                      y = achtal.df$results$location$lat, 
+#                      z = achtal.df$results$elevation,
+#                      type = "mesh3d", 
+#                      #color = achtal.df$results$elevation,
+#                      #colors = "YlOrRd",
+#                      height = 1000)
+# 
+# achtal.matrix <- acast(df, longitude~latitude, value.var="elevation")
+# #spread(df, latitude, elevation)
+# 
+# persp3D(x = df$longitude, y = df$latitude, z = achtal.matrix, main = "volcano", clab = c("height", "m"),
+# breaks = seq(0,1000, by = 100))
+```
+
 
