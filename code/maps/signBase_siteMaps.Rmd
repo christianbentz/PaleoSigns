@@ -27,12 +27,13 @@ library(scatterplot3d)
 library(googleway)
 library(rgl)
 library(plotly)
+library(grid)
 ```
 
 # Load data
 Run this code to load the file with data on Aurignacian objects.
 ```{r}
-objects <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-04-22.csv")
+objects <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-04-25.csv")
 nrow(objects)
 # Select Aurignacian objects from Swabian Jura Caves
 objects <- objects[objects$archaeological_unit == "Aurignacien" &
@@ -85,30 +86,31 @@ register_stadiamaps(key = "c56e7665-ab34-4608-8730-428e35d2766e", write = FALSE)
 register_google(key = "AIzaSyDVDHFLK0KnDoxuRfEauKSzvU1Udxu92RY")
 ```
 
-Load stamenmap of Swabian Jura locations. 
+Map of Germany with Swabian Jura indication. 
 ```{r}
-# Achtal and Lonetal
-map <- get_stadiamap(bbox = c(left = 9.7, bottom = 48.35, right = 10.25, top = 48.6), 
+# Germany
+germany.map.background <- get_map(location = "Germany", maptype = "stamen_toner_background", zoom = 6)
+germany.map <- ggmap(germany.map.background) +
+  geom_rect(aes(xmin = 9.7, xmax = 10.25, ymin = 48.35, ymax = 48.7), color = "red", fill = NA) +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank()) 
+germany.map
+```
+
+Plot a map of the Swabian Jura sites including Lone Valley and Ach Valley with each object and its location, and the densities of objects. Note that the object locations need to be jittered, otherwise they would just be overplotted for all objects of the same site.
+```{r, fig.width = 5, fig.height = 5}
+# Achtal and Lonetal, get map
+map <- get_stadiamap(bbox = c(left = 9.7, bottom = 48.35, right = 10.25, top = 48.7), 
                          zoom = 12, maptype = c("stamen_terrain"), crop = TRUE, messaging = FALSE,
                          urlonly = FALSE, force = FALSE,
                          where = tempdir())
 ggmap(map)
 
-# Achtal
-map.achtal <- get_map(location = c(lon = 9.76473, lat = 48.39075), 
-                         zoom = 14, maptype = "satellite", source = "google")
-ggmap(map.achtal)
-
-# Lonetal
-map.lonetal <- get_map(location = c(lon = 10.185, lat = 48.5546), 
-                         zoom = 15, maptype = "satellite", source = "google")
-ggmap(map.lonetal)
-
-```
-
-Plot a map of Europe with each object and its location, and the densities of objects. Note that the object locations need to be jittered, otherwise they would just be overplotted for all objects of the same site.
-```{r}
-# Achtal + Lonetal
+# Achtal + Lonetal Plot
 object.density.map <- ggmap(map) +
   stat_density2d(data = objects,
                  aes(x = longitude, y = latitude, fill = ..level..),
@@ -123,91 +125,201 @@ object.density.map <- ggmap(map) +
   theme(legend.position = "none") +
   ggtitle("Swabian Jura") +
   annotate("segment", x = 10.18, xend = 10, y = 48.559, yend = 48.559, colour = "black") +
-  annotate("text", x = 10, y = 48.57, label = "Lone Valley", colour = "black") +
+  annotate("text", x = 10.05, y = 48.57, label = "Lone Valley", colour = "black") +
   annotate("segment", x = 9.77, xend = 9.85, y = 48.385, yend = 48.385, colour = "black") +
   annotate("text", x = 9.85, y = 48.395, label = "Ach Valley", colour = "black") +
   annotate("text", x = 10, y = 48.41, label = "Ulm", colour = "black") +
   annotate("segment", x = 10.18, xend = 9.77, y = 48.559, yend = 48.385, colour = "black", linetype = 3) +
    annotate("text", x = 10.02, y = 48.47, label = "c. 35 km", colour = "black")
-object.density.map
+swabianJura.map <- object.density.map +
+  # add map of Germany as inset
+  inset(ggplotGrob(germany.map), xmin = 9.72, xmax = 9.98, ymin = 48.5, ymax = 48.69)
 ```
 
-Plot a map of the Achtal.
+Subset object data frame according to cave site.
 ```{r}
 # separate datasets per cave site
 objects.gkl <- objects[objects$site_name == "Geissenklösterle", ]
-# Order by a given column (e.g. object_type)
-objects.gkl.ordered <- objects.gkl[order(objects.gkl$object_type), ]
+objects.hfc <- objects[objects$site_name == "Hohle Fels", ]
+objects.vhc <- objects[objects$site_name == "Vogelherd", ]
+objects.hss <- objects[objects$site_name == "Hohlenstein-Stadel", ]
+```
 
-# Achtal
+# Maps
+Maps with objects for Achtal and Lonetal.
+```{r}
+# Achtal, get map
+map.achtal <- get_map(location = c(lon = 9.76473, lat = 48.39075), 
+                         zoom = 13, maptype = "satellite", source = "google")
+ggmap(map.achtal)
+
+# Achtal Plot
 object.map.achtal <- ggmap(map.achtal) +
-  # stat_density2d(data = objects,
-  #                aes(x = longitude, y = latitude, fill = ..level..),
-  #                alpha = 0.3, size = 0.1,
-  #                geom = "polygon") +
-  # geom_density2d(data = objects, 
-  #               aes(x = longitude, y = latitude), size = 0.3, colour = "white") +
-  #scale_fill_gradient(low = "yellow", high= "red") +
-  geom_point(data = objects,
-             aes(jitter(longitude, amount = 0.005), jitter(latitude, amount = 0.005),
-                 color = object_type),
-             size = 2)  +
+  # Geissenkösterle
+  geom_text_repel(data = objects.gkl, 
+                  aes(x = longitude,
+                      y = latitude,
+                      label = " "),
+                  color = "white",
+                  direction = 'y',
+                  nudge_x = 0.041,
+                  segment.size = 0.2,
+                  size = 2,
+                  max.overlaps = Inf) +
+  # Hohle Fels
+  geom_text_repel(data = objects.hfc, 
+                  aes(x = longitude,
+                      y = latitude,
+                      label = " "),
+                  color = "white",
+                  direction = 'y',
+                  nudge_x = -0.04,
+                  segment.size = 0.2,
+                  size = 1.8,
+                  max.overlaps = Inf) +
   ggtitle("Ach Valley") +
   theme(legend.position = c(.75, .2)) +
   annotate("segment", x = 9.772222, y = 48.398333, xend = 9.754103, yend = 48.379117, color = "white",
                linetype = 3) +
   annotate("text", x = 9.768, y = 48.389, label = "2.5 km", colour = "white") +
-  annotate("segment", x = 9.772222, xend = 9.75, y = 48.398333, yend = 48.4, colour = "white") +
-  annotate("text", x = 9.75, y = 48.401, label = "Geissenklösterle", colour = "white") +
-  annotate("segment", x = 9.754103, xend = 9.75, y = 48.379117, yend = 48.39, colour = "white") +
-  annotate("text", x = 9.75, y = 48.391, label = "Hohle Fels", colour = "white")
+  annotate("segment", x = 9.772222, xend = 9.772222, y = 48.398333, yend = 48.413, colour = "white") +
+  annotate("text", x = 9.772222, y = 48.415, label = "Geissenklösterle", colour = "white") +
+  annotate("segment", x = 9.754103, xend = 9.754103, y = 48.379117, yend = 48.37, colour = "white") +
+  annotate("text", x = 9.754103, y = 48.368, label = "Hohle Fels", colour = "white") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank()) 
 object.map.achtal
 ```
 
 Plot a map of the Lonetal.
 ```{r}
-# separate datasets per cave site
-objects.vhc <- objects[objects$site_name == "Vogelherd", ]
-# Order by a given column (e.g. object_type)
-objects.vhc.ordered <- objects.vhc[order(objects.vhc$object_type), ]
+# Lonetal, get map
+map.lonetal <- get_map(location = c(lon = 10.185, lat = 48.5546), 
+                         zoom = 15, maptype = "satellite", source = "google")
+ggmap(map.lonetal)
 
-objects.hss <- objects[objects$site_name == "Hohlenstein-Stadel", ]
-# Order by a given column (e.g. object_type)
-objects.hss.ordered <- objects.hss[order(objects.hss$object_type), ]
-
-# Lonetal
+# Lonetal plot
 object.map.lonetal <- ggmap(map.lonetal) +
-  geom_point(data = objects.vhc,
-             aes(jitter(longitude, amount = 0.003), jitter(latitude, amount = 0.003),
-                 color = object_type),
-             size = 2) +
-  geom_point(data = objects.hss,
-             aes(jitter(longitude, amount = 0.001), jitter(latitude, amount = 0.001),
-                 color = object_type),
-             size = 2) +
+   # Vogelherd
+  geom_text_repel(data = objects.vhc, 
+                  aes(x = longitude,
+                      y = latitude,
+                      label = " "),
+                  color = "white",
+                  direction = 'y',
+                  nudge_x = 0.004,
+                  segment.size = 0.2,
+                  size = 2,
+                  max.overlaps = Inf) +
+  # Hohlenstein-Stadel
+  geom_text_repel(data = objects.hss, 
+                  aes(x = longitude,
+                      y = latitude,
+                      label = sign_coding),
+                  color = "white",
+                  direction = 'y',
+                  nudge_x = 0.006,
+                  nudge_y = -0.002,
+                  segment.size = 0.2,
+                  size = 2,
+                  max.overlaps = Inf) +
   geom_segment(aes(x = 10.194, y = 48.559, xend = 10.17255, yend = 48.54975), color = "white",
                linetype = 3) +
   theme(legend.position = "none") +
   ggtitle("Lone Valley") +
   annotate("text", x = 10.185, y = 48.554, label = "1.9 km", colour = "white") +
-  annotate("segment", x = 10.194, xend = 10.182, y = 48.559, yend = 48.560, colour = "white") +
-  annotate("text", x = 10.182, y = 48.5605, label = "Vogelherd", colour = "white") +
-  annotate("segment", x = 10.17255, xend = 10.18, y = 48.54975, yend = 48.550, colour = "white") +
-  annotate("text", x = 10.185, y = 48.550, label = "Hohlenstein-Stadel", colour = "white") 
+  annotate("segment", x = 10.194, xend = 10.19, y = 48.559, yend = 48.559, colour = "white") +
+  annotate("text", x = 10.19, y = 48.56, label = "Vogelherd", colour = "white") +
+  annotate("segment", x = 10.17255, xend = 10.175, y = 48.54975, yend = 48.54975, colour = "white") +
+  annotate("text", x = 10.18, y = 48.550, label = "Hohlenstein-Stadel", colour = "white") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),
+        axis.title.y=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank()) 
 object.map.lonetal
 ```
 
+Add plots with codings by cave site.
+```{r, fig.width = 5, fig.height = 5}
+set.seed(09012020)
+# Geissenklösterle
+# Remove objects of type "other", this reduces the number of objects to display strings for
+objects.gkl.sample <- objects.gkl[objects.gkl$object_type != "other", ]
+# sample subset of objects randomly (otherwise the plot is overcrowded)
+objects.gkl.sample <- sample_n(objects.gkl.sample, 25)
+# Plot
+coding.plot.gkl <- ggplot(objects.gkl.sample, 
+                          aes(x = rep(0, nrow(objects.gkl.sample)), y = object_id)) +
+  geom_text(aes(label = sign_coding), hjust = 0, nudge_x = 0.3 , size = 2.5) +
+  geom_text(aes(label = object_type, color = object_type), hjust = 0, nudge_x = 0 , size = 2.5) +
+  xlim(0, 1) +
+  theme_classic2() + 
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  theme(legend.position = "none") +
+  ggtitle(paste("Geissenklösterle, n = ", nrow(objects.gkl) , sep = ""))
+coding.plot.gkl
 
-## Put both maps together in one panel plot
-```{r, fig.width = 18, fig.height = 7}
-maps.combined <- ggarrange(object.density.map, object.map.achtal, object.map.lonetal, ncol = 3, widths = c(1.5,1,1))
-maps.combined
+# Hohle Fels
+# Remove objects of type "other", this reduces the number of objects to display strings for
+objects.hfc.sample <- objects.hfc[objects.hfc$object_type != "other", ]
+# sample subset of objects randomly (otherwise the plot is overcrowded)
+objects.hfc.sample <- sample_n(objects.hfc.sample, 25)
+# Plot
+coding.plot.hfc <- ggplot(objects.hfc.sample, 
+                          aes(x = rep(0, nrow(objects.hfc.sample)), y = object_id)) +
+  geom_text(aes(label = sign_coding), hjust = 0, nudge_x = 0.3 , size = 2.5) +
+  geom_text(aes(label = object_type, color = object_type), hjust = 0, nudge_x = 0 , size = 2.5) +
+  xlim(0, 1) +
+  theme_classic2() + 
+  #scale_y_discrete(position = "right") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  theme(legend.position = "none") +
+  ggtitle(paste("Hohle Fels, n = ", nrow(objects.hfc) , sep = ""))
+coding.plot.hfc
+
+# Vogelherd
+# Remove objects of type "other", this reduces the number of objects to display strings for
+objects.vhc.sample <- objects.vhc[objects.vhc$object_type != "other", ]
+# sample subset objects randomly (otherwise the plot is overcrowded)
+objects.vhc.sample <- sample_n(objects.vhc.sample, 25)
+# Plot
+coding.plot.vhc <- ggplot(objects.vhc.sample, 
+                          aes(x = rep(0, nrow(objects.vhc.sample)), y = object_id)) +
+  geom_text(aes(label = sign_coding), hjust = 0, nudge_x = 0.3 , size = 2.5) +
+  geom_text(aes(label = object_type, color = object_type), hjust = 0, nudge_x = 0 , size = 2.5) +
+  # geom_point(size = 1) +
+  xlim(0, 1) +
+  theme_classic2() + 
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank()) +
+  theme(legend.position = "none") +
+  ggtitle(paste("Vogelherd, n = ", nrow(objects.vhc) , sep = ""))
+coding.plot.vhc
+```
+
+Combine plots.
+```{r, fig.width = 15, fig.height = 10}
+combined.plot <- ggarrange(swabianJura.map, object.map.lonetal, coding.plot.vhc, 
+                           coding.plot.hfc, object.map.achtal, coding.plot.gkl, ncol = 3, nrow = 2,
+                           labels = "AUTO")
+combined.plot
 ```
 
 Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/maps/maps_combined.pdf", 
-       maps.combined, dpi = 300, width = 18, height = 7, device = cairo_pdf)
+       combined.plot, dpi = 500, width = 17, height = 10, device = cairo_pdf)
 ```
 
 # 3D Plot
