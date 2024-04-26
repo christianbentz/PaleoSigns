@@ -313,8 +313,6 @@ object.map.hfc <- ggmap(map.hfc) +
 object.map.hfc
 ```
 
-
-
 Combine plots.
 ```{r, fig.width = 15, fig.height = 10, warning = F}
 combined.plot <- ggarrange(swabianJura.map, object.map.lonetal, object.map.vogelherd, 
