@@ -1,7 +1,7 @@
 ---
 title: "Estimations of Quantitative Features for Cuneiform Tablets"
 author: ""
-date: "28/03/2024"
+date: ""
 output:
   html_document: default
   pdf_document: default
@@ -14,12 +14,6 @@ knitr::opts_chunk$set(echo = TRUE)
 # Description
 This file contains the code for estimating the feature values (TTR, unigram entropy, entropy rate, repetition rate) per sign sequence on proto-cuneiform tablets from CDLI. These features where tested on a wider sample of linguistic and non-linguistic sign sequences in Bentz (2023). The repetition measure was tested also in Sproat (2014). 
 
-## References
-Bentz, C. (2023). The Zipfian Challenge: Learning the statistical fingerprint of natural languages. In Proceedings of the 27th Conference on Computational Natural Language Learning (CoNLL), pp. 27-37.
-
-Sproat, R. (2014). A statistical comparison of written language and nonlinguistic symbol systems. Language, 457-481.
-
-
 # Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2"). For the Hrate package this is different, since it comes from github. The devtools library needs to be installed, and then the install_github() function is used.
 ```{r}
@@ -29,6 +23,12 @@ library(gsubfn)
 #library(devtools)
 #install_github("dimalik/Hrate")
 library(Hrate)
+```
+
+Give the package versions.
+```{r, echo = F}
+# version of packages loaded
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ```
 
 # Load files
@@ -149,3 +149,17 @@ write.csv(cunei.data.est, paste("~/Github/UpperPalCombinatorics/results/features
                       paste(period, "_features.csv", sep = ""), 
                       sep =""), row.names = F)
 ```
+
+# Package References
+```{r, echo = F}
+print(citation("Hrate"), style = "text")
+print(citation("stringr"), style = "text")
+print(citation("gsubfn"), style = "text")
+print(citation("entropy"), style = "text")
+```
+
+# Literature References
+Bentz, C. (2023). The Zipfian Challenge: Learning the statistical fingerprint of natural languages. In Proceedings of the 27th Conference on Computational Natural Language Learning (CoNLL), pp. 27-37.
+
+Sproat, R. (2014). A statistical comparison of written language and nonlinguistic symbol systems. Language, 457-481.
+

@@ -1,7 +1,7 @@
 ---
 title: "Randomization"
 author: ''
-date: "28/03/2024"
+date: ""
 output:
   html_document: default
   pdf_document: default
@@ -28,12 +28,6 @@ Give the session info (reduced).
 sessionInfo()$R.version$version.string
 # platform
 sessionInfo()$R.version$platform 
-```
-
-# Load libraries
-If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2"). 
-```{r, message = F}
-#library(stringr)
 ```
 
 # Load Data

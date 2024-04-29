@@ -162,7 +162,6 @@ pre code {
 
 <h1 class="title toc-ignore">Estimations Combined</h1>
 <h4 class="author"></h4>
-<h4 class="date">28/03/2024</h4>
 
 </div>
 
@@ -182,6 +181,8 @@ pre code {
 <pre><code>## The following objects are masked from &#39;package:base&#39;:
 ## 
 ##     intersect, setdiff, setequal, union</code></pre>
+<p>Give the package versions.</p>
+<pre><code>## [1] &quot;1.1.4&quot;</code></pre>
 </div>
 </div>
 <div id="load-data" class="section level1">
@@ -264,40 +265,46 @@ names(teddi.selected)[names(teddi.selected) == &quot;text&quot;] &lt;- &quot;seq
                         cuneiIV.data.selected, cuneiIII.data.selected,
                         teddi.selected)
 head(estimations.df)</code></pre>
-<pre><code>##     subcorpus       sequence num.char huni.chars hrate.chars  ttr.chars
-## 1 Aurignacien ||| ////// _ V       12  1.7295740   1.3854133 0.33333333
-## 2 Aurignacien          vvvvv        5  0.0000000   0.5711903 0.20000000
-## 3 Aurignacien      vvvv vvvv        9  0.5032583   0.9060047 0.22222222
-## 4 Aurignacien vvvvvvvvvvvvvv       14  0.0000000   0.6379550 0.07142857
-## 5 Aurignacien            |||        3  0.0000000   0.4308271 0.33333333
-## 6 Aurignacien           ||||        4  0.0000000   0.5070802 0.25000000
+<pre><code>##     subcorpus           sequence num.char huni.chars hrate.chars  ttr.chars
+## 1 Aurignacien vvvvvvvvvvvvvvvvvv       18  0.0000000   0.6171397 0.05555556
+## 2 Aurignacien     ||| ////// _ V       12  1.7295740   1.3854133 0.33333333
+## 3 Aurignacien              vvvvv        5  0.0000000   0.5711903 0.20000000
+## 4 Aurignacien          vvvv vvvv        9  0.5032583   0.9060047 0.22222222
+## 5 Aurignacien     vvvvvvvvvvvvvv       14  0.0000000   0.6379550 0.07142857
+## 6 Aurignacien                |||        3  0.0000000   0.4308271 0.33333333
 ##    rm.chars
-## 1 0.6363636
-## 2 1.0000000
-## 3 0.7500000
-## 4 1.0000000
+## 1 1.0000000
+## 2 0.6363636
+## 3 1.0000000
+## 4 0.7500000
 ## 5 1.0000000
 ## 6 1.0000000</code></pre>
 </div>
 <div id="simple-stats" class="section level1">
 <h1>Simple Stats</h1>
 <pre class="r"><code>nrow(estimations.df) # number of sequences with feature estimations</code></pre>
-<pre><code>## [1] 3031</code></pre>
+<pre><code>## [1] 3027</code></pre>
 <pre class="r"><code>unique(estimations.df$subcorpus) # names of subcorpora</code></pre>
 <pre><code>## [1] &quot;Aurignacien&quot;          &quot;Cuneiform (Uruk V)&quot;   &quot;Cuneiform (Uruk IV)&quot; 
 ## [4] &quot;Cuneiform (Uruk III)&quot; &quot;TeDDi&quot;</code></pre>
-<pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Aurignacien&quot;,]) # number of Aurignacien sequences</code></pre>
-<pre><code>## [1] 211</code></pre>
-<pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;TeDDi&quot;,]) # number of TeDDi (modern writing) sequences</code></pre>
-<pre><code>## [1] 995</code></pre>
-<pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Cuneiform (Uruk V)&quot;,]) </code></pre>
+<pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Aurignacien&quot;, ]) # number of Aurignacien sequences</code></pre>
+<pre><code>## [1] 212</code></pre>
+<pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;TeDDi&quot;, ]) # number of TeDDi (modern writing) sequences</code></pre>
+<pre><code>## [1] 990</code></pre>
+<pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Cuneiform (Uruk V)&quot;, ]) # number of Uruk V proto-cuneiform sequences</code></pre>
 <pre><code>## [1] 111</code></pre>
-<pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Cuneiform (Uruk IV)&quot;,]) </code></pre>
+<pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Cuneiform (Uruk IV)&quot;, ]) </code></pre>
 <pre><code>## [1] 859</code></pre>
-<pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Cuneiform (Uruk III)&quot;,]) </code></pre>
+<pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Cuneiform (Uruk III)&quot;, ]) </code></pre>
 <pre><code>## [1] 855</code></pre>
 <p>Write to file</p>
 <pre class="r"><code>write.csv(estimations.df, &quot;~/Github/UpperPalCombinatorics/results/features/features_combined.csv&quot;, row.names = F)</code></pre>
+</div>
+<div id="package-references" class="section level1">
+<h1>Package References</h1>
+<pre><code>## Wickham H, François R, Henry L, Müller K, Vaughan D (2023). _dplyr: A
+## Grammar of Data Manipulation_. R package version 1.1.4,
+## &lt;https://CRAN.R-project.org/package=dplyr&gt;.</code></pre>
 </div>
 
 

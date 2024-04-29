@@ -162,7 +162,6 @@ pre code {
 
 <h1 class="title toc-ignore">Estimations of Quantitative Features for TeDDi Sample</h1>
 <h4 class="author"></h4>
-<h4 class="date">28/03/2024</h4>
 
 </div>
 
@@ -170,11 +169,6 @@ pre code {
 <div id="description" class="section level1">
 <h1>Description</h1>
 <p>This file contains the code for estimating the feature values (TTR, unigram entropy, entropy rate, repetition rate) per character sequence in TeDDi sample lines. These features where tested on a wider sample of linguistic and non-linguistic sign sequences in Bentz (2023). The repetition measure was tested also in Sproat (2014).</p>
-<div id="references" class="section level2">
-<h2>References</h2>
-<p>Bentz, C. (2023). The Zipfian Challenge: Learning the statistical fingerprint of natural languages. In Proceedings of the 27th Conference on Computational Natural Language Learning (CoNLL), pp. 27-37.</p>
-<p>Sproat, R. (2014). A statistical comparison of written language and nonlinguistic symbol systems. Language, 457-481.</p>
-</div>
 </div>
 <div id="load-libraries" class="section level1">
 <h1>Load libraries</h1>
@@ -186,6 +180,9 @@ library(gsubfn)</code></pre>
 <pre class="r"><code>#library(devtools)
 #install_github(&quot;dimalik/Hrate&quot;)
 library(Hrate)</code></pre>
+<p>Give the package versions.</p>
+<pre><code>##   Hrate  gsubfn   proto entropy stringr 
+##   &quot;0.2&quot;   &quot;0.7&quot; &quot;1.0.0&quot; &quot;1.3.1&quot; &quot;1.5.1&quot;</code></pre>
 </div>
 <div id="load-files" class="section level1">
 <h1>Load files</h1>
@@ -273,7 +270,7 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 3.183982 secs</code></pre>
+<pre><code>## Time difference of 3.271557 secs</code></pre>
 <p>Merge estimations with original file</p>
 <pre class="r"><code>teddi.clean.est &lt;- merge(teddi.clean, estimations.df, by = &quot;id&quot;)</code></pre>
 <p>Give head of estimation data frame (selected columns) for visual checking of the output data structure.</p>
@@ -302,6 +299,25 @@ end_time - start_time</code></pre>
 ## 6             Basque       66   3.955781    2.711963 0.3181818 0.000000000</code></pre>
 <p>Safe outputs to file.</p>
 <pre class="r"><code>write.csv(teddi.clean.est, &quot;~/Github/UpperPalCombinatorics/results/features/teddi_features.csv&quot;, row.names = F)</code></pre>
+</div>
+<div id="package-references" class="section level1">
+<h1>Package References</h1>
+<pre><code>## Bentz C, Alikaniotis D (2017). _Hrate: Implements LZ estimator for
+## texts_. R package version 0.2.</code></pre>
+<pre><code>## Wickham H (2023). _stringr: Simple, Consistent Wrappers for Common
+## String Operations_. R package version 1.5.1,
+## &lt;https://CRAN.R-project.org/package=stringr&gt;.</code></pre>
+<pre><code>## Grothendieck G (2018). _gsubfn: Utilities for Strings and Function
+## Arguments_. R package version 0.7,
+## &lt;https://CRAN.R-project.org/package=gsubfn&gt;.</code></pre>
+<pre><code>## Hausser J, Strimmer K (2021). _entropy: Estimation of Entropy, Mutual
+## Information and Related Quantities_. R package version 1.3.1,
+## &lt;https://CRAN.R-project.org/package=entropy&gt;.</code></pre>
+</div>
+<div id="literature-references" class="section level1">
+<h1>Literature References</h1>
+<p>Bentz, C. (2023). The Zipfian Challenge: Learning the statistical fingerprint of natural languages. In Proceedings of the 27th Conference on Computational Natural Language Learning (CoNLL), pp. 27-37.</p>
+<p>Sproat, R. (2014). A statistical comparison of written language and nonlinguistic symbol systems. Language, 457-481.</p>
 </div>
 
 

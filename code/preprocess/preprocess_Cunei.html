@@ -162,7 +162,6 @@ pre code {
 
 <h1 class="title toc-ignore">Proto-Cuneiform Preprocessing</h1>
 <h4 class="author"></h4>
-<h4 class="date">28/03/2024</h4>
 
 </div>
 
@@ -181,7 +180,7 @@ Example of a Proto-Cuneiform tablet and transliteration from the CDLI database. 
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
 <p>Give the session info (reduced).</p>
-<pre><code>## [1] &quot;R version 4.3.2 (2023-10-31)&quot;</code></pre>
+<pre><code>## [1] &quot;R version 4.3.3 (2024-02-29)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
 </div>
 <div id="load-libraries" class="section level1">
@@ -194,6 +193,9 @@ Example of a Proto-Cuneiform tablet and transliteration from the CDLI database. 
 ##     format.pval, units</code></pre>
 <pre class="r"><code>library(stringr)
 library(readr)</code></pre>
+<p>Give the package versions.</p>
+<pre><code>##   readr stringr   Hmisc 
+## &quot;2.1.5&quot; &quot;1.5.1&quot; &quot;5.1-1&quot;</code></pre>
 </div>
 <div id="load-transliteration-and-sign-list" class="section level1">
 <h1>Load Transliteration and Sign List</h1>
@@ -327,6 +329,17 @@ cunei.data &lt;- data.frame(tablet.id, signs.orig.vec, signs.expand.vec)</code><
 <pre class="r"><code>write.csv(cunei.data, file = paste(&quot;~/Github/UpperPalCombinatorics/data/CDLI/&quot;, 
                       paste(period, &quot;/signs_clean.csv&quot;, sep = &quot;&quot;), 
                       sep =&quot;&quot;), row.names = F)</code></pre>
+</div>
+<div id="package-references" class="section level1">
+<h1>Package References</h1>
+<pre><code>## Harrell Jr F (2023). _Hmisc: Harrell Miscellaneous_. R package version
+## 5.1-1, &lt;https://CRAN.R-project.org/package=Hmisc&gt;.</code></pre>
+<pre><code>## Wickham H (2023). _stringr: Simple, Consistent Wrappers for Common
+## String Operations_. R package version 1.5.1,
+## &lt;https://CRAN.R-project.org/package=stringr&gt;.</code></pre>
+<pre><code>## Wickham H, Hester J, Bryan J (2024). _readr: Read Rectangular Text
+## Data_. R package version 2.1.5,
+## &lt;https://CRAN.R-project.org/package=readr&gt;.</code></pre>
 </div>
 
 

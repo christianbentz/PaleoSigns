@@ -1,7 +1,7 @@
 ---
 title: "Preprocessing TeDDi Sample"
 author: ""
-date: "28/03/2024"
+date: ""
 output:
   html_document: default
   pdf_document: default
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Description
-This file enables preprocessing of the TeDDi sample natural language text material. This is used as a sample to compare against the sign codings for proto-cuneiform and paleolithic sign sequences. Dumps of the TeDDi sample can be downloaded from https://drive.switch.ch/index.php/s/MJv7xFkzqlzFn0y. Note that the sample of TeDDi lines was here produced by using the follwing Perl commands in the directory where the lines.csv file is stored:
+This file enables preprocessing of the TeDDi sample natural language text material (Moran et al., 2022). This is used as a sample to compare against the sign codings for proto-cuneiform and paleolithic sign sequences. Dumps of the TeDDi sample can be downloaded from https://drive.switch.ch/index.php/s/MJv7xFkzqlzFn0y. Note that the sample of TeDDi lines was here produced by using the follwing Perl commands in the directory where the lines.csv file is stored:
 
 head -1 line.csv > line_sample.csv
 perl -ne 'print if (rand() < .01)' line.csv >> line_sample.csv
@@ -34,6 +34,12 @@ If the libraries are not installed yet, you need to install them using, for exam
 library(dplyr)
 ```
 
+Give the package versions.
+```{r, echo = F}
+# version of packages loaded
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
+```
+
 # Load the TeDDi data
 ```{r}
 # load data from TeDDi dumps (takes a couple of minutes)
@@ -53,8 +59,8 @@ teddi.sample <-sample_n(teddi.data, 1000)
 
 # Further Preprocessing
 ```{r}
-# use only lines with at least two characters
-teddi.clean <- teddi.sample[nchar(teddi.sample$text) > 1, ]
+# use only lines with at least three characters (less than three are mostly noise)
+teddi.clean <- teddi.sample[nchar(teddi.sample$text) > 2, ]
 ```
 
 # Simple Stats
@@ -73,3 +79,11 @@ Write to file.
 write.csv(teddi.clean, 
           file = "~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.csv", row.names = F)
 ```
+
+# Package References
+```{r, echo = F}
+print(citation("dplyr"), style = "text")
+```
+
+# Literature References
+Moran, S., Bentz, C., Gutierrez-Vasques, X., Pelloni, O., & Samardzic, T. (2022, June). TeDDi sample: text data diversity sample for language comparison and multilingual NLP. In Proceedings of the Thirteenth Language Resources and Evaluation Conference (pp. 1150-1158).

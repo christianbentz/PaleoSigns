@@ -1,7 +1,7 @@
 ---
 title: "Estimations Combined"
 author: ""
-date: "28/03/2024"
+date: ""
 output:
   html_document: default
   pdf_document: default
@@ -18,6 +18,12 @@ This code loads and combines the different feature value estimations (natural la
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
 ```{r}
 library(dplyr)
+```
+
+Give the package versions.
+```{r, echo = F}
+# version of packages loaded
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ```
 
 # Load Data
@@ -108,14 +114,19 @@ head(estimations.df)
 ```{r}
 nrow(estimations.df) # number of sequences with feature estimations
 unique(estimations.df$subcorpus) # names of subcorpora
-nrow(estimations.df[estimations.df$subcorpus=="Aurignacien",]) # number of Aurignacien sequences
-nrow(estimations.df[estimations.df$subcorpus=="TeDDi",]) # number of TeDDi (modern writing) sequences
-nrow(estimations.df[estimations.df$subcorpus=="Cuneiform (Uruk V)",]) 
-nrow(estimations.df[estimations.df$subcorpus=="Cuneiform (Uruk IV)",]) 
-nrow(estimations.df[estimations.df$subcorpus=="Cuneiform (Uruk III)",]) 
+nrow(estimations.df[estimations.df$subcorpus=="Aurignacien", ]) # number of Aurignacien sequences
+nrow(estimations.df[estimations.df$subcorpus=="TeDDi", ]) # number of TeDDi (modern writing) sequences
+nrow(estimations.df[estimations.df$subcorpus=="Cuneiform (Uruk V)", ]) # number of Uruk V proto-cuneiform sequences
+nrow(estimations.df[estimations.df$subcorpus=="Cuneiform (Uruk IV)", ]) 
+nrow(estimations.df[estimations.df$subcorpus=="Cuneiform (Uruk III)", ]) 
 ```
 
 Write to file
 ```{r}
 write.csv(estimations.df, "~/Github/UpperPalCombinatorics/results/features/features_combined.csv", row.names = F)
+```
+
+# Package References
+```{r, echo = F}
+print(citation("dplyr"), style = "text")
 ```

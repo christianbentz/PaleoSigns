@@ -1,7 +1,7 @@
 ---
 title: "Proto-Cuneiform Preprocessing"
 author: ''
-date: "28/03/2024"
+date: ""
 output:
   html_document: default
   pdf_document: default
@@ -32,6 +32,12 @@ sessionInfo()$R.version$platform
 library(Hmisc)
 library(stringr)
 library(readr)
+```
+
+Give the package versions.
+```{r, echo = F}
+# version of packages loaded
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ```
 
 # Load Transliteration and Sign List
@@ -163,4 +169,11 @@ Safe to file.
 write.csv(cunei.data, file = paste("~/Github/UpperPalCombinatorics/data/CDLI/", 
                       paste(period, "/signs_clean.csv", sep = ""), 
                       sep =""), row.names = F)
+```
+
+# Package References
+```{r, echo = F}
+print(citation("Hmisc"), style = "text")
+print(citation("stringr"), style = "text")
+print(citation("readr"), style = "text")
 ```

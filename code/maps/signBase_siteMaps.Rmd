@@ -5,14 +5,15 @@ date: ""
 output:
   html_document: default
   pdf_document: default
-R version: R version 3.4.4 (2018-03-15) -- "Someone to Lean On"
-Linux version: Ubuntu 18.04.3 LTS
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(message = FALSE)
 ```
+
+# Description 
+This file gives code for plotting maps of the Swabian Aurignacian sites, including randomly sampled examples of sign codings for illustration purposes.
 
 # Session Info
 Give the session info (reduced).
@@ -53,6 +54,11 @@ objects <- objects[objects$archaeological_unit == "Aurignacien" &
                      objects$site_name == "Geissenklösterle" |
                      objects$site_name == "Hohlenstein-Stadel", ]
 nrow(objects)
+```
+# Preprocessing
+```{r}
+# Remove objects with short (or empty) sign sequences
+objects <- objects[nchar(objects$sign_coding) > 2, ]
 ```
 
 # Overview Stats
@@ -138,16 +144,18 @@ object.density.map <- ggmap(map) +
              size = 0.3)  +
   theme(legend.position = "none") +
   ggtitle("Swabian Jura") +
+  # further segment and text annotations
   annotate("segment", x = 10.18, xend = 10, y = 48.559, yend = 48.559, colour = "black") +
   annotate("text", x = 10.05, y = 48.57, label = "Lone Valley", colour = "black") +
   annotate("segment", x = 9.77, xend = 9.85, y = 48.385, yend = 48.385, colour = "black") +
   annotate("text", x = 9.85, y = 48.395, label = "Ach Valley", colour = "black") +
   annotate("text", x = 10, y = 48.41, label = "Ulm", colour = "black") +
   annotate("segment", x = 10.18, xend = 9.77, y = 48.559, yend = 48.385, colour = "black", linetype = 3) +
-   annotate("text", x = 10.02, y = 48.47, label = "c. 35 km", colour = "black")
+  annotate("text", x = 10.02, y = 48.47, label = "c. 35 km", colour = "black")
 swabianJura.map <- object.density.map +
   # add map of Germany as inset
   inset(ggplotGrob(germany.map), xmin = 9.72, xmax = 9.98, ymin = 48.5, ymax = 48.69)
+swabianJura.map
 ```
 
 Subset object data frame according to cave site.
@@ -160,7 +168,7 @@ objects.hss <- objects[objects$site_name == "Hohlenstein-Stadel", ]
 
 ## Maps of Achtal and Lonetal
 
-# Downsample the object data
+### Downsample the object data
 This is necessary since all the objects would overcrowed the plots.
 ```{r}
 set.seed(15022018)
@@ -183,7 +191,7 @@ objects.vhc.sample <- objects.vhc[objects.vhc$object_type != "other", ]
 objects.vhc.sample <- sample_n(objects.vhc.sample, 20)
 ```
 
-## Maps with objects for Achtal and Lonetal.
+### Maps with objects for Achtal and Lonetal
 
 Plot a map of the Lonetal.
 ```{r, warning = F}
@@ -216,6 +224,7 @@ object.map.lonetal <- ggmap(map.lonetal) +
   annotate("text", x = 10.188, y = 48.56, label = "Vogelherd", colour = "white") +
   annotate("segment", x = 10.17255, xend = 10.17255, y = 48.54975, yend = 48.547, colour = "white") +
   annotate("text", x = 10.178, y = 48.547, label = "Hohlenstein-Stadel", colour = "white")
+object.map.lonetal
 ```
 
 Map of the Achtal

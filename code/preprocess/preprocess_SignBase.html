@@ -162,7 +162,6 @@ pre code {
 
 <h1 class="title toc-ignore">Preprocessing for SignBase Sequences</h1>
 <h4 class="author"></h4>
-<h4 class="date">28/03/2024</h4>
 
 </div>
 
@@ -174,24 +173,21 @@ pre code {
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
 <p>Give the session info (reduced).</p>
-<pre><code>## [1] &quot;R version 4.3.2 (2023-10-31)&quot;</code></pre>
+<pre><code>## [1] &quot;R version 4.3.3 (2024-02-29)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
-</div>
-<div id="load-libraries" class="section level1">
-<h1>Load libraries</h1>
-<p>If the libraries are not installed yet, you need to install them using, for example, the command: install.packages(“ggplot2”).</p>
-<pre class="r"><code>#library(dplyr)</code></pre>
 </div>
 <div id="preprocessing" class="section level1">
 <h1>Preprocessing</h1>
 <p>Preprocessing and storage of cleaned file for signs. Load data from github repo and remove missing rows.</p>
 <pre class="r"><code># load data from github repo
 sign.data &lt;- read.csv(
-  &quot;~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-02-20.csv&quot;)
+  &quot;~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-04-26.csv&quot;)
 # remove certain columns
-sign.data &lt;- subset(sign.data, select = -c(id, comments, short_description, references))
+sign.data &lt;- subset(sign.data, select = -c(short_description, references))
 # remove rows for which there is no sign coding
-sign.data &lt;- sign.data[!sign.data$sign_coding == &quot;&quot;, ]</code></pre>
+sign.data &lt;- sign.data[!sign.data$sign_coding == &quot;&quot;, ]
+# remove rows with &quot;very uncertain&quot; sign codings
+sign.data &lt;- sign.data[!sign.data$coding_certainty == &quot;Very uncertain&quot;, ]</code></pre>
 <p>Remove UTF-8 characters which do not represent actual signs on the objects, i.e annotations. A table with these distinctions is also provided at www.signbase.org.</p>
 <pre class="r"><code># remove some special characters 
 coding.clean &lt;- gsub(&#39;[!?]&#39;, &#39;&#39;, sign.data$sign_coding)

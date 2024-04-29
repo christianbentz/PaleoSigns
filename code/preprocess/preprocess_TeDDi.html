@@ -162,27 +162,28 @@ pre code {
 
 <h1 class="title toc-ignore">Preprocessing TeDDi Sample</h1>
 <h4 class="author"></h4>
-<h4 class="date">28/03/2024</h4>
 
 </div>
 
 
 <div id="description" class="section level1">
 <h1>Description</h1>
-<p>This file enables preprocessing of the TeDDi sample natural language text material. This is used as a sample to compare against the sign codings for proto-cuneiform and paleolithic sign sequences. Dumps of the TeDDi sample can be downloaded from <a href="https://drive.switch.ch/index.php/s/MJv7xFkzqlzFn0y" class="uri">https://drive.switch.ch/index.php/s/MJv7xFkzqlzFn0y</a>. Note that the sample of TeDDi lines was here produced by using the follwing Perl commands in the directory where the lines.csv file is stored:</p>
+<p>This file enables preprocessing of the TeDDi sample natural language text material (Moran et al., 2022). This is used as a sample to compare against the sign codings for proto-cuneiform and paleolithic sign sequences. Dumps of the TeDDi sample can be downloaded from <a href="https://drive.switch.ch/index.php/s/MJv7xFkzqlzFn0y" class="uri">https://drive.switch.ch/index.php/s/MJv7xFkzqlzFn0y</a>. Note that the sample of TeDDi lines was here produced by using the follwing Perl commands in the directory where the lines.csv file is stored:</p>
 <p>head -1 line.csv &gt; line_sample.csv perl -ne ‘print if (rand() &lt; .01)’ line.csv &gt;&gt; line_sample.csv</p>
 <p>This randomly samples 10% of the overall around 20 million text lines. This downsampling is necessary, since otherwise loading the data into R for further processing is not feasible.</p>
 </div>
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
 <p>Give the session info (reduced).</p>
-<pre><code>## [1] &quot;R version 4.3.2 (2023-10-31)&quot;</code></pre>
+<pre><code>## [1] &quot;R version 4.3.3 (2024-02-29)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
 </div>
 <div id="load-libraries" class="section level1">
 <h1>Load libraries</h1>
 <p>If the libraries are not installed yet, you need to install them using, for example, the command: install.packages(“ggplot2”).</p>
 <pre class="r"><code>library(dplyr)</code></pre>
+<p>Give the package versions.</p>
+<pre><code>## [1] &quot;1.1.4&quot;</code></pre>
 </div>
 <div id="load-the-teddi-data" class="section level1">
 <h1>Load the TeDDi data</h1>
@@ -201,15 +202,15 @@ teddi.sample &lt;-sample_n(teddi.data, 1000)</code></pre>
 </div>
 <div id="further-preprocessing" class="section level1">
 <h1>Further Preprocessing</h1>
-<pre class="r"><code># use only lines with at least two characters
-teddi.clean &lt;- teddi.sample[nchar(teddi.sample$text) &gt; 1, ]</code></pre>
+<pre class="r"><code># use only lines with at least three characters (less than three are mostly noise)
+teddi.clean &lt;- teddi.sample[nchar(teddi.sample$text) &gt; 2, ]</code></pre>
 </div>
 <div id="simple-stats" class="section level1">
 <h1>Simple Stats</h1>
 <p>Some simple stats of the textual data here sampled from TeDDi.</p>
 <pre class="r"><code># lines of text
 nrow(teddi.clean)</code></pre>
-<pre><code>## [1] 995</code></pre>
+<pre><code>## [1] 990</code></pre>
 <pre class="r"><code># unique ISO codes (i.e. languages)
 unique(teddi.clean$iso639_3)</code></pre>
 <pre><code>##  [1] &quot;rus&quot; &quot;ell&quot; &quot;kat&quot; &quot;fra&quot; &quot;tur&quot; &quot;jpn&quot; &quot;fin&quot; &quot;deu&quot; &quot;pes&quot; &quot;heb&quot; &quot;kor&quot; &quot;cmn&quot;
@@ -222,6 +223,16 @@ unique(teddi.clean$writing_system)</code></pre>
 <p>Write to file.</p>
 <pre class="r"><code>write.csv(teddi.clean, 
           file = &quot;~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.csv&quot;, row.names = F)</code></pre>
+</div>
+<div id="package-references" class="section level1">
+<h1>Package References</h1>
+<pre><code>## Wickham H, François R, Henry L, Müller K, Vaughan D (2023). _dplyr: A
+## Grammar of Data Manipulation_. R package version 1.1.4,
+## &lt;https://CRAN.R-project.org/package=dplyr&gt;.</code></pre>
+</div>
+<div id="literature-references" class="section level1">
+<h1>Literature References</h1>
+<p>Moran, S., Bentz, C., Gutierrez-Vasques, X., Pelloni, O., &amp; Samardzic, T. (2022, June). TeDDi sample: text data diversity sample for language comparison and multilingual NLP. In Proceedings of the Thirteenth Language Resources and Evaluation Conference (pp. 1150-1158).</p>
 </div>
 
 

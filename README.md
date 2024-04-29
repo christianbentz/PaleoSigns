@@ -36,6 +36,8 @@ Estimation:
 - analyses_Randomization.Rmd: Comparison of entropy rates for original sign sequences of signBase to randomized sign sequences.
 - analyses_Aurignacian.Rmd: Further analyses of the relationship between feature values (e.g. entropy rates) and meta information (e.g. object type, material, volume, etc.) per object of the Swabian Aurignacian.
 
+## Maps
+- signBase_siteMaps: Code for creating maps of the Swabian Aurignacian sites.
 
 References
 
