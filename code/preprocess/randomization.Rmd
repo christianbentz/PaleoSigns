@@ -18,9 +18,6 @@ This file enables concatenation and randomization of sign strings which occur on
 
 Again, randomization would destroy this syntax and artificially introduce randomness where order was intended by the scribes.  
 
-## References
-Englund (1998). Texts from the Late Uruk period. In Bauer et al. (Eds.), Späturuk-Zeit und Frühdynastische Zeit.
-
 # Session Info
 Give the session info (reduced).
 ```{r, echo = F}
@@ -66,4 +63,5 @@ Safe to file.
 write.csv(sign.data, "~/Github/UpperPalCombinatorics/data/signBase/signBase_randomized.csv", row.names = F)
 ```
 
-
+## Literature References
+Englund (1998). Texts from the Late Uruk period. In Bauer et al. (Eds.), Späturuk-Zeit und Frühdynastische Zeit.

@@ -10,10 +10,19 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-## Description
+# Description
 This file enables stabilization analyses for the feature value estimations. In other words, feature values are not estimated for a single, pre-defined number of characters, but are estimated for discrete steps (defined with "stepsize"), and for a given maximum number of characters (defined as ``n'').
 
-## Load libraries
+# Session Info
+Give the session info (reduced).
+```{r, echo = F}
+# R version
+sessionInfo()$R.version$version.string
+# platform
+sessionInfo()$R.version$platform 
+```
+
+# Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2"). For the Hrate package this is different, since it comes from github. The devtools library needs to be installed, and then the install_github() function is used.
 ```{r}
 library(stringr)

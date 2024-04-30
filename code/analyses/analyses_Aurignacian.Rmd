@@ -12,6 +12,15 @@ knitr::opts_chunk$set(echo = TRUE)
 # Description
 This file enables analyses of feature values for sequences on Swabian Aurgnacian objects (entropy rate, TTR, repetition rate, unigram entropy) as a function of meta information (object type, volume, cave site, etc.). 
 
+# Session Info
+Give the session info (reduced).
+```{r, echo = F}
+# R version
+sessionInfo()$R.version$version.string
+# platform
+sessionInfo()$R.version$platform 
+```
+
 # Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
 ```{r}
@@ -23,8 +32,14 @@ library(ggpubr)
 library(ggridges)
 library(tidyverse)
 library(performance)
-#library(see)
+library(see)
 library(MASS)
+```
+
+Give the package versions.
+```{r, echo = F}
+# version of packages loaded
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ```
 
 # Load Data
@@ -60,7 +75,7 @@ sign.data$material <- fct_collapse(sign.data$material,
 
 # object_type: collapse manually
 sign.data$object_type <- fct_collapse(sign.data$object_type,
-             figurine_anthropomorph = c("figurine anthropomorph", "figurine anthropomoph",
+             figurine_anthropomorph = c("figurine anthropomorph",
                           "plaquette"), 
              # note: the "plaquette" is the so-called Adorant with an anthropomorph figure on it.
              figurine_zoomorph = c("figurine zoomorph"),
@@ -89,7 +104,7 @@ objectType.plot <- ggplot(sign.data, aes(x = feature.values,
   geom_density_ridges_gradient(scale = 1, color = "white",
                                quantile_lines = T, quantiles = 2) +
   scale_fill_viridis_c(name = feature.name, option = "D") +
-  geom_point(shape = 124, alpha = 0.7, size = 2) +
+  geom_point(shape = 124, alpha = 0.7, size = 3) +
   xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
   ylab("Object-Type (Carrier)") +
   theme(legend.position = "none")
@@ -105,7 +120,7 @@ material.plot <- ggplot(sign.data, aes(x = feature.values,
   geom_density_ridges_gradient(scale = 1, color = "white",
                                quantile_lines = T, quantiles = 2) +
   scale_fill_viridis_c(name = feature.name, option = "D") +
-  geom_point(shape = 124, alpha = 0.7, size = 2) +
+  geom_point(shape = 124, alpha = 0.7, size = 3) +
   xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
   ylab("Material") +
   theme(legend.position = "none")
@@ -121,7 +136,7 @@ site.plot <- ggplot(sign.data, aes(x = feature.values,
   geom_density_ridges_gradient(scale = 1, color = "white",
                                quantile_lines = T, quantiles = 2) +
   scale_fill_viridis_c(name = feature.name, option = "D") +
-  geom_point(shape = 124, alpha = 0.7, size = 2) +
+  geom_point(shape = 124, alpha = 0.7, size = 3) +
   xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
   ylab("Cave Site") +
   theme(legend.position = "none")
@@ -137,7 +152,7 @@ preservation.plot <- ggplot(sign.data, aes(x = feature.values,
   geom_density_ridges_gradient(scale = 1, color = "white",
                                quantile_lines = T, quantiles = 2) +
   scale_fill_viridis_c(name = feature.name, option = "D") +
-  geom_point(shape = 124, alpha = 0.7, size = 2) +
+  geom_point(shape = 124, alpha = 0.7, size = 3) +
   xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
   ylab("Preservation") +
   theme(legend.position = "none")
@@ -148,8 +163,8 @@ preservation.plot
 ```{r, warning = F}
 # create plot
 volume.plot <- ggplot(sign.data, aes(x = feature.values, y = volume)) +
-  geom_point(alpha = 0.5, size = 2) +
-  geom_label_repel(aes(label = object_type)) +
+  geom_point(alpha = 0.5, size = 3) +
+  geom_text_repel(aes(label = object_type)) +
   geom_smooth(method = "lm") +
   xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
   ylab("Volume (cm^3)")
@@ -160,7 +175,7 @@ volume.plot
 ```{r}
 # create plot
 date.plot <- ggplot(sign.data, aes(x = feature.values, y = date)) +
-  geom_point(alpha = 0.5, size = 2) +
+  geom_point(alpha = 0.5, size = 3) +
   #geom_label_repel(aes(label = object_type)) +
   geom_smooth(method = "lm") +
   xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
@@ -197,7 +212,7 @@ summary(linear.model)
 AIC(linear.model) 
 ```
 
-Interpretation: In the model summary above, the reference level for object_type is "tool". Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average c. 0.32 bits/sign *higher* than the once found on objects classified as tools. A similar effect occurs for zoomorph figurines which carry c. 0.3 bits/sign more information than tools. Inversely, entropy rates of sequences on tubes and flutes are c. 0.21 bits/sign *lower* than on tools, and those on personal ornaments c. 0.28 bits/sign lower. All of these differences are significant at the p < 0.05 level. Moreover, there is a small but significant positive effect of the volume of an object on the entropy rate, namely, it increases by c. 0.004 bits/sign with each cubic centimeter of volume. Lastly, the objects from Hohlenstein-Stadel cave have a higher average entropy rate (c. 0.9 bits/sign) than the once from Geissenklösterle (reference level). However, there are only two objects from Hohlenstein-Stadel -- one of them being the famous "lion-man", another one a personal ornament (pendant).    
+Interpretation: In the model summary above, the reference level for object_type is "tool". Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average c. 0.33 bits/sign *higher* than the once found on objects classified as tools. A similar effect occurs for zoomorph figurines which carry c. 0.3 bits/sign more information than tools. Inversely, entropy rates of sequences on tubes and flutes are c. 0.2 bits/sign *lower* than on tools, and those on personal ornaments c. 0.27 bits/sign lower. All of these differences are significant at the p < 0.05 level. Moreover, there is a small but significant positive effect of the volume of an object on the entropy rate, namely, it increases by c. 0.004 bits/sign with each cubic centimeter of volume. Lastly, the objects from Hohlenstein-Stadel cave have a higher average entropy rate (c. 0.9 bits/sign) than the once from Geissenklösterle (reference level). However, there are only two objects from Hohlenstein-Stadel -- one of them being the famous "lion-man", another one a personal ornament (pendant).    
 
 \newpage
 
@@ -213,9 +228,21 @@ shapiro.test(rstandard(linear.model))
 
 Interpretation: There is a slight deviation from linearity and homogeneity of variance for the residuals (first two panels above), though this is due to just one or two data points deviating for the highest fitted values. There are no overly influential observations, and no collinearity between predictors (middle panels above). There is a slight positive skew visible in the distribution of the residuals, cf. the last two panels. However, the Shapiro-Wilk test for normality gives a p-value > 0.05, meaning that the distribution does not significantly deviate from the expectation of a normal distribution (null hypothesis).
 
-# References
+# Package References
+```{r, echo = F}
+print(citation("ggplot2"), style = "text")
+print(citation("ggrepel"), style = "text")
+print(citation("ggExtra"), style = "text")
+print(citation("gridExtra"), style = "text")
+print(citation("ggpubr"), style = "text")
+print(citation("ggridges"), style = "text")
+print(citation("tidyverse"), style = "text")
+print(citation("performance"), style = "text")
+print(citation("see"), style = "text")
+print(citation("MASS"), style = "text")
+```
+
+# Literature References
 Baayen, R. H. (2008). Analyzing Linguistic Data. A Practical Introduction to Statistics Using R. Cambridge: Cambridge University Press.
 
 Baayen, H. (2014). Multivariate Statistics. In: Podesva, R. J. & Sharma, D. (eds.), Research methods in linguistics. Cambridge: Cambridge University Press, p. 337-373.
-
----

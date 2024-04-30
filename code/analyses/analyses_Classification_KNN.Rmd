@@ -1,7 +1,7 @@
 ---
 title: 'Analyses: Classification with KNN'
 author: ""
-date: "28/03/2024"
+date: ""
 output:
   html_document: default
   pdf_document: default
@@ -11,7 +11,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Description
+# Description
 K-Nearest Neighbor classification of the feature vectors per character sequence (loaded from ~/results/features_combined.csv). The results are stored in ~/results/classifier/. KNN is strictly speaking not a machine "learning" algorithm. Given a data point in the test set, it simply takes the k-nearest neighbors (in the "training" set) of this data point, and assigns the majority label of these to it. See figure below. 
 
 In the context of the current analyses, there are four relevant dimensions (instead of two as in the example below), namely, the TTR, unigram entropy, entropy rate, and repetition rate for the respective sequences. 
@@ -20,13 +20,28 @@ In the context of the current analyses, there are four relevant dimensions (inst
 knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/knn.jpg")
 ```
 
-## Load Packages
+# Session Info
+Give the session info (reduced).
+```{r, echo = F}
+# R version
+sessionInfo()$R.version$version.string
+# platform
+sessionInfo()$R.version$platform 
+```
+
+# Load Packages
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
 ```{r, message = F}
 library(dplyr)
 library(class)
 library(gmodels)
 library(caret)
+```
+
+Give the package versions.
+```{r, echo = F}
+# version of packages loaded
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ```
 
 # Load Data
@@ -161,4 +176,12 @@ write.csv(knn.predictions.df, file = paste(c("~/Github/UpperPalCombinatorics/res
                                               ".csv"
                                               ), collapse = ""),
                                       row.names = F)
+```
+
+# Package References
+```{r, echo = F}
+print(citation("dplyr"), style = "text")
+print(citation("gmodels"), style = "text")
+print(citation("caret"), style = "text")
+print(citation("class"), style = "text")
 ```

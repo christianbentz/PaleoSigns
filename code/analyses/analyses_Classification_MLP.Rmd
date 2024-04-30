@@ -1,7 +1,7 @@
 ---
 title: 'Analyses: Classification with MLP'
 author: ""
-date: "28/03/2024"
+date: ""
 output:
   html_document: default
   pdf_document: default
@@ -18,9 +18,14 @@ Classification of the feature vectors per character sequence (loaded from ~/resu
 knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/mlp_hidden44.png")
 ```
 
-## References
-Bentz, Christian (2023). The Zipfian Challenge: Learning the statistical fingerprint of natural
-languages. CoNLL, Singapore. https://aclanthology.org/2023.conll-1.3/
+# Session Info
+Give the session info (reduced).
+```{r, echo = F}
+# R version
+sessionInfo()$R.version$version.string
+# platform
+sessionInfo()$R.version$platform 
+```
 
 # Load Packages
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2"). For the Hrate package this is different, since it comes from github. The devtools library needs to be installed, and then the install_github() function is used.
@@ -29,6 +34,12 @@ If the libraries are not installed yet, you need to install them using, for exam
 library(neuralnet)
 library(sigmoid)
 library(caret)
+```
+
+Give the package versions.
+```{r, echo = F}
+# version of packages loaded
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ```
 
 # Load Data
@@ -240,4 +251,14 @@ Visualize the NN with the best weights after training. Note this is the *last ru
 #mlp.plot
 ```
 
+# Package References
+```{r, echo = F}
+print(citation("neuralnet"), style = "text")
+print(citation("sigmoid"), style = "text")
+print(citation("caret"), style = "text")
+```
+
+# Literature References
+Bentz, Christian (2023). The Zipfian Challenge: Learning the statistical fingerprint of natural
+languages. CoNLL, Singapore. https://aclanthology.org/2023.conll-1.3/
 

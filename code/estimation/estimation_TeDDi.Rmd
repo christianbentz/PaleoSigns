@@ -14,6 +14,15 @@ knitr::opts_chunk$set(echo = TRUE)
 # Description
 This file contains the code for estimating the feature values (TTR, unigram entropy, entropy rate, repetition rate) per character sequence in TeDDi sample lines. These features where tested on a wider sample of linguistic and non-linguistic sign sequences in Bentz (2023). The repetition measure was tested also in Sproat (2014). 
 
+# Session Info
+Give the session info (reduced).
+```{r, echo = F}
+# R version
+sessionInfo()$R.version$version.string
+# platform
+sessionInfo()$R.version$platform 
+```
+
 # Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2"). For the Hrate package this is different, since it comes from github. The devtools library needs to be installed, and then the install_github() function is used.
 ```{r}
