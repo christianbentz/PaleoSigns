@@ -1,7 +1,7 @@
 ---
 title: "Analyses: Feature Value Distributions"
 author: ""
-date: "28/03/2024"
+date: ""
 output:
   html_document: default
   pdf_document: default
@@ -23,12 +23,17 @@ library(ggbiplot)
 library(stringr)
 library(ggplot2)
 library(ggrepel)
-library(dplyr)
 library(ggExtra)
-library(gridExtra)
 library(ggpubr)
+library(dplyr)
 library(ggridges)
 library(GGally)
+```
+
+Give the package versions.
+```{r, echo = F}
+# version of packages loaded
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ```
 
 # Load Data
@@ -46,7 +51,6 @@ head(estimations.df)
 
 # select only certain subcorpora for plotting
 estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignacien"|
-                                          #estimations.df$subcorpus == "Aurignacien/Gravettian"|
                                           estimations.df$subcorpus == "Cuneiform (Uruk V)"|
                                           estimations.df$subcorpus == "Cuneiform (Uruk IV)"| 
                                           estimations.df$subcorpus == "Cuneiform (Uruk III)"|  
@@ -86,8 +90,8 @@ length.plot <- ggplot(estimations.df.selected, aes(x = num.char, y = subcorpus,
 
 Safe complete figure to file
 ```{r}
-#ggsave("~/Github/UpperPalCombinatorics/figures/lengthPlot_chars.pdf", 
-#       length.plot, dpi = 300, width = 5, height = 5, device = cairo_pdf)
+ggsave("~/Github/UpperPalCombinatorics/figures/lengthPlot_chars.pdf", 
+       length.plot, dpi = 300, width = 5, height = 5, device = cairo_pdf)
 ```
 
 Get subset of data points to plot labels.
@@ -98,24 +102,29 @@ table(estimations.df.selected$num.char)
 # choose subset of data points for labeling
 labels.df <- estimations.df.selected[estimations.df.selected$num.char > 9 &
                                        estimations.df.selected$num.char < 11 &
-                                       #estimations.df.selected$ttr.chars < 1 &
-                                       estimations.df.selected$subcorpus != "Cuneiform (Uruk V)" &
+                                       #estimations.df.selected$subcorpus != "Cuneiform (Uruk V)" &
                                        estimations.df.selected$subcorpus != "Cuneiform (Uruk IV)" &
                                        estimations.df.selected$subcorpus != "Cuneiform (Uruk III)", ]
+# further downsample labels (otherwise they overplot heavily)
+set.seed(15022018)
+labels.df <- sample_n(labels.df, 30)
 ```
 
 ## Entropy rate vs. Unigram Entropy
 ```{r, fig.width = 5, fig.height = 5, warning = FALSE}
 huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y =  hrate.chars, 
-                                    colour = subcorpus, size = num.char)) + 
+                                                             color = subcorpus, size = num.char)) + 
   geom_point(alpha = 0.3) +
-  xlim(0, 5) +
-  #ylim(-0.5, 4.5) +
+  xlim(-0.2, 5) +
   # geom_density2d(alpha = .8) +
   labs(x = "Unigram entropy for characters", y = "Entropy rate for characters") +
   geom_label_repel(data = labels.df,
                   aes(label = sequence),
-                  size = 3,
+                  size = 2,
+                  hjust = 0,
+                  direction = 'y',
+                  fontface = "bold",
+                  nudge_x = 1,
                   max.overlaps = Inf,
                   show.legend = FALSE) +
     theme(legend.position = c(.2, .75))
@@ -129,14 +138,18 @@ huni.hrate.chars.plot <- ggMarginal(huni.hrate.chars.plot, groupFill = T, groupC
 ttr.rm.chars.plot <- ggplot(estimations.df.selected, aes(x = ttr.chars, y = rm.chars, 
                                     colour = subcorpus, size = num.char)) + 
   geom_point(alpha = 0.3) +
+  xlim(0, 1.5) +
   theme(legend.position = "none") +
-  labs(x = "TTR for characters", y = "Repetition rate for characters")
-  # geom_label_repel(data = labels.df, 
-  #                  aes(label = sequence),
-  #                  position = position_nudge_repel(x = 0.25, y = 0),
-  #                  size = 3,
-  #                  max.overlaps = Inf,
-  #                  show.legend = FALSE)
+  labs(x = "TTR for characters", y = "Repetition rate for characters") +
+  geom_label_repel(data = labels.df,
+                   aes(label = sequence),
+                   size = 2,
+                   hjust = 0,
+                   direction = 'y',
+                   fontface = "bold",
+                   nudge_x = 0.2,
+                   max.overlaps = Inf,
+                   show.legend = FALSE)
 ttr.rm.chars.plot <- ggMarginal(ttr.rm.chars.plot, groupFill = T, groupColour = T, 
                                   type = "density")
 #ttr.rm.chars.plot
@@ -150,8 +163,8 @@ combined.plot1 <- ggarrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2,
 
 Safe complete figure to file
 ```{r}
-#ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", 
-#       combined.plot1, dpi = 300, width = 20, height = 10, device = cairo_pdf)
+ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", 
+       combined.plot1, dpi = 300, width = 20, height = 10, device = cairo_pdf)
 ```
 
 # Correlation Plot
@@ -166,8 +179,8 @@ cor.plot
 
 Safe complete figure to file.
 ```{r}
-#ggsave("~/Github/UpperPalCombinatorics/figures/correlation_plot.pdf", 
-#       cor.plot, dpi = 300, width = 12, height = 12, device = cairo_pdf)
+ggsave("~/Github/UpperPalCombinatorics/figures/correlation_plot.pdf", 
+       cor.plot, dpi = 300, width = 12, height = 12, device = cairo_pdf)
 ```
 
 
@@ -227,14 +240,14 @@ The normal data ellipse for the Aurignacian sign sequences fully overlaps with t
 
 Safe complete figure to file
 ```{r}
-#ggsave("~/Github/UpperPalCombinatorics/figures/pca_biplot.pdf", 
-#       biplot, dpi = 300, device = cairo_pdf)
+ggsave("~/Github/UpperPalCombinatorics/figures/pca_biplot.pdf", 
+       biplot, dpi = 300, device = cairo_pdf)
 ```
 
 Combine figures.
 ```{r}
 combined.plot2 <- ggarrange(length.plot, biplot, ncol = 2, 
-                            widths = c(1,2), labels = c("C", "D"))
+                            widths = c(1,1.5), labels = c("C", "D"))
 ```
 
 # Final Combination of Plot Panels
@@ -251,6 +264,19 @@ ggsave("~/Github/UpperPalCombinatorics/figures/finalPlot_chars.pdf",
        final.plot, dpi = 300, width = 15, height = 15, device = cairo_pdf)
 ```
 
-# References 
+# Package References
+```{r, echo = F}
+print(citation("ggbiplot"), style = "text")
+print(citation("stringr"), style = "text")
+print(citation("ggrepel"), style = "text")
+print(citation("ggExtra"), style = "text")
+print(citation("ggpubr"), style = "text")
+print(citation("ggridges"), style = "text")
+print(citation("GGally"), style = "text")
+```
+
+# Literature References 
 
 Jolliffe, I. T., & Cadima, J. (2016). Principal component analysis: a review and recent developments. Philosophical transactions of the royal society A: Mathematical, Physical and Engineering Sciences, 374(2065), 20150202.
+
+Moran, S., Bentz, C., Gutierrez-Vasques, X., Pelloni, O., & Samardzic, T. (2022, June). TeDDi sample: text data diversity sample for language comparison and multilingual NLP. In Proceedings of the Thirteenth Language Resources and Evaluation Conference (pp. 1150-1158).

@@ -1,7 +1,7 @@
 ---
 title: "Randomization Analyses"
 author: ""
-date: "2/27/2024"
+date: ""
 output:
   html_document: default
   pdf_document: default
@@ -23,6 +23,12 @@ library(ggpubr)
 library(gridExtra)
 ```
 
+Give the package versions.
+```{r, echo = F}
+# version of packages loaded
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
+```
+
 # Load Data
 Load csv file with quantitative feature values for sign sequences per object. 
 ```{r}
@@ -37,9 +43,9 @@ sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
 ## Entropy rate 
 Entropy rate for the original versus randomized sequences (i.e. strings of sign characters where randomized).
 ```{r, fig.width = 6, fig.height = 6, warning = FALSE}
-hrate.random.plot <- ggplot(sign.data, aes(x = hrate.chars, y =  hrate.chars.random, 
-                                    size = num.char)) + 
-  geom_point(alpha = 0.3) +
+hrate.random.plot <- ggplot(sign.data, aes(x = hrate.chars, y =  hrate.chars.random)) + 
+  geom_point(aes(size = num.char), alpha = 0.3) +
+  geom_smooth(method = "loess") +
   theme(legend.position = c(.8, .25)) +
   labs(x = " Entropy rate for characters (original)", y = "Entropy rate for characters (randomized)")
 hrate.random.plot <- ggMarginal(hrate.random.plot,
@@ -56,4 +62,12 @@ ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_signBase_random.pdf"
 # Correlation
 ```{r}
 cor(sign.data$hrate.chars, sign.data$hrate.chars.random, method = "pearson")
+```
+
+# Package References
+```{r, echo = F}
+print(citation("ggplot2"), style = "text")
+print(citation("ggExtra"), style = "text")
+print(citation("ggpubr"), style = "text")
+print(citation("gridExtra"), style = "text")
 ```

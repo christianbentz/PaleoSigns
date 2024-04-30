@@ -1,7 +1,7 @@
 ---
 title: "Stabilization Analyses"
 author: ''
-date: "12/03/2024"
+date: ""
 output:
   html_document:
     df_print: paged
@@ -25,6 +25,12 @@ library(gsubfn)
 # library(devtools)
 # install_github("dimalik/Hrate")
 library(Hrate)
+```
+
+Give the package versions.
+```{r, echo = F}
+# version of packages loaded
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ```
 
 # Load Data
@@ -104,8 +110,8 @@ for (i in 1:nrow(data.combined))
   id <- row.data$id
   corpus <- row.data$corpus
   subcorpus <- row.data$subcorpus
-  sequence <- row.data$sequence
-  num.char <- nchar(row.data$sequence)
+  sequence <- as.character(row.data$sequence)
+  num.char <- nchar(as.character(row.data$sequence))
   
   # if/else statement to distinguish between the proto-cuneiform signs
   # and individial UTF-8 characters in the other sequences
@@ -263,4 +269,15 @@ rm.chars.plot
 ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_rm_chars.pdf", rm.chars.plot, dpi = 300,
        width = 20, height = 20, 
        scale = 1, device = cairo_pdf)
+```
+
+# Package References
+```{r, echo = F}
+print(citation("Hrate"), style = "text")
+print(citation("stringr"), style = "text")
+print(citation("gsubfn"), style = "text")
+print(citation("entropy"), style = "text")
+print(citation("ggplot2"), style = "text")
+print(citation("plyr"), style = "text")
+print(citation("ggExtra"), style = "text")
 ```

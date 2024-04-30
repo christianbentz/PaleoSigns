@@ -1,7 +1,7 @@
 ---
 title: 'Analyses: Swabian Aurignacian'
 author: ""
-date: "4/11/2024"
+date: ""
 output: html_document
 ---
 
@@ -23,7 +23,7 @@ library(ggpubr)
 library(ggridges)
 library(tidyverse)
 library(performance)
-library(see)
+#library(see)
 library(MASS)
 ```
 
