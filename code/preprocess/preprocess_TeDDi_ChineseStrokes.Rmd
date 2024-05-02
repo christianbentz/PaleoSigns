@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Description
-This file enables replacing Chinese characters in vector of text lines with individual strokes represented by Latin characters (for easier further processing). The mapping from Chinese characters to strokes is taken from Wang et al. (2022), and can be downloaded from https://github.com/zjwang21/StrokeNet, the original file name is zh2letter.txt. 
+This file enables replacing Chinese characters in vector of text lines with individual strokes represented by Latin characters (for easier further processing). The mapping from Chinese characters to strokes is taken from Wang et al. (2022), and can be downloaded from https://github.com/zjwang21/StrokeNet. The original file name is zh2letter.txt. 
 
 # Session Info
 Give the session info (reduced).
@@ -41,6 +41,8 @@ Select and clean lines with Chinese characters from the TeDDi subsample.
 cmn.data$text <- gsub("[ -~]", '', cmn.data$text)
 # remove punctuation (since this will give NAs when transliterating to strokes)
 cmn.data$text <- gsub("[[:punct:]]", '', cmn.data$text)
+# remove rows with less than 2 characters after cleaning
+cmn.data <- cmn.data[nchar(cmn.data$text) > 1, ]
 # append cleaned rows to TeDDi data frame
 teddi.data.modified <- rbind(teddi.data.nocmn, cmn.data) 
 ```

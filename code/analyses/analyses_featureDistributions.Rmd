@@ -116,7 +116,7 @@ labels.df <- estimations.df.selected[estimations.df.selected$num.char > 9 &
                                        estimations.df.selected$subcorpus != "Cuneiform (Uruk III)", ]
 # further downsample labels (otherwise they overplot heavily)
 set.seed(15022018)
-labels.df <- sample_n(labels.df, 30)
+labels.df <- sample_n(labels.df, 25)
 ```
 
 ## Entropy rate vs. Unigram Entropy
@@ -139,7 +139,7 @@ huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y =
     theme(legend.position = c(.2, .75))
 huni.hrate.chars.plot <- ggMarginal(huni.hrate.chars.plot, groupFill = T, groupColour = T, 
                                   type = "density")
-#huni.hrate.chars.plot
+huni.hrate.chars.plot
 ```
 
 ## TTR vs. Repetition Rate
@@ -234,12 +234,11 @@ biplot <- ggbiplot(pca,
               var.scale = 1,
               groups = estimations.df.selected$subcorpus,
               ellipse = TRUE,
+              ellipse.alpha = 0.1,
               circle = FALSE,
               #ellipse.prob = 0.68, # NULL = 0.68
               alpha = 0.3) +
-  scale_color_discrete(name = '') +
-  theme(legend.direction = 'horizontal',
-               legend.position = 'top')
+  theme(legend.position = 'top') 
 print(biplot)
 ```
 

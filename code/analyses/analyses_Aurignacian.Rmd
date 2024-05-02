@@ -51,6 +51,11 @@ sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
 ```
 
 # Preprocessing
+Exclude certain levels of column coding_certainty to check the robustness of results.
+```{r}
+#sign.data <- sign.data[sign.data$coding_certainty != "Uncertain", ]
+```
+
 Add columns for object volume and dates.
 ```{r}
 # volume in cm^3 (mm multiplications divided by 1000)

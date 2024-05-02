@@ -1,7 +1,7 @@
 ---
 title: 'Analyses: Classification Performance'
 author: ''
-date: "3/1/2024"
+date: ""
 output:
   html_document: default
   pdf_document: default
@@ -101,6 +101,14 @@ In other words, precision measures how often the positive class (also called "Ev
 
 The F-score is then a harmonized mean over prediction and recall. The rational behind this is to make the results more robust in the face of imbalances in terms of the distribution of class labels in the test set. 
 
+# Session Info
+Give the session info (reduced).
+```{r, echo = F}
+# R version
+sessionInfo()$R.version$version.string
+# platform
+sessionInfo()$R.version$platform 
+```
 
 # Load libraries
 If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
@@ -113,6 +121,12 @@ library(ggridges)
 library(tidyverse)
 library(data.table)
 library(caret)
+```
+
+Give the package versions.
+```{r, echo = F}
+# version of packages loaded
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ```
 
 # Multi-layer perceptron (MLP)
@@ -165,7 +179,7 @@ head(performance.mlp.combined)
 Select comparisons to further analyse.
 ```{r}
 # select only comparisons involving the Aurignacien
-performance.mlp.combined <- performance.mlp.combined[performance.mlp.combined$comparison %like% "Aurignacien", ]
+#performance.mlp.combined <- performance.mlp.combined[performance.mlp.combined$comparison %like% "Aurignacien", ]
 ```
 
 ## Density Plots
@@ -275,7 +289,7 @@ head(performance.knn.combined)
 Select comparisons to further analyse.
 ```{r}
 # select only comparisons involving the Aurignacien
-performance.knn.combined <- performance.knn.combined[performance.knn.combined$comparison %like% "Aurignacien", ]
+#performance.knn.combined <- performance.knn.combined[performance.knn.combined$comparison %like% "Aurignacien", ]
 ```
 
 ## Density Plots
@@ -341,7 +355,20 @@ ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot_KNN.pdf",
        combined.plot, dpi = 300, width = 10, height = 3, device = cairo_pdf)
 ```
 
-# References
+# Package References
+
+```{r, echo = F}
+print(citation("ggplot2"), style = "text")
+print(citation("ggExtra"), style = "text")
+print(citation("gridExtra"), style = "text")
+print(citation("ggpubr"), style = "text")
+print(citation("ggridges"), style = "text")
+print(citation("tidyverse"), style = "text")
+print(citation("data.table"), style = "text")
+print(citation("caret"), style = "text")
+```
+
+# Literature References
 
 Hollander, M., Wolfe, D. A., & Chicken, E. (2013). Nonparametric statistical methods. John Wiley & Sons.
 

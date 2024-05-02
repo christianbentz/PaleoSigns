@@ -43,7 +43,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 # Load files
 Load the file with cleaned TeDDi sample lines.
 ```{r}
-teddi.clean <- read.csv("~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.csv")
+teddi.clean <- read.csv("~/Github/UpperPalCombinatorics/data/TeDDi/final_sample_strokes.csv")
 ```
 
 # Feature Estimations
@@ -51,7 +51,10 @@ teddi.clean <- read.csv("~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.
 # set counter
 counter = 0
 # initialize dataframe to append results to
-estimations.df <- data.frame(id = numeric(0),
+estimations.df <- data.frame(id = numeric(0), text = character(0), filename = character(0),
+                             language_name_glotto = character(0), iso639_3 = character(0),
+                             mode = character(0), genre_broad = character(0), 
+                             writing_system = character(0), comments = character(0),
                              num.char = numeric(0), huni.chars = numeric (0), 
                              hrate.chars = numeric(0), ttr.chars = numeric(0), 
                              rm.chars = numeric(0)) 
@@ -62,9 +65,17 @@ for (i in 1:nrow(teddi.clean)){
   try({ # if the processing fails for a certain row, there will be no output for this row,
   # but the try() function allows the loop to keep running  
   
-  # collect info from row
+  # collect relevant meta info from row
   id <- teddi.clean$id[i]
   coding.sample <- as.character(teddi.clean$text[i])
+  text <- coding.sample
+  filename <- teddi.clean$filename[i]
+  language_name_glotto <- teddi.clean$language_name_glotto[i]
+  iso639_3 <- teddi.clean$iso639_3[i]
+  mode <- teddi.clean$mode[i]
+  genre_broad <- teddi.clean$genre_broad[i]
+  writing_system <- teddi.clean$writing_system[i]
+  comments <- teddi.clean$comments[i]
   
   # get number of characters
   num.char <- nchar(coding.sample)
@@ -117,7 +128,10 @@ for (i in 1:nrow(teddi.clean)){
   }
   
   # append results to dataframe
-  local.df <- data.frame(id, num.char, huni.chars, hrate.chars,
+  local.df <- data.frame(id, text, filename, language_name_glotto,
+                         iso639_3, mode, genre_broad, 
+                         writing_system, comments,
+                         num.char, huni.chars, hrate.chars,
                          ttr.chars, rm.chars)
   estimations.df <- rbind(estimations.df, local.df)
 }) # end of try()
@@ -129,20 +143,15 @@ end_time <- Sys.time()
 end_time - start_time
 ```
 
-Merge estimations with original file
-```{r}
-teddi.clean.est <- merge(teddi.clean, estimations.df, by = "id")
-```
-
 Give head of estimation data frame (selected columns) for visual checking of the output data structure.
 ```{r}
-head(teddi.clean.est[c("id", "text", "language_name_wals", "num.char", "huni.chars", 
-                       "hrate.chars", "ttr.chars", "rm.chars")])
+head(estimations.df)
 ```
 
 Safe outputs to file.
 ```{r}
-write.csv(teddi.clean.est, "~/Github/UpperPalCombinatorics/results/features/teddi_features.csv", row.names = F)
+write.csv(estimations.df, "~/Github/UpperPalCombinatorics/results/features/teddi_features.csv", 
+          row.names = F)
 ```
 
 # Package References

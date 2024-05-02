@@ -349,7 +349,7 @@ pre code {
 
 <div id="description" class="section level1">
 <h1>Description</h1>
-<p>This file enables replacing Chinese characters in vector of text lines with individual strokes represented by Latin characters (for easier further processing). The mapping from Chinese characters to strokes is taken from Wang et al. (2022), and can be downloaded from <a href="https://github.com/zjwang21/StrokeNet" class="uri">https://github.com/zjwang21/StrokeNet</a>, the original file name is zh2letter.txt.</p>
+<p>This file enables replacing Chinese characters in vector of text lines with individual strokes represented by Latin characters (for easier further processing). The mapping from Chinese characters to strokes is taken from Wang et al. (2022), and can be downloaded from <a href="https://github.com/zjwang21/StrokeNet" class="uri">https://github.com/zjwang21/StrokeNet</a>. The original file name is zh2letter.txt.</p>
 </div>
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
@@ -376,6 +376,8 @@ teddi.data.nocmn &lt;- teddi.data[teddi.data$language_name_glotto != &quot;Manda
 cmn.data$text &lt;- gsub(&quot;[ -~]&quot;, '', cmn.data$text)
 # remove punctuation (since this will give NAs when transliterating to strokes)
 cmn.data$text &lt;- gsub(&quot;[[:punct:]]&quot;, '', cmn.data$text)
+# remove rows with less than 2 characters after cleaning
+cmn.data &lt;- cmn.data[nchar(cmn.data$text) &gt; 1, ]
 # append cleaned rows to TeDDi data frame
 teddi.data.modified &lt;- rbind(teddi.data.nocmn, cmn.data) </code></pre>
 </div>
@@ -417,10 +419,10 @@ head(cmn.list)</code></pre>
 ## [1] &quot;怎&quot; &quot;么&quot; &quot;了&quot;
 ## 
 ## [[5]]
-## [1] &quot;嗨&quot;
+## [1] &quot;干&quot; &quot;杯&quot;
 ## 
 ## [[6]]
-## [1] &quot;干&quot; &quot;杯&quot;</code></pre>
+##  [1] &quot;另&quot; &quot;外&quot; &quot;万&quot; &quot;爱&quot; &quot;尔&quot; &quot;兰&quot; &quot;人&quot; &quot;妇&quot; &quot;女&quot; &quot;和&quot; &quot;儿&quot; &quot;童&quot;</code></pre>
 <pre class="r"><code># replace characters with stroke transliterations for each string in list
 for (i in 1: length(cmn.list)){
   cmn.list[[i]] &lt;- paste(with(stroke.df, strokes[match(cmn.list[[i]], chars)]), collapse = &quot; &quot;)
@@ -439,10 +441,10 @@ head(cmn.list)</code></pre>
 ## [1] &quot;teaeeouoo tlo hr&quot;
 ## 
 ## [[5]]
-## [1] &quot;aieoodtefsoeo&quot;
+## [1] &quot;eea eatoetao&quot;
 ## 
 ## [[6]]
-## [1] &quot;eea eatoetao&quot;</code></pre>
+## [1] &quot;aiest0 thoao est tootohethn thrto oteee tn1 gteiee gte teatoaie tc0 oeoteaieeaee&quot;</code></pre>
 <pre class="r"><code># unlist and replace original text column in cmn dataframe
 cmn.data$text &lt;- unlist(cmn.list)
 # add comment on stroke transliteration in column &quot;comments&quot;
