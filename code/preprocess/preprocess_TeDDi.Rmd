@@ -19,6 +19,14 @@ perl -ne 'print if (rand() < .01)' line.csv >> line_sample.csv
 
 This randomly samples 10% of the overall around 20 million text lines. This downsampling is necessary, since otherwise loading the data into R for further processing is not feasible.
 
+# Preprocessing of Raw Text Lines
+The text lines are here further cleaned, since there is some unwanted noise in the character strings. In particular, we use the regex "[[:punct:]]" to remove punctuation from all text lines. While it can be argued that punctuation belongs to writing, the problem is that some text lines consist of only punctuation, e.g. "** *" or a series of symbols for musical notes which are arguably not genuine writing (i.e. not representing speech sounds -- not even in an indirect way). 
+
+We also use the regex "[!-~]" to remove ASCII characters (see table below) from number 33 (exclamation mark) to 126 (tilde) from *non-Latin* scripts. This is because there is -- mainly English -- contamination of texts in other languages and writing systems (e.g. Mandarin Chinese, Korean). Note that this also removes some of the punctuation in the non-Latin scripts.    
+```{r foo, out.width="100%", fig.cap="ASCII table from WikiCommons"}
+knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/ASCII-Table.png")
+```
+
 # Session Info
 Give the session info (reduced).
 ```{r, echo = F}
@@ -45,7 +53,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 # load data from TeDDi dumps (takes a couple of minutes)
 line.data <- read.csv(
   "~/Github/UpperPalCombinatorics/data/TeDDi/line_sample.csv")
-file.data <- read.csv("~/Data/TeDDi_dumps/file.csv")
+file.data <- read.csv("~/Github/UpperPalCombinatorics/data/TeDDi/file.csv")
 # merge the files
 teddi.data <- merge(line.data, file.data, by.x = "file_id", by.y = "id")
 ```
@@ -57,10 +65,61 @@ set.seed(15022018)
 teddi.sample <-sample_n(teddi.data, 1000)
 ```
 
-# Further Preprocessing
+# Preprocessing
+
+# Data Cleaning
+Remove punctuation for all text lines, as well as ASCII Characters from non-Latin writing systems (this is the most common type of noise in this data).
 ```{r}
-# use only lines with at least three characters (less than three are mostly noise)
-teddi.clean <- teddi.sample[nchar(teddi.sample$text) > 2, ]
+# remove punctuation from all text lines
+teddi.sample$text <- gsub("[[:punct:]]", '', teddi.sample$text)
+# remove ASCII characters from non-Latin scripts
+# the regex "[!-~]" matches ASCII characters (except white spaces)
+teddi.sample[teddi.sample$writing_system != "Latn", ]$text <- 
+  gsub("[!-~]", '', teddi.sample[teddi.sample$writing_system != "Latn", ]$text)
+```
+
+# Transliterate Chinese Characters to Strokes
+
+## Read file with strokes per character
+Transliterate Chinese characters to strings of strokes represented by Latin characters.
+```{r}
+# load stroke transliteration list
+stroke.file = "~/Github/UpperPalCombinatorics/data/TeDDi/zh2letter.txt"
+stroke.df <- read.table("~/Github/UpperPalCombinatorics/data/TeDDi/zh2letter.txt", sep = " ")
+# add column names
+colnames(stroke.df) <- c("chars","strokes")
+# give beginning of signlist
+head(stroke.df)
+```
+
+## Replace Chinese characters by strokes
+```{r}
+# select only Hanzi simplified script (ISO code Hans)
+hans.data <- teddi.sample[teddi.sample$writing_system == "Hans", ]  
+# split into individual characters (list by text line)
+hans.list <- strsplit(hans.data$text, split = "")
+head(hans.list)
+# replace characters with stroke transliterations for each string in list
+for (i in 1:length(hans.list)){
+  # remove remaining white spaces
+  hans.list[[i]] <- hans.list[[i]][hans.list[[i]] != " "]
+  hans.list[[i]] <- paste(with(stroke.df, strokes[match(hans.list[[i]], chars)]), collapse = " ")
+}
+head(hans.list)
+# unlist and replace original text column in cmn dataframe
+hans.data$text <- unlist(hans.list)
+# add comment on stroke transliteration in column "comments"
+hans.data$comments <- rep("chars transliterated to strokes", nrow(hans.data))
+# add cmn data with strokes to overall data frame
+teddi.sample.modified <- rbind(teddi.sample, hans.data) 
+```
+
+# Final Preprocessing
+Trim white spaces at beginning and end of texts sequences, remove empty text rows (only consisting of white spaces), as well as very short text lines as these can cause NAs in the later calculations. This is the same for other sequences, i.e. paleolithic and proto-cuneiform.
+```{r}
+teddi.clean <- teddi.sample.modified[nchar(teddi.sample.modified$text) > 2, ]
+teddi.clean$text <- trimws(teddi.clean$text)
+teddi.clean <- teddi.clean[teddi.clean$text != "", ]
 ```
 
 # Simple Stats
@@ -76,6 +135,9 @@ unique(teddi.clean$writing_system)
 
 Write to file.
 ```{r}
+# order the columns for convenience
+teddi.clean <- teddi.clean[order(teddi.clean$language_name_glotto), ]
+# write to file
 write.csv(teddi.clean, 
           file = "~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.csv", row.names = F)
 ```
@@ -86,4 +148,4 @@ print(citation("dplyr"), style = "text")
 ```
 
 # Literature References
-Moran, S., Bentz, C., Gutierrez-Vasques, X., Pelloni, O., & Samardzic, T. (2022, June). TeDDi sample: text data diversity sample for language comparison and multilingual NLP. In Proceedings of the Thirteenth Language Resources and Evaluation Conference (pp. 1150-1158).
+Moran, S., Bentz, C., Gutierrez-Vasques, X., Pelloni, O., & Samardzic, T. (2022). TeDDi sample: text data diversity sample for language comparison and multilingual NLP. In Proceedings of the Thirteenth Language Resources and Evaluation Conference (pp. 1150-1158).
