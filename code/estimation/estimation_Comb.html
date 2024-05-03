@@ -470,14 +470,14 @@ head(estimations.df)</code></pre>
 <div id="simple-stats" class="section level1">
 <h1>Simple Stats</h1>
 <pre class="r"><code>nrow(estimations.df) # number of sequences with feature estimations</code></pre>
-<pre><code>## [1] 3078</code></pre>
+<pre><code>## [1] 3077</code></pre>
 <pre class="r"><code>unique(estimations.df$subcorpus) # names of subcorpora</code></pre>
 <pre><code>## [1] &quot;Aurignacien&quot;          &quot;Cuneiform (Uruk V)&quot;   &quot;Cuneiform (Uruk IV)&quot; 
 ## [4] &quot;Cuneiform (Uruk III)&quot; &quot;TeDDi&quot;</code></pre>
 <pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Aurignacien&quot;, ]) # number of Aurignacien sequences</code></pre>
 <pre><code>## [1] 212</code></pre>
 <pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;TeDDi&quot;, ]) # number of TeDDi (modern writing) sequences</code></pre>
-<pre><code>## [1] 1041</code></pre>
+<pre><code>## [1] 1040</code></pre>
 <pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Cuneiform (Uruk V)&quot;, ]) # number of Uruk V proto-cuneiform sequences</code></pre>
 <pre><code>## [1] 111</code></pre>
 <pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Cuneiform (Uruk IV)&quot;, ]) </code></pre>

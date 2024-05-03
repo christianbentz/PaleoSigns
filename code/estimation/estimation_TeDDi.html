@@ -374,7 +374,7 @@ library(Hrate)</code></pre>
 <div id="load-files" class="section level1">
 <h1>Load files</h1>
 <p>Load the file with cleaned TeDDi sample lines.</p>
-<pre class="r"><code>teddi.clean &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/TeDDi/final_sample_strokes.csv&quot;)</code></pre>
+<pre class="r"><code>teddi.clean &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.csv&quot;)</code></pre>
 </div>
 <div id="feature-estimations" class="section level1">
 <h1>Feature Estimations</h1>
@@ -471,7 +471,7 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 6.549067 secs</code></pre>
+<pre><code>## Time difference of 6.233669 secs</code></pre>
 <p>Give head of estimation data frame (selected columns) for visual checking of the output data structure.</p>
 <pre class="r"><code>head(estimations.df)</code></pre>
 <pre><code>##       id
@@ -481,13 +481,13 @@ end_time - start_time</code></pre>
 ## 4 137860
 ## 5 410735
 ## 6 393591
-##                                                                                                                                                                                            text
-## 1 Na nd mounmotrhu mrokfot inji wanyhato duka memoya nhai wom hefenr tohyuk frohrn o bbinysoft tohyuk frohrn o yiro Maringour tohyuk frohrn nd skrorkfot yak nyusakuhato yiro mrokfom htikfot .
-## 2                                                                                          Setxi itaritxiakori aua mitxi ĩkorapokoriti . Apia kiomanetakari ĩtaniriuata . Meenetipanika ipina .
-## 3                                                                                                                                                           Baina ezdeus batekin ezkondu zinen.
-## 4                                                                                                                                                                           Ez dago gainazalik?
-## 5                                                                                                                                                  Moundsvilleko matrikuladun kotxea darabilzu?
-## 6                                                                                                                                       Ez duzu sinistuko baina berak asko maite zuen zure ama.
+##                                                                                                                                                                                          text
+## 1 Na nd mounmotrhu mrokfot inji wanyhato duka memoya nhai wom hefenr tohyuk frohrn o bbinysoft tohyuk frohrn o yiro Maringour tohyuk frohrn nd skrorkfot yak nyusakuhato yiro mrokfom htikfot
+## 2                                                                                            Setxi itaritxiakori aua mitxi ĩkorapokoriti  Apia kiomanetakari ĩtaniriuata  Meenetipanika ipina
+## 3                                                                                                                                                          Baina ezdeus batekin ezkondu zinen
+## 4                                                                                                                                                                          Ez dago gainazalik
+## 5                                                                                                                                                 Moundsvilleko matrikuladun kotxea darabilzu
+## 6                                                                                                                                      Ez duzu sinistuko baina berak asko maite zuen zure ama
 ##          filename language_name_glotto iso639_3    mode genre_broad
 ## 1   amp_nfi_1.txt             Alamblak      amp written non-fiction
 ## 2   apu_nfi_1.txt              Apurinã      apu written non-fiction
@@ -510,12 +510,12 @@ end_time - start_time</code></pre>
 ## 5                                                                                                                                                                                              &lt;NA&gt;
 ## 6                                                                                                                                                                                              &lt;NA&gt;
 ##   num.char huni.chars hrate.chars ttr.chars    rm.chars
-## 1      189   3.975086    2.421501 0.1216931 0.005319149
-## 2      100   3.698165    2.454681 0.1800000 0.010101010
-## 3       35   3.658313    2.444520 0.4285714 0.000000000
-## 4       19   3.405822    2.329392 0.6315789 0.000000000
-## 5       44   4.109793    2.755077 0.4545455 0.023255814
-## 6       55   3.816721    2.541232 0.3090909 0.000000000</code></pre>
+## 1      187   3.954932    2.400201 0.1176471 0.005376344
+## 2       96   3.617791    2.436322 0.1770833 0.031578947
+## 3       34   3.573229    2.365557 0.4117647 0.000000000
+## 4       18   3.281036    2.222807 0.6111111 0.000000000
+## 5       43   4.045240    2.692185 0.4418605 0.023809524
+## 6       54   3.753867    2.481230 0.2962963 0.000000000</code></pre>
 <p>Safe outputs to file.</p>
 <pre class="r"><code>write.csv(estimations.df, &quot;~/Github/UpperPalCombinatorics/results/features/teddi_features.csv&quot;, 
           row.names = F)</code></pre>

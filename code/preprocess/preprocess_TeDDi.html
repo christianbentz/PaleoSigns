@@ -488,24 +488,24 @@ teddi.sample.modified &lt;- rbind(teddi.sample, hans.data) </code></pre>
 <div id="final-preprocessing" class="section level1">
 <h1>Final Preprocessing</h1>
 <p>Trim white spaces at beginning and end of texts sequences, remove empty text rows (only consisting of white spaces), as well as very short text lines as these can cause NAs in the later calculations. This is the same for other sequences, i.e. paleolithic and proto-cuneiform.</p>
-<pre class="r"><code>teddi.clean &lt;- teddi.sample.modified[nchar(teddi.sample.modified$text) &gt; 2, ]
+<pre class="r"><code>teddi.clean &lt;- teddi.sample.modified[teddi.sample.modified$text != &quot;&quot;, ]
 teddi.clean$text &lt;- trimws(teddi.clean$text)
-teddi.clean &lt;- teddi.clean[teddi.clean$text != &quot;&quot;, ]</code></pre>
+teddi.clean &lt;- teddi.clean[nchar(teddi.clean$text) &gt; 1, ]</code></pre>
 </div>
 <div id="simple-stats" class="section level1">
 <h1>Simple Stats</h1>
 <p>Some simple stats of the textual data here sampled from TeDDi.</p>
 <pre class="r"><code># lines of text
 nrow(teddi.clean)</code></pre>
-<pre><code>## [1] 1027</code></pre>
+<pre><code>## [1] 1040</code></pre>
 <pre class="r"><code># unique ISO codes (i.e. languages)
 unique(teddi.clean$iso639_3)</code></pre>
-<pre><code>##  [1] &quot;rus&quot; &quot;ell&quot; &quot;kat&quot; &quot;fra&quot; &quot;tur&quot; &quot;jpn&quot; &quot;fin&quot; &quot;deu&quot; &quot;pes&quot; &quot;cmn&quot; &quot;heb&quot; &quot;gug&quot;
-## [13] &quot;tha&quot; &quot;ind&quot; &quot;eng&quot; &quot;mya&quot; &quot;vie&quot; &quot;spa&quot; &quot;kor&quot; &quot;eus&quot; &quot;arz&quot; &quot;hin&quot; &quot;yor&quot; &quot;tgl&quot;
+<pre><code>##  [1] &quot;rus&quot; &quot;ell&quot; &quot;kat&quot; &quot;fra&quot; &quot;tur&quot; &quot;jpn&quot; &quot;fin&quot; &quot;deu&quot; &quot;pes&quot; &quot;heb&quot; &quot;cmn&quot; &quot;gug&quot;
+## [13] &quot;tha&quot; &quot;spa&quot; &quot;ind&quot; &quot;eng&quot; &quot;mya&quot; &quot;vie&quot; &quot;kor&quot; &quot;eus&quot; &quot;arz&quot; &quot;hin&quot; &quot;yor&quot; &quot;tgl&quot;
 ## [25] &quot;khk&quot; &quot;cha&quot; &quot;ram&quot; &quot;plt&quot; &quot;dgz&quot; &quot;hae&quot; &quot;jac&quot; &quot;apu&quot; &quot;amp&quot;</code></pre>
 <pre class="r"><code># writing systems
 unique(teddi.clean$writing_system)</code></pre>
-<pre><code>##  [1] &quot;Cyrl&quot; &quot;Grek&quot; &quot;Geor&quot; &quot;Latn&quot; &quot;Jpan&quot; &quot;Arab&quot; &quot;Hans&quot; &quot;Hebr&quot; &quot;Thai&quot; &quot;Mymr&quot;
+<pre><code>##  [1] &quot;Cyrl&quot; &quot;Grek&quot; &quot;Geor&quot; &quot;Latn&quot; &quot;Jpan&quot; &quot;Arab&quot; &quot;Hebr&quot; &quot;Hans&quot; &quot;Thai&quot; &quot;Mymr&quot;
 ## [11] &quot;Kore&quot; &quot;Deva&quot; &quot;Hang&quot;</code></pre>
 <p>Write to file.</p>
 <pre class="r"><code># order the columns for convenience

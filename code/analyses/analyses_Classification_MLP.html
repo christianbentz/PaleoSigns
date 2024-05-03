@@ -398,7 +398,7 @@ head(estimations.df)</code></pre>
 <p>Choose subcorpora for binary classification.</p>
 <pre class="r"><code># choose subcorpora to compare: &quot;Aurignacien&quot;, &quot;TeDDi&quot;, &quot;Cuneiform (Uruk V)&quot;,
 # &quot;Cuneiform (Uruk IV)&quot;, &quot;Cuneiform (Uruk III)&quot;.
-subcorpus1 &lt;- &quot;Cuneiform (Uruk III)&quot;
+subcorpus1 &lt;- &quot;Aurignacien&quot;
 subcorpus2 &lt;- &quot;TeDDi&quot;
 selected &lt;- c(subcorpus1, subcorpus2)
 estimations.subset &lt;- estimations.df[estimations.df$subcorpus %in% selected, ]</code></pre>
@@ -551,11 +551,7 @@ for (hidden in hidden.list) {
   counter &lt;- counter + 1
   print(counter)
 }</code></pre>
-<pre><code>## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
-## [1] 1
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
+<pre><code>## [1] 1
 ## [1] 2
 ## [1] 3
 ## [1] 4
@@ -564,84 +560,52 @@ for (hidden in hidden.list) {
 ## [1] 7
 ## [1] 8
 ## [1] 9
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 10
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 11
 ## [1] 12
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 13
 ## [1] 14
 ## [1] 15
 ## [1] 16
 ## [1] 17
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 18
 ## [1] 19
 ## [1] 20
 ## [1] 21
 ## [1] 22
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 23
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 24
 ## [1] 25
 ## [1] 26
 ## [1] 27
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 28
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 29
 ## [1] 30
 ## [1] 31
 ## [1] 32
 ## [1] 33
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 34
 ## [1] 35
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 36
 ## [1] 37
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 38
 ## [1] 39
 ## [1] 40
 ## [1] 41
 ## [1] 42
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 43
 ## [1] 44
 ## [1] 45
 ## [1] 46
 ## [1] 47
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 48
 ## [1] 49
 ## [1] 50
 ## [1] 51
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 52
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 53
 ## [1] 54
 ## [1] 55
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 56
 ## [1] 57
 ## [1] 58
@@ -655,8 +619,6 @@ for (hidden in hidden.list) {
 ## [1] 66
 ## [1] 67
 ## [1] 68
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 69
 ## [1] 70
 ## [1] 71
@@ -664,8 +626,6 @@ for (hidden in hidden.list) {
 ## [1] 73
 ## [1] 74
 ## [1] 75
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 76
 ## [1] 77
 ## [1] 78
@@ -675,36 +635,26 @@ for (hidden in hidden.list) {
 ## [1] 82
 ## [1] 83
 ## [1] 84
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 85
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 86
 ## [1] 87
 ## [1] 88
 ## [1] 89
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 90
 ## [1] 91
 ## [1] 92
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 93
 ## [1] 94
 ## [1] 95
 ## [1] 96
 ## [1] 97
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 98
 ## [1] 99
 ## [1] 100</code></pre>
 <pre class="r"><code>end_time &lt;- Sys.time()
 proc.time &lt;- end_time - start_time
 print(proc.time)</code></pre>
-<pre><code>## Time difference of 33.26423 mins</code></pre>
+<pre><code>## Time difference of 32.10897 secs</code></pre>
 <p>Write performance metrics to file.</p>
 <pre class="r"><code># classification results summaries 
 write.csv(results.df, file = paste(c(&quot;~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_&quot;,

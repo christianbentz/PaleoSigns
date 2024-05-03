@@ -43,7 +43,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 # Load files
 Load the file with cleaned TeDDi sample lines.
 ```{r}
-teddi.clean <- read.csv("~/Github/UpperPalCombinatorics/data/TeDDi/final_sample_strokes.csv")
+teddi.clean <- read.csv("~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.csv")
 ```
 
 # Feature Estimations

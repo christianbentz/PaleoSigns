@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(message = FALSE)
 ```
 
-# Description 
+# Description
 This file gives code for plotting maps of the Swabian Aurignacian sites, including randomly sampled examples of sign codings for illustration purposes.
 
 # Session Info
@@ -54,11 +54,6 @@ objects <- objects[objects$archaeological_unit == "Aurignacien" &
                      objects$site_name == "Geissenklösterle" |
                      objects$site_name == "Hohlenstein-Stadel", ]
 nrow(objects)
-```
-# Preprocessing
-```{r}
-# Remove objects with short (or empty) sign sequences
-objects <- objects[nchar(objects$sign_coding) > 2, ]
 ```
 
 # Overview Stats

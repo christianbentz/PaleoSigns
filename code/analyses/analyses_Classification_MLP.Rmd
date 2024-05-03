@@ -54,7 +54,7 @@ Choose subcorpora for binary classification.
 ```{r}
 # choose subcorpora to compare: "Aurignacien", "TeDDi", "Cuneiform (Uruk V)",
 # "Cuneiform (Uruk IV)", "Cuneiform (Uruk III)".
-subcorpus1 <- "Cuneiform (Uruk III)"
+subcorpus1 <- "Aurignacien"
 subcorpus2 <- "TeDDi"
 selected <- c(subcorpus1, subcorpus2)
 estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]

@@ -117,9 +117,9 @@ teddi.sample.modified <- rbind(teddi.sample, hans.data)
 # Final Preprocessing
 Trim white spaces at beginning and end of texts sequences, remove empty text rows (only consisting of white spaces), as well as very short text lines as these can cause NAs in the later calculations. This is the same for other sequences, i.e. paleolithic and proto-cuneiform.
 ```{r}
-teddi.clean <- teddi.sample.modified[nchar(teddi.sample.modified$text) > 2, ]
+teddi.clean <- teddi.sample.modified[teddi.sample.modified$text != "", ]
 teddi.clean$text <- trimws(teddi.clean$text)
-teddi.clean <- teddi.clean[teddi.clean$text != "", ]
+teddi.clean <- teddi.clean[nchar(teddi.clean$text) > 1, ]
 ```
 
 # Simple Stats

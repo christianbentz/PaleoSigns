@@ -116,7 +116,7 @@ labels.df <- estimations.df.selected[estimations.df.selected$num.char > 9 &
                                        estimations.df.selected$subcorpus != "Cuneiform (Uruk III)", ]
 # further downsample labels (otherwise they overplot heavily)
 set.seed(15022018)
-labels.df <- sample_n(labels.df, 25)
+labels.df <- sample_n(labels.df, 30)
 ```
 
 ## Entropy rate vs. Unigram Entropy
@@ -130,10 +130,10 @@ huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y =
   geom_label_repel(data = labels.df,
                   aes(label = sequence),
                   size = 2,
-                  hjust = 0,
-                  direction = 'y',
+                  #hjust = 0,
+                  #direction = 'y',
                   fontface = "bold",
-                  nudge_x = 1,
+                  #nudge_x = 1,
                   max.overlaps = Inf,
                   show.legend = FALSE) +
     theme(legend.position = c(.2, .75))
@@ -148,15 +148,16 @@ ttr.rm.chars.plot <- ggplot(estimations.df.selected, aes(x = ttr.chars, y = rm.c
                                     colour = subcorpus, size = num.char)) + 
   geom_point(alpha = 0.3) +
   xlim(0, 1.5) +
+  ylim(-0.05, 1) +
   theme(legend.position = "none") +
   labs(x = "TTR for characters", y = "Repetition rate for characters") +
   geom_label_repel(data = labels.df,
                    aes(label = sequence),
                    size = 2,
-                   hjust = 0,
-                   direction = 'y',
+                   #hjust = 0,
+                   #direction = 'y',
                    fontface = "bold",
-                   nudge_x = 0.2,
+                   #nudge_x = 0.2,
                    max.overlaps = Inf,
                    show.legend = FALSE)
 ttr.rm.chars.plot <- ggMarginal(ttr.rm.chars.plot, groupFill = T, groupColour = T, 

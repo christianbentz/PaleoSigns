@@ -59,7 +59,7 @@ sign.data <- sign.data[!sign.data$coding_clean == "", ]
 ```
 
 ```{r}
-# use only lines with at least two characters
+# use only lines with more than two characters
 sign.data <- sign.data[nchar(sign.data$coding_clean) > 1, ]
 ```
 
