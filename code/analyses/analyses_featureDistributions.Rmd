@@ -29,7 +29,6 @@ If the libraries are not installed yet, you need to install them using, for exam
 #library(devtools)
 #install_github("vqv/ggbiplot")
 library(ggbiplot)
-library(stringr)
 library(ggplot2)
 library(ggrepel)
 library(ggExtra)
@@ -116,7 +115,7 @@ labels.df <- estimations.df.selected[estimations.df.selected$num.char > 9 &
                                        estimations.df.selected$subcorpus != "Cuneiform (Uruk III)", ]
 # further downsample labels (otherwise they overplot heavily)
 set.seed(15022018)
-labels.df <- sample_n(labels.df, 30)
+labels.df <- sample_n(labels.df, 20)
 ```
 
 ## Entropy rate vs. Unigram Entropy
@@ -129,11 +128,11 @@ huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y =
   labs(x = "Unigram entropy for characters", y = "Entropy rate for characters") +
   geom_label_repel(data = labels.df,
                   aes(label = sequence),
-                  size = 2,
-                  #hjust = 0,
-                  #direction = 'y',
+                  size = 3,
+                  hjust = 0,
+                  direction = 'y',
                   fontface = "bold",
-                  #nudge_x = 1,
+                  nudge_x = 1,
                   max.overlaps = Inf,
                   show.legend = FALSE) +
     theme(legend.position = c(.2, .75))
@@ -153,11 +152,11 @@ ttr.rm.chars.plot <- ggplot(estimations.df.selected, aes(x = ttr.chars, y = rm.c
   labs(x = "TTR for characters", y = "Repetition rate for characters") +
   geom_label_repel(data = labels.df,
                    aes(label = sequence),
-                   size = 2,
-                   #hjust = 0,
-                   #direction = 'y',
+                   size = 3,
+                   hjust = 0,
+                   direction = 'y',
                    fontface = "bold",
-                   #nudge_x = 0.2,
+                   nudge_x = 0.2,
                    max.overlaps = Inf,
                    show.legend = FALSE)
 ttr.rm.chars.plot <- ggMarginal(ttr.rm.chars.plot, groupFill = T, groupColour = T, 
@@ -192,7 +191,6 @@ Safe complete figure to file.
 ggsave("~/Github/UpperPalCombinatorics/figures/correlation_plot.pdf", 
        cor.plot, dpi = 300, width = 12, height = 12, device = cairo_pdf)
 ```
-
 
 # Principal Component Analysis (PCA)
 Since we have overall four dimensions of statistical values derived from the sign sequences (unigram entropy, entropy rate, TTR, repetition rate), we can first use a principal component analysis to reduce the number of dimensions to the first two principal components. This allows us to see the clustering of data points in two dimensional space. 
@@ -276,7 +274,7 @@ ggsave("~/Github/UpperPalCombinatorics/figures/finalPlot_chars.pdf",
 # Package References
 ```{r, echo = F}
 print(citation("ggbiplot"), style = "text")
-print(citation("stringr"), style = "text")
+print(citation("dplyr"), style = "text")
 print(citation("ggrepel"), style = "text")
 print(citation("ggExtra"), style = "text")
 print(citation("ggpubr"), style = "text")

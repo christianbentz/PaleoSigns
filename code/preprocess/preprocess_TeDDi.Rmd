@@ -109,7 +109,7 @@ head(hans.list)
 # unlist and replace original text column in cmn dataframe
 hans.data$text <- unlist(hans.list)
 # add comment on stroke transliteration in column "comments"
-hans.data$comments <- rep("chars transliterated to strokes", nrow(hans.data))
+hans.data$writing_system <- rep("Hans (strokes)", nrow(hans.data))
 # add cmn data with strokes to overall data frame
 teddi.sample.modified <- rbind(teddi.sample, hans.data) 
 ```

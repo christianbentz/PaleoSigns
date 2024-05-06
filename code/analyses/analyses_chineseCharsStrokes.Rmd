@@ -1,0 +1,146 @@
+---
+title: "Chinese Characters vs. Strokes"
+author: ""
+date: ""
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Description
+This file provides functionality for plotting feature value distributions in density plots. It also contains code for PCA analyses given the values of the four statistical features (entropy rate, unigram entropy, TTR, and repetition rate). It focuses on the difference between Chinese complex characters and individual strokes.
+
+# Session Info
+Give the session info (reduced).
+```{r, echo = F}
+# R version
+sessionInfo()$R.version$version.string
+# platform
+sessionInfo()$R.version$platform 
+```
+
+# Load libraries
+If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
+```{r}
+library(ggplot2)
+library(ggrepel)
+library(ggExtra)
+library(ggpubr)
+library(ggridges)
+```
+
+Give the package versions.
+```{r, echo = F}
+# version of packages loaded
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
+```
+
+# Load Data
+Load csv file with quantitative feature values for a comparative sample of feature values for languages across the world. This is derived from the Text Data Diversity (TeDDi) sample (Moran et al 2022). 
+
+```{r}
+estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features/teddi_features.csv")
+head(estimations.df)
+```
+
+# Preprocessing
+```{r}
+# select only texts written in Han simplified (Hans)
+estimations.df.selected <- estimations.df[estimations.df$writing_system == "Hans" |
+                                       estimations.df$writing_system == "Hans (strokes)", ]
+```
+
+# Density Plots
+
+## Length
+Density plot for lengths in number of characters.
+```{r}
+length.plot <- ggplot(estimations.df.selected, aes(x = num.char, y = writing_system, 
+                                    fill = writing_system)) + 
+  # add density ridges with quantiles = 2, i.e. median as a line
+  geom_density_ridges(alpha = 0.5, quantile_lines = TRUE, quantiles = 2) +
+  # limit the x-range 
+  xlim(0, 100) +
+  xlab("Number of Characters/Strokes") +
+  theme(legend.position = "none")
+length.plot
+```
+
+Get subset of data points to plot labels.
+```{r}
+# how many data points with a given sequence length?
+table(estimations.df.selected$num.char)
+
+# choose subset of data points for labeling
+labels.df <- estimations.df.selected[estimations.df.selected$num.char > 10 &
+                                       estimations.df.selected$num.char < 20, ]
+```
+
+## Entropy rate vs. Unigram Entropy
+```{r, fig.width = 5, fig.height = 5, warning = FALSE}
+huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y =  hrate.chars, 
+                                                             color = writing_system, size = num.char)) + 
+  geom_point(alpha = 0.3) +
+  xlim(-0.2, 5) +
+  # geom_density2d(alpha = .8) +
+  labs(x = "Unigram entropy for characters/strokes", y = "Entropy rate for characters/strokes") +
+  geom_label_repel(data = labels.df,
+                  aes(label = text),
+                  size = 3,
+                  hjust = 0,
+                  direction = 'y',
+                  fontface = "bold",
+                  nudge_x = 1,
+                  max.overlaps = Inf,
+                  show.legend = FALSE) +
+    theme(legend.position = c(.2, .75))
+huni.hrate.chars.plot <- ggMarginal(huni.hrate.chars.plot, groupFill = T, groupColour = T, 
+                                  type = "density")
+#huni.hrate.chars.plot
+```
+
+## TTR vs. Repetition Rate
+```{r, fig.width = 5, fig.height = 5, warning = FALSE}
+ttr.rm.chars.plot <- ggplot(estimations.df.selected, aes(x = ttr.chars, y = rm.chars, 
+                                    colour = writing_system, size = num.char)) + 
+  geom_point(alpha = 0.3) +
+  xlim(0, 1.5) +
+  ylim(-0.05, 1) +
+  theme(legend.position = "none") +
+  labs(x = "TTR for characters/strokes", y = "Repetition rate for characters/strokes") +
+  geom_label_repel(data = labels.df,
+                   aes(label = text),
+                   size = 3,
+                   hjust = 0,
+                   direction = 'y',
+                   fontface = "bold",
+                   nudge_x = 0.2,
+                   max.overlaps = Inf,
+                   show.legend = FALSE)
+ttr.rm.chars.plot <- ggMarginal(ttr.rm.chars.plot, groupFill = T, groupColour = T, 
+                                  type = "density")
+#ttr.rm.chars.plot
+```
+
+Combine figures.
+```{r, fig.width = 15, fig.height = 7.5}
+combined.plot1 <- ggarrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2,
+                               labels = c("A", "B"))
+combined.plot1
+```
+
+# Package References
+```{r, echo = F}
+print(citation("ggrepel"), style = "text")
+print(citation("ggExtra"), style = "text")
+print(citation("ggpubr"), style = "text")
+print(citation("ggridges"), style = "text")
+```
+
+# Literature References 
+
+Jolliffe, I. T., & Cadima, J. (2016). Principal component analysis: a review and recent developments. Philosophical transactions of the royal society A: Mathematical, Physical and Engineering Sciences, 374(2065), 20150202.
+
+Moran, S., Bentz, C., Gutierrez-Vasques, X., Pelloni, O., & Samardzic, T. (2022, June). TeDDi sample: text data diversity sample for language comparison and multilingual NLP. In Proceedings of the Thirteenth Language Resources and Evaluation Conference (pp. 1150-1158).
