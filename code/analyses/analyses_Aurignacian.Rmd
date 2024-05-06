@@ -191,9 +191,10 @@ date.plot
 ## Figures Combined
 Combine figures.
 ```{r, fig.width = 16, fig.height = 8, warning = F, message = F}
-combined.plot <- grid.arrange(objectType.plot, material.plot, site.plot,
+combined.plot <- ggarrange(objectType.plot, material.plot, site.plot,
                               preservation.plot, volume.plot,
-                              date.plot, ncol = 3)
+                              date.plot, ncol = 3, nrow = 2,
+                           labels = "AUTO")
 ```
 
 Safe complete figure to file

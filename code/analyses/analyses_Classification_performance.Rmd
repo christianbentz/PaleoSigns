@@ -189,7 +189,7 @@ Density distributions of accuracies and F1-scores by comparison. Note: the order
 ### F1 Distributions 
 Distributions of F1-scores by comparison.
 ```{r}
-f1.plot <- ggplot(performance.mlp.combined, aes(x = jitter(f1, amount = 0), 
+f1.mlp.plot <- ggplot(performance.mlp.combined, aes(x = jitter(f1, amount = 0), 
                                             y = fct_reorder(comparison, f1),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -198,13 +198,14 @@ f1.plot <- ggplot(performance.mlp.combined, aes(x = jitter(f1, amount = 0),
   geom_point(shape = 124, alpha = 0.4, size = 1.5) +
   xlab("F1-Score") +
   ylab("Comparison") +
-  theme(legend.position = "none")
-f1.plot
+  theme(legend.position = "none") +
+  ggtitle("Multi-Layer-Perceptron (MLP)")
+f1.mlp.plot
 ```
 
 ## Accuracy Distributions 
 ```{r}
-accuracy.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy, amount = 0), 
+accuracy.mlp.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy, amount = 0), 
                                             y = fct_reorder(comparison, accuracy),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -214,8 +215,9 @@ accuracy.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy, amoun
   geom_point(shape = 124, size = 5, aes(x = baseline, y = comparison), color = "red") +
   xlab("Accuracy") +
   ylab("Comparison") +
-  theme(legend.position = "none")
-accuracy.plot
+  theme(legend.position = "none") +
+  ggtitle("Multi-Layer-Perceptron (MLP)")
+accuracy.mlp.plot
 ```
 
 ## P-value Distributions 
@@ -226,24 +228,14 @@ performance.mlp.combined$accuracy.pvalue.corrected <-
   ifelse(performance.mlp.combined$accuracy.pvalue.corrected < 0.05, "< 0.05", "> 0.05")
 
 # create plot
-pvalue.plot <- ggplot(performance.mlp.combined, aes(y = fct_reorder(comparison, accuracy), 
+pvalue.mlp.plot <- ggplot(performance.mlp.combined, aes(y = fct_reorder(comparison, accuracy), 
                                                     fill = as.factor(accuracy.pvalue.corrected))) +
   geom_bar(stat = "count", position = "fill") +
   theme(axis.title.y = element_blank(),
         axis.text.y = element_blank()) +
-  scale_fill_discrete(name = "p-values")
-pvalue.plot
-```
-
-## Combine Plots
-```{r, fig.width = 10, fig.height = 3}
-combined.plot <- grid.arrange(accuracy.plot, pvalue.plot, ncol = 2, widths = c(2, 1))
-```
-
-Safe to file.
-```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot_MLP.pdf", 
-       combined.plot, dpi = 300, width = 10, height = 3, device = cairo_pdf)
+  scale_fill_discrete(name = "p-values") +
+  ggtitle("    p-value frequencies")
+pvalue.mlp.plot
 ```
 
 # K-Nearest-Neighbors (KNN)
@@ -297,7 +289,7 @@ Select comparisons to further analyse.
 ### F1 Distributions 
 Distributions of F1-scores by comparison.
 ```{r}
-f1.plot <- ggplot(performance.knn.combined, aes(x = jitter(f1, amount = 0), 
+f1.knn.plot <- ggplot(performance.knn.combined, aes(x = jitter(f1, amount = 0), 
                                             y = fct_reorder(comparison, f1),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -306,14 +298,15 @@ f1.plot <- ggplot(performance.knn.combined, aes(x = jitter(f1, amount = 0),
   geom_point(shape = 124, alpha = 0.4, size = 1.5) +
   xlab("F1-Score") +
   ylab("Comparison") +
-  theme(legend.position = "none")
-f1.plot
+  theme(legend.position = "none")+
+  ggtitle("K-Nearest-Neigbors (KNN)")
+f1.knn.plot
 ```
 
 ## Accuracy Distributions 
 Distributions of accuracies by comparison.
 ```{r}
-accuracy.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy, amount = 0), 
+accuracy.knn.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy, amount = 0), 
                                             y = fct_reorder(comparison, accuracy),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -323,8 +316,9 @@ accuracy.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy, amoun
   geom_point(shape = 124, size = 5, aes(x = baseline, y = comparison), color = "red") +
   xlab("Accuracy") +
   ylab("Comparison") +
-  theme(legend.position = "none")
-accuracy.plot
+  theme(legend.position = "none") +
+  ggtitle("K-Nearest-Neighbors (KNN)")
+accuracy.knn.plot
 ```
 
 ## P-value Distributions 
@@ -335,24 +329,29 @@ performance.knn.combined$accuracy.pvalue.corrected <-
   ifelse(performance.knn.combined$accuracy.pvalue.corrected < 0.05, "< 0.05", "> 0.05")
 
 # create plot
-pvalue.plot <- ggplot(performance.knn.combined, aes(y = fct_reorder(comparison, accuracy), 
+pvalue.knn.plot <- ggplot(performance.knn.combined, aes(y = fct_reorder(comparison, accuracy), 
                                                     fill = as.factor(accuracy.pvalue.corrected))) +
   geom_bar(stat = "count", position = "fill") +
   theme(axis.title.y = element_blank(),
         axis.text.y = element_blank()) +
-  scale_fill_discrete(name = "p-values")
-pvalue.plot
+  scale_fill_discrete(name = "p-values") +
+  ggtitle("    p-value frequencies")
+pvalue.knn.plot
 ```
 
 ## Combine Plots
-```{r, fig.width = 10, fig.height = 3}
-combined.plot <- grid.arrange(accuracy.plot, pvalue.plot, ncol = 2, widths = c(2, 1))
+```{r, fig.width = 10, fig.height = 5}
+combined.plot <- ggarrange(accuracy.mlp.plot, pvalue.mlp.plot, 
+                           accuracy.knn.plot, pvalue.knn.plot, 
+                           ncol = 2, nrow = 2,
+                           widths = c(1.5, 1), labels = "AUTO")
+combined.plot
 ```
 
 Safe to file.
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot_KNN.pdf", 
-       combined.plot, dpi = 300, width = 10, height = 3, device = cairo_pdf)
+ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot.pdf", 
+       combined.plot, dpi = 300, width = 10, height = 5, device = cairo_pdf)
 ```
 
 # Package References

@@ -318,9 +318,8 @@ object.map.hfc
 ```
 
 Combine plots.
-```{r, fig.width = 15, fig.height = 10, warning = F}
-combined.plot <- ggarrange(swabianJura.map, object.map.lonetal, object.map.vogelherd, 
-                           object.map.achtal, object.map.hfc, object.map.gkl, ncol = 3, nrow = 2,
+```{r, fig.width = 15, fig.height = 5, warning = F}
+combined.plot <- ggarrange(swabianJura.map, object.map.lonetal, object.map.vogelherd, ncol = 3, nrow = 1,
                            labels = "AUTO")
 combined.plot
 ```
@@ -328,7 +327,7 @@ combined.plot
 Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/maps/maps_combined.pdf", 
-       combined.plot, dpi = 500, width = 17, height = 10, device = cairo_pdf)
+       combined.plot, dpi = 500, width = 15, height = 5, device = cairo_pdf)
 ```
 
 # Package References
