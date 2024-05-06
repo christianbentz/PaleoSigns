@@ -14,6 +14,13 @@ knitr::opts_chunk$set(echo = TRUE)
 # Description
 This file enables preprocessing of Upper-Paleolithic sign sequences as published at https://www.signbase.org. The csv file with latest objects and sign codings can be downloaded from there. The file used for the analyses here is also given in the github repo under data/signBase/.
 
+## Randomization
+The code also provides concatenation and randomization of sign strings which occur on different parts of a paleolithic object (indicated by underscore `_'). In the case of paleolithic sequences, we do not know the order of these respective strings (if any), hence, if we want to analyse them as one combined sequence, they need to be randomized. Note that this is not applicable to modern day written languages, as the order of strings of characters (e.g. words) is meaningful. Randomization of strings would artificially introduce randomness where order is intended. Arguably, the same holds for proto-cuneiform writing. There are particular orders with which proto-cuneiform signs were imprinted onto a tablet, i.e. a kind of "syntax", cf. the following statement in Englund (1998), p. 79:
+
+"Number sign sequences within discrete notations are, as might be expected, very rigid and follow a definite numerical `syntax’. Within text entries, moreover, the position of numerical notations relative to ideographic notations is fairly rigid."
+
+Again, randomization would destroy this syntax and artificially introduce randomness where order was intended by the scribes.
+
 # Session Info
 Give the session info (reduced).
 ```{r, echo = F}
@@ -63,10 +70,36 @@ sign.data <- sign.data[!sign.data$coding_clean == "", ]
 sign.data <- sign.data[nchar(sign.data$coding_clean) > 1, ]
 ```
 
+# Randomization
+Randomize sign sequences per object.
+```{r}
+# set seed to get reproducible result
+set.seed(09012020)
+# initialize empty vector
+coding.random <- c()
+# run loop to randomize, and add new column to data frame
+for (i in 1:nrow(sign.data)){
+  # use single coding per row
+  coding.local <- sign.data[i, ]$coding_clean
+  # split on underscores surrounded by white spaces
+  coding.split <- unlist(strsplit(as.character(coding.local), split = " _ "))
+  # randomize order
+  coding.random.local <- sample(coding.split)
+  # concatenate with underscore and white space again
+  coding.random.local <- paste(coding.random.local, collapse = " _ ")
+  # add to vector
+  coding.random <- c(coding.random, coding.random.local)
+}
+
+# add column with randomized order to data frame
+sign.data$coding_random <- coding.random
+```
+
 Safe to file.
 ```{r}
-write.csv(sign.data, 
-          file = "~/Github/UpperPalCombinatorics/data/signBase/signBase_clean.csv",
-          row.names = F)
+write.csv(sign.data, "~/Github/UpperPalCombinatorics/data/signBase/signBase_randomized.csv", row.names = F)
 ```
+
+# Literature References
+Englund (1998). Texts from the Late Uruk period. In Bauer et al. (Eds.), Späturuk-Zeit und Frühdynastische Zeit.
 
