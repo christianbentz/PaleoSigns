@@ -37,6 +37,7 @@ library(dplyr)
 library(ggridges)
 library(GGally)
 library(hexbin)
+library(tidyverse)
 ```
 
 Give the package versions.
@@ -62,7 +63,7 @@ head(estimations.df)
 estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignacien"|
                                           estimations.df$subcorpus == "Cuneiform (Uruk V)"|
                                           estimations.df$subcorpus == "Cuneiform (Uruk IV)"| 
-                                          #estimations.df$subcorpus == "Cuneiform (Uruk III)"|  
+                                          estimations.df$subcorpus == "Cuneiform (Uruk III)"|  
                                           estimations.df$subcorpus == "TeDDi", ]
 ```
 
@@ -86,13 +87,16 @@ aggregate(estimations.df.selected$num.char~
 ## Length
 Density plot for lengths in number of characters.
 ```{r, fig.width = 2, fig.height = 5}
-length.plot <- ggplot(estimations.df.selected, aes(x = num.char, y = subcorpus, 
-                                    fill = subcorpus)) + 
+length.plot <- ggplot(estimations.df.selected, 
+                      aes(x = num.char, y = fct_reorder(subcorpus, num.char), 
+                          fill = subcorpus)) + 
   # add density ridges with quantiles = 2, i.e. median as a line
-  geom_density_ridges(alpha = 0.5, quantile_lines = TRUE, quantiles = 2) +
+  geom_density_ridges(alpha = 0.5, quantile_lines = TRUE, quantiles = 2, scale = 1) +
+  geom_point(shape = 124, alpha = 0.3, size = 3) +
   # limit the x-range 
   xlim(0, 100) +
   xlab("Number of Characters") +
+  ylab("Subcorpus") +
   theme(legend.position = "none")
 #length.plot
 ```
@@ -109,8 +113,7 @@ Get subset of data points to plot labels.
 table(estimations.df.selected$num.char)
 
 # choose subset of data points for labeling
-labels.df <- estimations.df.selected[estimations.df.selected$num.char > 9 &
-                                       estimations.df.selected$num.char < 11, ]
+labels.df <- estimations.df.selected[estimations.df.selected$num.char == 3, ]
                                        #estimations.df.selected$subcorpus != "Cuneiform (Uruk V)" &
                                        #estimations.df.selected$subcorpus != "Cuneiform (Uruk IV)" &
                                        #estimations.df.selected$subcorpus != "Cuneiform (Uruk III)", ]
@@ -127,18 +130,19 @@ huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y =
   geom_hex(bins = 20) +
   scale_fill_continuous(type = "viridis") +
   labs(x = "Unigram entropy for characters", y = "Entropy rate for characters") +
-  # geom_label_repel(data = labels.df,
-  #                 aes(label = sequence),
-  #                 size = 2,
-  #                 hjust = 0,
-  #                 direction = 'y',
-  #                 fontface = "bold",
-  #                 #nudge_x = 1,
-  #                 max.overlaps = Inf,
-  #                 show.legend = FALSE) +
-  guides(size = guide_legend(title = "No. of chars")) +
-  facet_grid(~factor(subcorpus, levels=c('Aurignacien', 'Cuneiform (Uruk V)', 
-                                         'Cuneiform (Uruk IV)', 'TeDDi')))
+  geom_label_repel(data = labels.df,
+                  aes(label = sequence),
+                  size = 2,
+                  hjust = 0,
+                  direction = 'y',
+                  fontface = "bold",
+                  nudge_x = 1,
+                  max.overlaps = Inf,
+                  show.legend = FALSE) +
+  #guides(size = guide_legend(title = "No. of chars")) +
+  facet_grid(~factor(subcorpus, levels = c('Aurignacien', 'Cuneiform (Uruk V)', 
+                                         'Cuneiform (Uruk IV)', 'Cuneiform (Uruk III)',
+                                         'TeDDi')))
 huni.hrate.chars.plot
 ```
 
@@ -159,8 +163,9 @@ ttr.rm.chars.plot <- ggplot(estimations.df.selected, aes(x = ttr.chars, y = rm.c
   #                  #nudge_x = 0.2,
   #                  max.overlaps = Inf,
   #                  show.legend = FALSE) +
-  facet_grid(~factor(subcorpus, levels=c('Aurignacien', 'Cuneiform (Uruk V)', 
-                                         'Cuneiform (Uruk IV)', 'TeDDi')))
+  facet_grid(~factor(subcorpus, levels = c('Aurignacien', 'Cuneiform (Uruk V)', 
+                                         'Cuneiform (Uruk IV)', 'Cuneiform (Uruk III)',
+                                         'TeDDi')))
 ttr.rm.chars.plot
 ```
 
@@ -269,13 +274,14 @@ final.plot
 Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/finalPlot_chars.pdf", 
-       final.plot, dpi = 300, width = 12, height = 12, device = cairo_pdf)
+       final.plot, dpi = 300, width = 20, height = 20, device = cairo_pdf)
 ```
 
 # Package References
 ```{r, echo = F}
 print(citation("ggbiplot"), style = "text")
 print(citation("dplyr"), style = "text")
+print(citation("tidyverse"), style = "text")
 print(citation("ggrepel"), style = "text")
 print(citation("ggExtra"), style = "text")
 print(citation("ggpubr"), style = "text")
