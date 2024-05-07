@@ -19,12 +19,20 @@ perl -ne 'print if (rand() < .01)' line.csv >> line_sample.csv
 
 This randomly samples 10% of the overall around 20 million text lines. This downsampling is necessary, since otherwise loading the data into R for further processing is not feasible.
 
-# Preprocessing of Raw Text Lines
+## Preprocessing of Raw Text Lines
 The text lines are here further cleaned, since there is some unwanted noise in the character strings. In particular, we use the regex "[[:punct:]]" to remove punctuation from all text lines. While it can be argued that punctuation belongs to writing, the problem is that some text lines consist of only punctuation, e.g. "** *" or a series of symbols for musical notes which are arguably not genuine writing (i.e. not representing speech sounds -- not even in an indirect way). 
 
 We also use the regex "[!-~]" to remove ASCII characters (see table below) from number 33 (exclamation mark) to 126 (tilde) from *non-Latin* scripts. This is because there is -- mainly English -- contamination of texts in other languages and writing systems (e.g. Mandarin Chinese, Korean). Note that this also removes some of the punctuation in the non-Latin scripts.    
-```{r foo, out.width="100%", fig.cap="ASCII table from WikiCommons"}
+```{r, out.width="100%", fig.cap="Figure. ASCII table from WikiCommons."}
 knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/ASCII-Table.png")
+```
+
+## Chinese characters to strokes
+We also transliterate Chinese characters into individual strokes using the mapping given by Wang et al. (2022) via https:
+//github.com/zjwang21/StrokeNet. The original file name with the mappings is zh2letter.txt. This provides a mapping from Chinese characters to individual component strokes given as Latin characters (for ease of further processing). See also figure below.
+
+```{r, out.width="100%", fig.cap="Figure. Mapping of Chinese characters to strokes. This is part of Figure 1 in Wang et al. (2022)."}
+knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/wang.jpg")
 ```
 
 # Session Info
@@ -149,3 +157,5 @@ print(citation("dplyr"), style = "text")
 
 # Literature References
 Moran, S., Bentz, C., Gutierrez-Vasques, X., Pelloni, O., & Samardzic, T. (2022). TeDDi sample: text data diversity sample for language comparison and multilingual NLP. In Proceedings of the Thirteenth Language Resources and Evaluation Conference (pp. 1150-1158).
+
+Wang, Z., Liu, X., & Zhang, M. (2022). Breaking the representation bottleneck of Chinese characters: Neural machine translation with stroke sequence modeling. arXiv preprint arXiv:2211.12781.

@@ -227,6 +227,14 @@ Interpretation: In the model summary above, the reference level for object_type 
 check_model(linear.model)
 ```
 
+Write to file.
+```{r}
+png(filename = file.path("~/Github/UpperPalCombinatorics/figures/", "modelCheckingPlot.png"), 
+    width = 10, height = 10, units = "in", res = 300)
+check_model(linear.model)
+dev.off()
+```
+
 ## Shapiro-Wilk Test for Normality of Residuals
 ```{r}
 shapiro.test(rstandard(linear.model))

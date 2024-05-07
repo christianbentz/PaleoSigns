@@ -36,6 +36,7 @@ library(ggpubr)
 library(dplyr)
 library(ggridges)
 library(GGally)
+library(hexbin)
 ```
 
 Give the package versions.
@@ -61,7 +62,7 @@ head(estimations.df)
 estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignacien"|
                                           estimations.df$subcorpus == "Cuneiform (Uruk V)"|
                                           estimations.df$subcorpus == "Cuneiform (Uruk IV)"| 
-                                          estimations.df$subcorpus == "Cuneiform (Uruk III)"|  
+                                          #estimations.df$subcorpus == "Cuneiform (Uruk III)"|  
                                           estimations.df$subcorpus == "TeDDi", ]
 ```
 
@@ -98,8 +99,8 @@ length.plot <- ggplot(estimations.df.selected, aes(x = num.char, y = subcorpus,
 
 Safe complete figure to file
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/lengthPlot_chars.pdf", 
-       length.plot, dpi = 300, width = 5, height = 5, device = cairo_pdf)
+#ggsave("~/Github/UpperPalCombinatorics/figures/lengthPlot_chars.pdf", 
+#       length.plot, dpi = 300, width = 5, height = 5, device = cairo_pdf)
 ```
 
 Get subset of data points to plot labels.
@@ -109,71 +110,70 @@ table(estimations.df.selected$num.char)
 
 # choose subset of data points for labeling
 labels.df <- estimations.df.selected[estimations.df.selected$num.char > 9 &
-                                       estimations.df.selected$num.char < 11 &
+                                       estimations.df.selected$num.char < 11, ]
                                        #estimations.df.selected$subcorpus != "Cuneiform (Uruk V)" &
-                                       estimations.df.selected$subcorpus != "Cuneiform (Uruk IV)" &
-                                       estimations.df.selected$subcorpus != "Cuneiform (Uruk III)", ]
+                                       #estimations.df.selected$subcorpus != "Cuneiform (Uruk IV)" &
+                                       #estimations.df.selected$subcorpus != "Cuneiform (Uruk III)", ]
 # further downsample labels (otherwise they overplot heavily)
 set.seed(15022018)
 labels.df <- sample_n(labels.df, 20)
 ```
 
 ## Entropy rate vs. Unigram Entropy
-```{r, fig.width = 5, fig.height = 5, warning = FALSE}
+```{r, fig.width = 7, fig.height = 7, warning = FALSE}
 huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y =  hrate.chars, 
-                                                             color = subcorpus, size = num.char)) + 
-  geom_point(alpha = 0.3) +
-  xlim(-0.2, 5) +
-  # geom_density2d(alpha = .8) +
+                                                             color = subcorpus)) + 
+  scale_colour_discrete(guide = "none") +
+  geom_hex(bins = 20) +
+  scale_fill_continuous(type = "viridis") +
   labs(x = "Unigram entropy for characters", y = "Entropy rate for characters") +
-  geom_label_repel(data = labels.df,
-                  aes(label = sequence),
-                  size = 3,
-                  hjust = 0,
-                  direction = 'y',
-                  fontface = "bold",
-                  nudge_x = 1,
-                  max.overlaps = Inf,
-                  show.legend = FALSE) +
-    theme(legend.position = c(.2, .75))
-huni.hrate.chars.plot <- ggMarginal(huni.hrate.chars.plot, groupFill = T, groupColour = T, 
-                                  type = "density")
+  # geom_label_repel(data = labels.df,
+  #                 aes(label = sequence),
+  #                 size = 2,
+  #                 hjust = 0,
+  #                 direction = 'y',
+  #                 fontface = "bold",
+  #                 #nudge_x = 1,
+  #                 max.overlaps = Inf,
+  #                 show.legend = FALSE) +
+  guides(size = guide_legend(title = "No. of chars")) +
+  facet_grid(~factor(subcorpus, levels=c('Aurignacien', 'Cuneiform (Uruk V)', 
+                                         'Cuneiform (Uruk IV)', 'TeDDi')))
 huni.hrate.chars.plot
 ```
 
 ## TTR vs. Repetition Rate
-```{r, fig.width = 5, fig.height = 5, warning = FALSE}
+```{r, fig.width = 7, fig.height = 7, warning = FALSE}
 ttr.rm.chars.plot <- ggplot(estimations.df.selected, aes(x = ttr.chars, y = rm.chars, 
-                                    colour = subcorpus, size = num.char)) + 
-  geom_point(alpha = 0.3) +
-  xlim(0, 1.5) +
-  ylim(-0.05, 1) +
-  theme(legend.position = "none") +
+                                    colour = subcorpus)) + 
+  scale_colour_discrete(guide = "none") +
+  geom_hex(bins = 20) +
+  scale_fill_continuous(type = "viridis") +
   labs(x = "TTR for characters", y = "Repetition rate for characters") +
-  geom_label_repel(data = labels.df,
-                   aes(label = sequence),
-                   size = 3,
-                   hjust = 0,
-                   direction = 'y',
-                   fontface = "bold",
-                   nudge_x = 0.2,
-                   max.overlaps = Inf,
-                   show.legend = FALSE)
-ttr.rm.chars.plot <- ggMarginal(ttr.rm.chars.plot, groupFill = T, groupColour = T, 
-                                  type = "density")
-#ttr.rm.chars.plot
+  # geom_label_repel(data = labels.df,
+  #                  aes(label = sequence),
+  #                  size = 2,
+  #                  hjust = 0,
+  #                  direction = 'y',
+  #                  fontface = "bold",
+  #                  #nudge_x = 0.2,
+  #                  max.overlaps = Inf,
+  #                  show.legend = FALSE) +
+  facet_grid(~factor(subcorpus, levels=c('Aurignacien', 'Cuneiform (Uruk V)', 
+                                         'Cuneiform (Uruk IV)', 'TeDDi')))
+ttr.rm.chars.plot
 ```
 
 Combine figures.
 ```{r, fig.width = 20, fig.height = 10}
-combined.plot1 <- ggarrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 2,
+combined.plot1 <- ggarrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 1,
                                labels = c("A", "B"))
 ```
 
 Safe complete figure to file
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", 
-       combined.plot1, dpi = 300, width = 20, height = 10, device = cairo_pdf)
+#ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", 
+#       combined.plot1, dpi = 300, width = 20, height = 10, device = cairo_pdf)
 ```
 
 # Correlation Plot
@@ -248,8 +248,8 @@ The normal data ellipse for the Aurignacian sign sequences fully overlaps with t
 
 Safe complete figure to file
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/pca_biplot.pdf", 
-       biplot, dpi = 300, device = cairo_pdf)
+#ggsave("~/Github/UpperPalCombinatorics/figures/pca_biplot.pdf", 
+#       biplot, dpi = 300, device = cairo_pdf)
 ```
 
 Combine figures.
@@ -260,7 +260,7 @@ combined.plot2 <- ggarrange(length.plot, biplot, ncol = 2,
 
 # Final Combination of Plot Panels
 Combine figures.
-```{r, fig.width = 15, fig.height = 15}
+```{r, fig.width = 12, fig.height = 12}
 final.plot <- ggarrange(combined.plot1,
                         combined.plot2, ncol = 1, nrow = 2)
 final.plot
@@ -269,7 +269,7 @@ final.plot
 Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/finalPlot_chars.pdf", 
-       final.plot, dpi = 300, width = 15, height = 15, device = cairo_pdf)
+       final.plot, dpi = 300, width = 12, height = 12, device = cairo_pdf)
 ```
 
 # Package References

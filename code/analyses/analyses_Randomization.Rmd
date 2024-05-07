@@ -47,6 +47,13 @@ sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/signBase_
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ] 
 ```
 
+# Correlation
+```{r}
+cor.value <- round(cor(sign.data$hrate.chars, sign.data$hrate.chars.random, method = "pearson"), digits = 2)
+cor.pvalue <- round(cor.test(sign.data$hrate.chars, sign.data$hrate.chars.random, method = "pearson")$p.value, digits = 2)
+sample.size <- nrow(sign.data)
+```
+
 # Plot
 
 ## Entropy rate 
@@ -56,7 +63,13 @@ hrate.random.plot <- ggplot(sign.data, aes(x = hrate.chars, y =  hrate.chars.ran
   geom_point(aes(size = num.char), alpha = 0.3) +
   geom_smooth(method = "loess") +
   theme(legend.position = c(.8, .25)) +
-  labs(x = " Entropy rate for characters (original)", y = "Entropy rate for characters (randomized)")
+  annotate("text", x = c(0.5,0.5,0.5), y = c(1.7,1.6,1.5), 
+           label = c(paste("r = ", cor.value, sep =""), 
+                     "p-value < 0.0001",
+                     paste("n = ", sample.size, sep ="")), size = 4) +
+  labs(x = " Entropy rate for characters (original)", 
+       y = "Entropy rate for characters (randomized)") +
+  guides(size = guide_legend(title="No. of signs"))
 hrate.random.plot <- ggMarginal(hrate.random.plot,
                                   type = "density")
 hrate.random.plot
@@ -66,11 +79,6 @@ hrate.random.plot
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_signBase_random.pdf", 
        hrate.random.plot, dpi = 300, width = 6, height = 6, device = cairo_pdf)
-```
-
-# Correlation
-```{r}
-cor(sign.data$hrate.chars, sign.data$hrate.chars.random, method = "pearson")
 ```
 
 # Package References
