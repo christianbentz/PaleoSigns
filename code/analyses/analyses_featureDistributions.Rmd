@@ -56,8 +56,9 @@ head(estimations.df)
 
 # Preprocessing
 ```{r}
-# select sign strings of certain length
-#estimations.df <- estimations.df[estimations.df$num.char > 1,]
+# select only sign strings of certain length
+#estimations.df <- estimations.df[estimations.df$num.char > 10 &
+#                                   estimations.df$num.char < 50,]
 
 # select only certain subcorpora for plotting
 estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignacien"|
@@ -113,7 +114,7 @@ Get subset of data points to plot labels.
 table(estimations.df.selected$num.char)
 
 # choose subset of data points for labeling
-labels.df <- estimations.df.selected[estimations.df.selected$num.char == 3, ]
+labels.df <- estimations.df.selected[estimations.df.selected$num.char == 10, ]
                                        #estimations.df.selected$subcorpus != "Cuneiform (Uruk V)" &
                                        #estimations.df.selected$subcorpus != "Cuneiform (Uruk IV)" &
                                        #estimations.df.selected$subcorpus != "Cuneiform (Uruk III)", ]
@@ -123,22 +124,22 @@ labels.df <- sample_n(labels.df, 20)
 ```
 
 ## Entropy rate vs. Unigram Entropy
-```{r, fig.width = 7, fig.height = 7, warning = FALSE}
+```{r, fig.width = 15, fig.height = 5, warning = FALSE}
 huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y =  hrate.chars, 
                                                              color = subcorpus)) + 
   scale_colour_discrete(guide = "none") +
   geom_hex(bins = 20) +
   scale_fill_continuous(type = "viridis") +
   labs(x = "Unigram entropy for characters", y = "Entropy rate for characters") +
-  geom_label_repel(data = labels.df,
-                  aes(label = sequence),
-                  size = 2,
-                  hjust = 0,
-                  direction = 'y',
-                  fontface = "bold",
-                  nudge_x = 1,
-                  max.overlaps = Inf,
-                  show.legend = FALSE) +
+  # geom_label_repel(data = labels.df,
+  #                 aes(label = sequence),
+  #                 size = 2,
+  #                 hjust = 0,
+  #                 direction = 'y',
+  #                 fontface = "bold",
+  #                 nudge_x = 2,
+  #                 max.overlaps = Inf,
+  #                 show.legend = FALSE) +
   #guides(size = guide_legend(title = "No. of chars")) +
   facet_grid(~factor(subcorpus, levels = c('Aurignacien', 'Cuneiform (Uruk V)', 
                                          'Cuneiform (Uruk IV)', 'Cuneiform (Uruk III)',
@@ -147,7 +148,7 @@ huni.hrate.chars.plot
 ```
 
 ## TTR vs. Repetition Rate
-```{r, fig.width = 7, fig.height = 7, warning = FALSE}
+```{r, fig.width = 15, fig.height = 5, warning = FALSE}
 ttr.rm.chars.plot <- ggplot(estimations.df.selected, aes(x = ttr.chars, y = rm.chars, 
                                     colour = subcorpus)) + 
   scale_colour_discrete(guide = "none") +
@@ -274,13 +275,14 @@ final.plot
 Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/finalPlot_chars.pdf", 
-       final.plot, dpi = 300, width = 20, height = 20, device = cairo_pdf)
+       final.plot, dpi = 300, width = 12, height = 12, device = cairo_pdf)
 ```
 
 # Package References
 ```{r, echo = F}
 print(citation("ggbiplot"), style = "text")
 print(citation("dplyr"), style = "text")
+print(citation("hexbin"), style = "text")
 print(citation("tidyverse"), style = "text")
 print(citation("ggrepel"), style = "text")
 print(citation("ggExtra"), style = "text")

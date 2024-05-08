@@ -48,7 +48,7 @@ sign.data <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/signBase_ran
 ```
 
 # SignBase (Swabian Aurignacian) Estimations
-Estimations of quantitative features for the Aurignacian objects and their sign codings as found in signBase.
+Estimations of quantitative features for the objects and their sign codings as found in signBase.
 ```{r}
 # set counter
 counter = 0
@@ -69,11 +69,11 @@ for (i in 1:nrow(sign.data)){
   coding.sample <- as.character(sign.data$coding_clean[i])
   coding.sample.random <- as.character(sign.data$coding_random[i])
   
-  # remove underscores
-  # note: underscores will impact the feature values as they occur very often
-  # arguably, leaving underscores in will artificially decrease the unigram entropy, for example.
-  coding.sample <- gsub(" _ ", " ", coding.sample, fixed = T)
-  coding.sample.random <- gsub(" _ ", " ", coding.sample.random, fixed = T)
+  # remove white spaces around underscores
+  # note: white spaces are generally counted as UTF-8 characters, and will hence impact the feature values.
+  # For example, leaving white spaces around underscores will artificially decrease the unigram entropy.
+  coding.sample <- gsub(" _ ", "_", coding.sample, fixed = T)
+  coding.sample.random <- gsub(" _ ", "_", coding.sample.random, fixed = T)
   
   # get number of characters
   num.char <- nchar(coding.sample)
