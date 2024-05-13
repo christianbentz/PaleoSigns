@@ -104,6 +104,8 @@ for (i in 1:arch.no) {
   hidden.units <- round(runif(layer.no, min = 1, max = 5), 0)
   hidden.list[[i]] <- hidden.units
 }
+# remove duplicate hidden structures, i.e. only use "unique" vectors of numbers
+hidden.list <- unique(hidden.list)
 
 # Manual list of architectures for testing 
 # hidden.list <- list(c(4,4))
@@ -171,6 +173,19 @@ for (hidden in hidden.list) {
   # if the prediction probability is >0.5, else assign label of subcorpus2. 
   mlp.predictions.rd <- ifelse(mlp.predictions > 0.5, subcorpus1, subcorpus2)
   
+  # create data frame with actual labels in the test set and predicted labels
+  mlp.predictions.df <- cbind(test, mlp.predictions.rd)
+  
+  # safe predictions for post hoc analyses
+  write.csv(mlp.predictions.df, file = 
+              paste(c("~/Github/UpperPalCombinatorics/results/classifier/MLP/predictions/predictions_MLP_",
+                                              subcorpus1, "_",
+                                              subcorpus2, "_",
+                                              paste("hidden", paste(unlist(hidden), collapse = ""), sep = ""),
+                                              ".csv"
+                                              ), collapse = ""),
+                                      row.names = F)
+  
   # Model Evaluation
   # creating a dataframe from known (true) test labels
   test.labels <- data.frame(test$subcorpus)
@@ -222,21 +237,6 @@ Write performance metrics to file.
 ```{r}
 # classification results summaries 
 write.csv(results.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_",
-                                              subcorpus1, "_",
-                                              subcorpus2,
-                                              ".csv"
-                                              ), collapse = ""),
-                                      row.names = F)
-```
-
-Safe label predictions alongside the other columns in the test data set. Note that these are the results for the *last run* of the for-loop.
-```{r}
-mlp.predictions.df <- cbind(test, mlp.predictions.rd)
-```
-
-```{r}
-# safe predictions 
-write.csv(mlp.predictions.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/MLP/predictions/predictions_MLP_",
                                               subcorpus1, "_",
                                               subcorpus2,
                                               ".csv"

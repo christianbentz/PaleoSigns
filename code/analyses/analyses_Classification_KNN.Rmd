@@ -154,23 +154,22 @@ for (k in 1:n){
   knn.results <- rbind(knn.results, local.results)
   # give predictions alongside the other information in data frame
   knn.predictions.df <- cbind(test, predictions.knn)
+  # write df with predictions for post-hoc analyses
+  write.csv(knn.predictions.df, file =
+              paste(c("~/Github/UpperPalCombinatorics/results/classifier/KNN/predictions/predictions_KNN_",
+                                              subcorpus1, "_",
+                                              subcorpus2, "_",
+                                              paste("k", k, sep = ""),
+                                              ".csv"), collapse = ""),
+                                      row.names = F)
 }
 print(knn.results)
 ```
 
-Write to file. 
+Write results to file. 
 ```{r}
 # write results
 write.csv(knn.results, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_",
-                                              subcorpus1, "_",
-                                              subcorpus2,
-                                              ".csv"
-                                              ), collapse = ""),
-                                      row.names = F)
-
-# write df with predictions for post-hoc analyses
-# note that this writes the predictions only for the last run of the loop, i.e. the highest k
-write.csv(knn.predictions.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/KNN/predictions/predictions_KNN_",
                                               subcorpus1, "_",
                                               subcorpus2,
                                               ".csv"
