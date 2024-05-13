@@ -176,12 +176,6 @@ for (file in files.mlp.performance){
 head(performance.mlp.combined)
 ```
 
-Select comparisons to further analyse.
-```{r}
-# select only comparisons involving the Aurignacien
-#performance.mlp.combined <- performance.mlp.combined[performance.mlp.combined$comparison %like% "Aurignacien", ]
-```
-
 ## Density Plots
 
 Density distributions of accuracies and F1-scores by comparison. Note: the ordering of "comparisons" according to either F1-scores or accuracies should be consistent across the panels. 
@@ -231,6 +225,8 @@ performance.mlp.combined$accuracy.pvalue.corrected <-
 pvalue.mlp.plot <- ggplot(performance.mlp.combined, aes(y = fct_reorder(comparison, accuracy), 
                                                     fill = as.factor(accuracy.pvalue.corrected))) +
   geom_bar(stat = "count", position = "fill") +
+  geom_text(x = 0.5, label = paste("n = ", performance.mlp.combined$test.n, sep = ""), 
+            check_overlap = T) +
   theme(axis.title.y = element_blank(),
         axis.text.y = element_blank()) +
   scale_fill_discrete(name = "p-values") +
@@ -276,12 +272,6 @@ for (file in files.knn.performance){
   performance.knn.combined <- rbind(performance.knn.combined, performance.data)
 }
 head(performance.knn.combined)
-```
-
-Select comparisons to further analyse.
-```{r}
-# select only comparisons involving the Aurignacien
-#performance.knn.combined <- performance.knn.combined[performance.knn.combined$comparison %like% "Aurignacien", ]
 ```
 
 ## Density Plots
@@ -332,6 +322,8 @@ performance.knn.combined$accuracy.pvalue.corrected <-
 pvalue.knn.plot <- ggplot(performance.knn.combined, aes(y = fct_reorder(comparison, accuracy), 
                                                     fill = as.factor(accuracy.pvalue.corrected))) +
   geom_bar(stat = "count", position = "fill") +
+  geom_text(x = 0.5, label = paste("n = ", performance.knn.combined$test.n, sep = ""), 
+            check_overlap = T) +
   theme(axis.title.y = element_blank(),
         axis.text.y = element_blank()) +
   scale_fill_discrete(name = "p-values") +
