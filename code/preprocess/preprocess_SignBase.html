@@ -187,7 +187,7 @@ pre code {
 <p>Preprocessing and storage of cleaned file for signs. Load data from github repo and remove missing rows.</p>
 <pre class="r"><code># load data from github repo
 sign.data &lt;- read.csv(
-  &quot;~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-04-26.csv&quot;)
+  &quot;~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-05-13.csv&quot;)
 # remove certain columns
 sign.data &lt;- subset(sign.data, select = -c(short_description, references))
 # remove rows for which there is no sign coding

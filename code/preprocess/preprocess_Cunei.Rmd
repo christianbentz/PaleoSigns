@@ -44,7 +44,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 Loading transliterations and sign lists from CDLI (locally stored in the github repo under data/CDLI). Note that different datasets have to be loaded by choosing the period as a character string below. 
 ```{r}
 # choose period (UrukIII, UrukIV, UrukV)
-period <- "UrukV"
+period <- "UrukIII"
 
 # transliteration as text file with line breaks 
 translit.file = paste("~/Github/UpperPalCombinatorics/data/CDLI/", 

@@ -202,7 +202,7 @@ estimations.df &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/results/featu
 head(estimations.df)</code></pre>
 <pre><code>##     subcorpus           sequence num.char huni.chars hrate.chars  ttr.chars
 ## 1 Aurignacien vvvvvvvvvvvvvvvvvv       18  0.0000000   0.6171397 0.05555556
-## 2 Aurignacien     ||| ////// _ V       12  1.7295740   1.3854133 0.33333333
+## 2 Aurignacien     ||| ////// _ V       12  1.8962406   1.5295563 0.41666667
 ## 3 Aurignacien              vvvvv        5  0.0000000   0.5711903 0.20000000
 ## 4 Aurignacien          vvvv vvvv        9  0.5032583   0.9060047 0.22222222
 ## 5 Aurignacien     vvvvvvvvvvvvvv       14  0.0000000   0.6379550 0.07142857
@@ -218,7 +218,7 @@ head(estimations.df)</code></pre>
 <pre class="r"><code># choose subcorpora to compare: &quot;Aurignacien&quot;, &quot;TeDDi&quot;, &quot;Cuneiform (Uruk V)&quot;,
 # &quot;Cuneiform (Uruk IV)&quot;, &quot;Cuneiform (Uruk III)&quot;.
 subcorpus1 &lt;- &quot;Aurignacien&quot;
-subcorpus2 &lt;- &quot;TeDDi&quot;
+subcorpus2 &lt;- &quot;Cuneiform (Uruk III)&quot;
 selected &lt;- c(subcorpus1, subcorpus2)
 estimations.subset &lt;- estimations.df[estimations.df$subcorpus %in% selected, ]</code></pre>
 <p>Remove NAs (whole row)</p>
@@ -386,7 +386,11 @@ for (hidden in hidden.list) {
   print(counter)
 }</code></pre>
 <pre><code>## [1] 1
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 2
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 3
 ## [1] 4
 ## [1] 5
@@ -394,9 +398,15 @@ for (hidden in hidden.list) {
 ## [1] 7
 ## [1] 8
 ## [1] 9
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 10
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 11
 ## [1] 12
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 13
 ## [1] 14
 ## [1] 15
@@ -406,17 +416,29 @@ for (hidden in hidden.list) {
 ## [1] 19
 ## [1] 20
 ## [1] 21
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 22
 ## [1] 23
 ## [1] 24
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 25
 ## [1] 26
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 27
 ## [1] 28
 ## [1] 29
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 30
 ## [1] 31
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 32
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 33
 ## [1] 34
 ## [1] 35
@@ -426,9 +448,13 @@ for (hidden in hidden.list) {
 ## [1] 39
 ## [1] 40
 ## [1] 41
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 42
 ## [1] 43
 ## [1] 44
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 45
 ## [1] 46
 ## [1] 47
@@ -436,9 +462,13 @@ for (hidden in hidden.list) {
 ## [1] 49
 ## [1] 50
 ## [1] 51
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 52
 ## [1] 53
 ## [1] 54
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 55
 ## [1] 56
 ## [1] 57
@@ -447,14 +477,20 @@ for (hidden in hidden.list) {
 ## [1] 60
 ## [1] 61
 ## [1] 62
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 63
 ## [1] 64
 ## [1] 65
 ## [1] 66
 ## [1] 67
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 68
 ## [1] 69
 ## [1] 70
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 71
 ## [1] 72
 ## [1] 73
@@ -462,7 +498,7 @@ for (hidden in hidden.list) {
 <pre class="r"><code>end_time &lt;- Sys.time()
 proc.time &lt;- end_time - start_time
 print(proc.time)</code></pre>
-<pre><code>## Time difference of 3.22012 secs</code></pre>
+<pre><code>## Time difference of 13.77632 mins</code></pre>
 <p>Write performance metrics to file.</p>
 <pre class="r"><code># classification results summaries 
 write.csv(results.df, file = paste(c(&quot;~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_&quot;,

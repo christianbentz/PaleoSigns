@@ -15,7 +15,7 @@ The code should be run in the following order:
 Preprocessing:
 - preprocess_TeDDi.Rmd: preprocessing of the TeDDi sample lines with raw text. This outputs a predefined number of randomly sampled TeDDi raw text lines to data/TeDDi/final_sample.csv.
 - preprocess_SignBase.Rmd: preprocessing of sign sequences from www.signbase.org. The clean and randomized sequences are output to data/signBase/signBase_randomized.csv.
-- preprocess_Cunei.Rmd: preprocessing of sign sequences from CDLI. This code needs to be run separately for each proto-cuneiform period. The clean sequences are output for example to data/CDLI/UrukV/signs_clean.csv. 
+- preprocess_Cunei.Rmd: preprocessing of sign sequences from CDLI. This code needs to be run separately for each proto-cuneiform period (Uruk V, Uruk IV, Uruk III). The clean sequences are output for example to data/CDLI/UrukV/signs_clean.csv. 
 
 Estimation:
 - estimation_TeDDi.Rmd: Estimates quantitative features (entropy, entropy rate, TTR, repetition rate) for each sequence of characters in the TeDDi lines sample. The results are output to results/features/teddi_features.csv.

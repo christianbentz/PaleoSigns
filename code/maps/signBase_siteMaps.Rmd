@@ -45,7 +45,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 # Load data
 Run this code to load the file with data on Aurignacian objects. 
 ```{r}
-objects <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-04-26.csv")
+objects <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-05-13.csv")
 nrow(objects)
 # Select Aurignacian objects from Swabian Jura Caves
 objects <- objects[objects$archaeological_unit == "Aurignacien" &
@@ -319,7 +319,9 @@ object.map.hfc
 
 Combine plots.
 ```{r, fig.width = 15, fig.height = 5, warning = F}
-combined.plot <- ggarrange(swabianJura.map, object.map.lonetal, object.map.vogelherd, ncol = 3, nrow = 1,
+combined.plot <- ggarrange(swabianJura.map, object.map.lonetal, object.map.vogelherd,
+                           object.map.achtal, object.map.hfc, object.map.gkl,
+                           ncol = 3, nrow = 2,
                            labels = "AUTO")
 combined.plot
 ```
@@ -327,7 +329,7 @@ combined.plot
 Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/maps/maps_combined.pdf", 
-       combined.plot, dpi = 500, width = 15, height = 5, device = cairo_pdf)
+       combined.plot, dpi = 500, width = 15, height = 10, device = cairo_pdf)
 ```
 
 # Package References

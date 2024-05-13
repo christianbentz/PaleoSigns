@@ -52,6 +52,9 @@ sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
 cor.value <- round(cor(sign.data$hrate.chars, sign.data$hrate.chars.random, method = "pearson"), digits = 2)
 cor.pvalue <- round(cor.test(sign.data$hrate.chars, sign.data$hrate.chars.random, method = "pearson")$p.value, digits = 2)
 sample.size <- nrow(sign.data)
+print(cor.value)
+print(cor.pvalue)
+print(sample.size)
 ```
 
 # Plot
