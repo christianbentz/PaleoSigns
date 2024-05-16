@@ -33,6 +33,7 @@ library(ggridges)
 library(tidyverse)
 library(performance)
 library(see)
+library(GGally)
 library(MASS)
 ```
 
@@ -93,21 +94,61 @@ sign.data$object_type <- fct_collapse(sign.data$object_type,
              figurine_zoomorph = c("figurine zoomorph"),
              tool = c("awl", "bâton percé",
                       "rod/bâton", "spatula/lissoir"),
-             tube_flute = c("flute", "tube", "possible flute", "tube/flute"),
+             tube_flute = c("flute", "tube", "tube/flute"),
              personal_ornament = c("personal ornament"),
              other_level = "other")
 ```
 
-# Select Feature
+# Simple Statistics Plots
 ```{r}
-# select the statistical feature to look at
+# barplot for object counts per cave site
+site.barplot <- ggplot(sign.data, aes(x = site_name, fill = site_name)) +
+  geom_bar() +
+  ylim(0, 200) +
+  geom_text(aes(label = after_stat(count)), stat = "count", vjust = -1, hjust = -1) +
+  geom_text(aes(label = paste(round(after_stat(prop)*100, 1), "%")), 
+            stat = "prop", vjust = 1, hjust = -0.2) +
+  theme(legend.position = "none") +
+  xlab("Cave Site") +
+  coord_flip()
+site.barplot
+
+# barplot for object counts per material
+material.barplot <- ggplot(sign.data, aes(x = material, fill = material)) +
+  geom_bar() +
+  ylim(0, 200) +
+  geom_text(aes(label = after_stat(count)), stat = "count", vjust = -1, hjust = -1) +
+  geom_text(aes(label = paste(round(after_stat(prop)*100, 1), "%")), 
+            stat = "prop", vjust = 1, hjust = -0.2) +
+  theme(legend.position = "none") +
+  xlab("Material") +
+  coord_flip()
+material.barplot
+
+# barplot for object counts per object_type
+type.barplot <- ggplot(sign.data, aes(x = object_type, fill = object_type)) +
+  geom_bar() +
+  ylim(0, 200) +
+  geom_text(aes(label = after_stat(count)), stat = "count", vjust = -1, hjust = -1) +
+  geom_text(aes(label = paste(round(after_stat(prop)*100, 1), "%")), 
+            stat = "prop", vjust = 1, hjust = -0.2) +
+  theme(legend.position = "none") +
+  xlab("Object-Type (Carrier)") +
+  coord_flip()
+type.barplot
+```
+
+
+## Select Feature
+```{r}
+# select the statistical feature for further analyses
 feature.name <- "hrate.chars"
 feature.values <- get(feature.name, sign.data)
 ```
 
-# Properties of Objects
+## Properties of Objects
 
-## Object Type (Carrier)
+### Object Type (Carrier)
 ```{r}
 # create plot
 objectType.plot <- ggplot(sign.data, aes(x = feature.values, 
@@ -123,7 +164,7 @@ objectType.plot <- ggplot(sign.data, aes(x = feature.values,
 objectType.plot
 ```
 
-## Material
+### Material
 ```{r}
 # create plot
 material.plot <- ggplot(sign.data, aes(x = feature.values, 
@@ -139,7 +180,7 @@ material.plot <- ggplot(sign.data, aes(x = feature.values,
 material.plot
 ```
 
-## Cave Site
+### Cave Site
 ```{r}
 # create plot
 site.plot <- ggplot(sign.data, aes(x = feature.values, 
@@ -155,7 +196,7 @@ site.plot <- ggplot(sign.data, aes(x = feature.values,
 site.plot
 ```
 
-## Preservation
+### Preservation
 ```{r}
 # create plot
 preservation.plot <- ggplot(sign.data, aes(x = feature.values, 
@@ -171,19 +212,20 @@ preservation.plot <- ggplot(sign.data, aes(x = feature.values,
 preservation.plot
 ```
 
-## Volume of Object
+### Volume of Object
 ```{r, warning = F}
 # create plot
-volume.plot <- ggplot(sign.data, aes(x = feature.values, y = volume)) +
-  geom_point(alpha = 0.5, size = 3) +
-  geom_text_repel(aes(label = object_type)) +
+volume.plot <- ggplot(sign.data, aes(x = feature.values, y = volume, size = volume)) +
+  geom_point(alpha = 0.5) +
+  #geom_text_repel(aes(label = object_type), nudge_x = 0.2) +
   geom_smooth(method = "lm") +
   xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
-  ylab("Volume (cm^3)")
+  ylab("Volume (cm^3)") +
+  theme(legend.position = "none")
 volume.plot
 ```
 
-## Date
+### Date
 ```{r}
 # create plot
 date.plot <- ggplot(sign.data, aes(x = feature.values, y = date)) +
@@ -197,17 +239,19 @@ date.plot
 
 ## Figures Combined
 Combine figures.
-```{r, fig.width = 16, fig.height = 8, warning = F, message = F}
-combined.plot <- ggarrange(objectType.plot, material.plot, site.plot,
-                              preservation.plot, volume.plot,
-                              date.plot, ncol = 3, nrow = 2,
+```{r, fig.width = 12, fig.height = 12, warning = F, message = F}
+combined.plot <- ggarrange(type.barplot, material.barplot, site.barplot,
+                           objectType.plot, material.plot, site.plot,
+                           preservation.plot, volume.plot, date.plot, 
+                           ncol = 3, nrow = 3,
                            labels = "AUTO")
+combined.plot
 ```
 
 Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_Aurignacian.pdf", 
-       combined.plot, dpi = 300, width = 16, height = 8, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 12, height = 12, device = cairo_pdf)
 ```
 
 # Linear Models
