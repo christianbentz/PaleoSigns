@@ -182,13 +182,58 @@ pre code {
 <pre><code>## [1] &quot;R version 4.3.3 (2024-02-29)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
 </div>
-<div id="preprocessing" class="section level1">
-<h1>Preprocessing</h1>
-<p>Preprocessing and storage of cleaned file for signs. Load data from github repo and remove missing rows.</p>
+<div id="load-data" class="section level1">
+<h1>Load Data</h1>
 <pre class="r"><code># load data from github repo
 sign.data &lt;- read.csv(
   &quot;~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-05-13.csv&quot;)
-# remove certain columns
+# select objects of the Swabian Aurignacien
+sign.data &lt;- sign.data[sign.data$archaeological_unit == &quot;Aurignacien&quot; &amp;
+                     sign.data$site_name == &quot;Vogelherd&quot; |
+                     sign.data$site_name == &quot;Hohle Fels&quot; |
+                     sign.data$site_name == &quot;Geissenklösterle&quot; |
+                     sign.data$site_name == &quot;Hohlenstein-Stadel&quot; |
+                     sign.data$site_name == &quot;Bockstein-Törle&quot;, ]</code></pre>
+</div>
+<div id="simple-stats-before-preprocessing" class="section level1">
+<h1>Simple Stats (before Preprocessing)</h1>
+<pre class="r"><code># number of sequences/objects
+nrow(sign.data)</code></pre>
+<pre><code>## [1] 260</code></pre>
+<pre class="r"><code># cave sites
+table(sign.data$site_name)</code></pre>
+<pre><code>## 
+##    Bockstein-Törle   Geissenklösterle         Hohle Fels Hohlenstein-Stadel 
+##                  3                 30                 50                  2 
+##          Vogelherd 
+##                175</code></pre>
+<pre class="r"><code># material
+table(sign.data$material)</code></pre>
+<pre><code>## 
+## animal tooth       antler         bone       fossil        ivory        ochre 
+##            1            7           76            1          172            1 
+##    sandstone        slate 
+##            1            1</code></pre>
+<pre class="r"><code># object_type
+table(sign.data$object_type)</code></pre>
+<pre><code>## 
+##          antler object                    awl            bâton percé 
+##                      3                      6                      4 
+## figurine anthropomorph        figurine undet.      figurine zoomorph 
+##                      6                      8                     25 
+##                  flute                  other      personal ornament 
+##                     10                      1                     18 
+##              plaquette                  point      possible figurine 
+##                      1                      1                     24 
+##         possible flute              rod/bâton        spatula/lissoir 
+##                     15                     20                     12 
+##                   tube             tube/flute           undetermined 
+##                      1                     24                     81</code></pre>
+</div>
+<div id="preprocessing" class="section level1">
+<h1>Preprocessing</h1>
+<p>Preprocessing and storage of cleaned file for signs. Load data from github repo and remove missing rows.</p>
+<pre class="r"><code># remove certain columns
 sign.data &lt;- subset(sign.data, select = -c(short_description, references))
 # remove rows for which there is no sign coding
 sign.data &lt;- sign.data[!sign.data$sign_coding == &quot;&quot;, ]
@@ -214,6 +259,41 @@ sign.data$coding_clean &lt;- coding.clean
 sign.data &lt;- sign.data[!sign.data$coding_clean == &quot;&quot;, ]</code></pre>
 <pre class="r"><code># use only lines with more than two characters
 sign.data &lt;- sign.data[nchar(sign.data$coding_clean) &gt; 1, ]</code></pre>
+</div>
+<div id="simple-stats-after-preprocessing" class="section level1">
+<h1>Simple Stats (after Preprocessing)</h1>
+<pre class="r"><code># number of sequences/objects
+nrow(sign.data)</code></pre>
+<pre><code>## [1] 212</code></pre>
+<pre class="r"><code># cave sites
+table(sign.data$site_name)</code></pre>
+<pre><code>## 
+##    Bockstein-Törle   Geissenklösterle         Hohle Fels Hohlenstein-Stadel 
+##                  1                 28                 34                  2 
+##          Vogelherd 
+##                147</code></pre>
+<pre class="r"><code># material
+table(sign.data$material)</code></pre>
+<pre><code>## 
+## animal tooth       antler         bone       fossil        ivory    sandstone 
+##            1            6           67            1          135            1 
+##        slate 
+##            1</code></pre>
+<pre class="r"><code># object_type
+table(sign.data$object_type)</code></pre>
+<pre><code>## 
+##          antler object                    awl            bâton percé 
+##                      3                      4                      3 
+## figurine anthropomorph        figurine undet.      figurine zoomorph 
+##                      6                      6                     22 
+##                  flute      personal ornament              plaquette 
+##                      8                     16                      1 
+##      possible figurine         possible flute              rod/bâton 
+##                     20                     15                     15 
+##        spatula/lissoir                   tube             tube/flute 
+##                     10                      1                     21 
+##           undetermined 
+##                     61</code></pre>
 </div>
 <div id="randomization-1" class="section level1">
 <h1>Randomization</h1>

@@ -30,12 +30,35 @@ sessionInfo()$R.version$version.string
 sessionInfo()$R.version$platform 
 ```
 
-# Preprocessing
-Preprocessing and storage of cleaned file for signs. Load data from github repo and remove missing rows.
+# Load Data
 ```{r}
 # load data from github repo
 sign.data <- read.csv(
   "~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-05-13.csv")
+# select objects of the Swabian Aurignacien
+sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien" &
+                     sign.data$site_name == "Vogelherd" |
+                     sign.data$site_name == "Hohle Fels" |
+                     sign.data$site_name == "Geissenklösterle" |
+                     sign.data$site_name == "Hohlenstein-Stadel" |
+                     sign.data$site_name == "Bockstein-Törle", ]
+```
+
+# Simple Stats (before Preprocessing)
+```{r}
+# number of sequences/objects
+nrow(sign.data)
+# cave sites
+table(sign.data$site_name)
+# material
+table(sign.data$material)
+# object_type
+table(sign.data$object_type)
+```
+
+# Preprocessing
+Preprocessing and storage of cleaned file for signs. Load data from github repo and remove missing rows.
+```{r}
 # remove certain columns
 sign.data <- subset(sign.data, select = -c(short_description, references))
 # remove rows for which there is no sign coding
@@ -68,6 +91,18 @@ sign.data <- sign.data[!sign.data$coding_clean == "", ]
 ```{r}
 # use only lines with more than two characters
 sign.data <- sign.data[nchar(sign.data$coding_clean) > 1, ]
+```
+
+# Simple Stats (after Preprocessing)
+```{r}
+# number of sequences/objects
+nrow(sign.data)
+# cave sites
+table(sign.data$site_name)
+# material
+table(sign.data$material)
+# object_type
+table(sign.data$object_type)
 ```
 
 # Randomization

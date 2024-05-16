@@ -52,7 +52,8 @@ objects <- objects[objects$archaeological_unit == "Aurignacien" &
                      objects$site_name == "Vogelherd" |
                      objects$site_name == "Hohle Fels" |
                      objects$site_name == "Geissenklösterle" |
-                     objects$site_name == "Hohlenstein-Stadel", ]
+                     objects$site_name == "Hohlenstein-Stadel" |
+                     objects$site_name == "Bockstein-Törle", ]
 nrow(objects)
 ```
 

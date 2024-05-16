@@ -50,6 +50,18 @@ sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/signBase_
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
 ```
 
+# Simple Stats
+```{r}
+# number of sequences/objects
+nrow(sign.data)
+# cave sites
+table(sign.data$site_name)
+# material
+table(sign.data$material)
+# object_type
+table(sign.data$object_type)
+```
+
 # Preprocessing
 Exclude certain levels of column coding_certainty to check the robustness of results.
 ```{r}
@@ -66,11 +78,6 @@ sign.data$date <- as.numeric(substr(sign.data$date_bp_min, 1, 5))
 # Collapse Factors
 Collapse some factors of meta information which are uncommon and/or related. Note that using the factor levels as is will lead to problems with model fitting, since there are sometimes very few data points per level.
 ```{r}
-# material
-table(sign.data$material)
-# object_type
-table(sign.data$object_type)
-
 # material: collapse manually
 sign.data$material <- fct_collapse(sign.data$material,
              ivory = "ivory",
