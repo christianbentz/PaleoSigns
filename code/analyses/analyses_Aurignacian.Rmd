@@ -215,7 +215,8 @@ preservation.plot
 ### Volume of Object
 ```{r, warning = F}
 # create plot
-volume.plot <- ggplot(sign.data, aes(x = feature.values, y = volume, size = volume)) +
+volume.plot <- ggplot(sign.data, aes(x = feature.values, y = volume, 
+                                     size = volume, color = volume)) +
   geom_point(alpha = 0.5) +
   #geom_text_repel(aes(label = object_type), nudge_x = 0.2) +
   geom_smooth(method = "lm") +
@@ -228,12 +229,15 @@ volume.plot
 ### Date
 ```{r}
 # create plot
-date.plot <- ggplot(sign.data, aes(x = feature.values, y = date)) +
-  geom_point(alpha = 0.5, size = 3) +
+date.plot <- ggplot(sign.data, aes(x = date, y = feature.values, 
+                                   size = volume, color = volume)) +
+  geom_point(alpha = 0.5) +
+  scale_x_continuous(trans = "reverse") +
   #geom_label_repel(aes(label = object_type)) +
   geom_smooth(method = "lm") +
-  xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
-  ylab("Date (BP, min)")
+  ylab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
+  xlab("Date (BP, min)") +
+  theme(legend.position = "none")
 date.plot
 ```
 

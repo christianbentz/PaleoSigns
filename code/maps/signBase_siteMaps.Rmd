@@ -49,6 +49,7 @@ objects <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-20
 nrow(objects)
 # Select Aurignacian objects from Swabian Jura Caves
 objects <- objects[objects$archaeological_unit == "Aurignacien" &
+                     nchar(objects$sign_coding) > 1 & # remove objects with less than two signs
                      objects$site_name == "Vogelherd" |
                      objects$site_name == "Hohle Fels" |
                      objects$site_name == "Geissenklösterle" |
@@ -324,7 +325,6 @@ combined.plot <- ggarrange(swabianJura.map, object.map.lonetal, object.map.vogel
                            object.map.achtal, object.map.hfc, object.map.gkl,
                            ncol = 3, nrow = 2,
                            labels = "AUTO")
-combined.plot
 ```
 
 Safe complete figure to file
