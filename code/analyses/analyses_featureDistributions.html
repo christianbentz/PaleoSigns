@@ -409,8 +409,8 @@ ttr.rm.chars.plot</code></pre>
 <pre class="r"><code>combined.plot1 &lt;- ggarrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 1,
                                labels = c(&quot;A&quot;, &quot;B&quot;))</code></pre>
 <p>Safe complete figure to file</p>
-<pre class="r"><code>#ggsave(&quot;~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf&quot;, 
-#       combined.plot1, dpi = 300, width = 20, height = 10, device = cairo_pdf)</code></pre>
+<pre class="r"><code>ggsave(&quot;~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf&quot;, 
+       combined.plot1, dpi = 300, width = 12, height = 6, device = cairo_pdf)</code></pre>
 </div>
 </div>
 <div id="correlation-plot" class="section level1">

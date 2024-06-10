@@ -178,8 +178,8 @@ combined.plot1 <- ggarrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 1,
 
 Safe complete figure to file
 ```{r}
-#ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", 
-#       combined.plot1, dpi = 300, width = 20, height = 10, device = cairo_pdf)
+ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", 
+       combined.plot1, dpi = 300, width = 12, height = 6, device = cairo_pdf)
 ```
 
 # Correlation Plot
