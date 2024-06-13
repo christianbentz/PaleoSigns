@@ -44,7 +44,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 Load the files with the cleaned sequences. A period needs to be chosen here. Hence, the code needs to be run for periods separately.
 ```{r}
 # choose period (UrukIII, UrukIV, UrukV)
-period <- "UrukIII"
+period <- "UrukV"
 
 # cuneiform data from CDLI
 cunei.data <- read.csv(paste("~/Github/UpperPalCombinatorics/data/CDLI/", 

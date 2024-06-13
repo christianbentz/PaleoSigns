@@ -45,16 +45,16 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 # Load data
 Run this code to load the file with data on Aurignacian objects. 
 ```{r}
-objects <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-05-13.csv")
+objects <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-06-13.csv")
 nrow(objects)
 # Select Aurignacian objects from Swabian Jura Caves
-objects <- objects[objects$archaeological_unit == "Aurignacien" &
-                     nchar(objects$sign_coding) > 1 & # remove objects with less than two signs
-                     objects$site_name == "Vogelherd" |
+objects <- objects[objects$archaeological_unit == "Aurignacien", ]
+objects <- objects[objects$site_name == "Vogelherd" |
                      objects$site_name == "Hohle Fels" |
                      objects$site_name == "Geissenklösterle" |
                      objects$site_name == "Hohlenstein-Stadel" |
                      objects$site_name == "Bockstein-Törle", ]
+objects <- objects[objects$sign_coding != "", ] # remove objects with no sign coding
 nrow(objects)
 ```
 

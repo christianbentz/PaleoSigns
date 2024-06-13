@@ -34,7 +34,7 @@ sessionInfo()$R.version$platform
 ```{r}
 # load data from github repo
 sign.data <- read.csv(
-  "~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-05-13.csv")
+  "~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-06-13.csv")
 # select objects of the Swabian Aurignacien
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien" &
                      sign.data$site_name == "Vogelherd" |
