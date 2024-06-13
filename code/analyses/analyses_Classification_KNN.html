@@ -219,7 +219,7 @@ head(estimations.df)</code></pre>
 <pre class="r"><code># choose subcorpora to compare: &quot;Aurignacien&quot;, &quot;TeDDi&quot;, &quot;Cuneiform (Uruk V)&quot;,
 # &quot;Cuneiform (Uruk IV)&quot;, &quot;Cuneiform (Uruk III)&quot;.
 subcorpus1 &lt;- &quot;Aurignacien&quot;
-subcorpus2 &lt;- &quot;Cuneiform (Uruk III)&quot;
+subcorpus2 &lt;- &quot;TeDDi&quot;
 selected &lt;- c(subcorpus1, subcorpus2)
 estimations.subset &lt;- estimations.df[estimations.df$subcorpus %in% selected, ]</code></pre>
 <p>Remove NAs (whole row)</p>
@@ -318,16 +318,16 @@ for (k in 1:n){
 }
 print(knn.results)</code></pre>
 <pre><code>##     k baseline accuracy accuracy.pvalue precision recall   f1 test.n
-## 1   1     0.83     0.90    0.0002099737      0.68   0.77 0.72    351
-## 2   2     0.83     0.88    0.0031534250      0.65   0.70 0.67    351
-## 3   3     0.83     0.87    0.0249263495      0.62   0.62 0.62    351
-## 4   4     0.83     0.87    0.0249263495      0.61   0.63 0.62    351
-## 5   5     0.83     0.87    0.0117116674      0.62   0.68 0.65    351
-## 6   6     0.83     0.89    0.0011579734      0.66   0.72 0.69    351
-## 7   7     0.83     0.89    0.0011579734      0.66   0.73 0.69    351
-## 8   8     0.83     0.88    0.0031534250      0.66   0.67 0.66    351
-## 9   9     0.83     0.88    0.0077503978      0.63   0.67 0.65    351
-## 10 10     0.83     0.87    0.0351522280      0.60   0.67 0.63    351</code></pre>
+## 1   1     0.85     0.99    6.400345e-23      0.98   0.95 0.97    401
+## 2   2     0.85     0.99    3.601757e-24      0.98   0.97 0.97    401
+## 3   3     0.85     1.00    1.516770e-25      1.00   0.97 0.98    401
+## 4   4     0.85     1.00    1.516770e-25      1.00   0.97 0.98    401
+## 5   5     0.85     1.00    1.516770e-25      1.00   0.97 0.98    401
+## 6   6     0.85     1.00    1.516770e-25      1.00   0.97 0.98    401
+## 7   7     0.85     1.00    1.516770e-25      1.00   0.97 0.98    401
+## 8   8     0.85     0.99    3.601757e-24      1.00   0.95 0.97    401
+## 9   9     0.85     0.99    3.601757e-24      1.00   0.95 0.97    401
+## 10 10     0.85     0.99    3.601757e-24      1.00   0.95 0.97    401</code></pre>
 <p>Write results to file.</p>
 <pre class="r"><code># write results
 write.csv(knn.results, file = paste(c(&quot;~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_&quot;,

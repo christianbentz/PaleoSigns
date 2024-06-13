@@ -73,7 +73,7 @@ Add columns for object volume and dates.
 ```{r}
 # volume in cm^3 (mm multiplications divided by 1000)
 sign.data$volume <- (sign.data$length_mm*sign.data$width_mm*sign.data$depth)/1000
-sign.data$date <- as.numeric(substr(sign.data$date_bp_min, 1, 5)) 
+sign.data$date <- as.numeric(substr(sign.data$date_bp_max, 1, 5)) 
 ```
 
 # Collapse Factors
@@ -236,7 +236,7 @@ date.plot <- ggplot(sign.data, aes(x = date, y = feature.values,
   #geom_label_repel(aes(label = object_type)) +
   geom_smooth(method = "lm") +
   ylab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
-  xlab("Date (BP, min)") +
+  xlab("Date (BP, max)") +
   theme(legend.position = "none")
 date.plot
 ```
