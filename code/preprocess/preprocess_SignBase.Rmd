@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Description
-This file enables preprocessing of Upper-Paleolithic sign sequences as published at https://www.signbase.org. The csv file with latest objects and sign codings can be downloaded from there. The file used for the analyses here is also given in the github repo under data/signBase/.
+This file enables preprocessing of Upper-Paleolithic sign sequences as published at https://www.signbase.org. The csv file with updated objects and sign codings, as well as a csv file with the sign type typology can be downloaded from there. The files used for the current analyses are also given in the github repo under data/signBase/.
 
 ## Randomization
 The code also provides concatenation and randomization of sign strings which occur on different parts of a paleolithic object (indicated by underscore `_'). In the case of paleolithic sequences, we do not know the order of these respective strings (if any), hence, if we want to analyse them as one combined sequence, they need to be randomized. Note that this is not applicable to modern day written languages, as the order of strings of characters (e.g. words) is meaningful. Randomization of strings would artificially introduce randomness where order is intended. Arguably, the same holds for proto-cuneiform writing. There are particular orders with which proto-cuneiform signs were imprinted onto a tablet, i.e. a kind of "syntax", cf. the following statement in Englund (1998), p. 79:
@@ -33,8 +33,12 @@ sessionInfo()$R.version$platform
 # Load Data
 ```{r}
 # load data from github repo
-sign.data <- read.csv(
-  "~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-06-13.csv")
+# sign typology
+sign.typology <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sign-2024-07-17.csv")
+print(sign.typology[,1:4])
+
+# sign codings and meta info per object
+sign.data <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-06-13.csv")
 # select objects of the Swabian Aurignacien
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien" &
                      sign.data$site_name == "Vogelherd" |
@@ -42,6 +46,8 @@ sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien" &
                      sign.data$site_name == "Geissenklösterle" |
                      sign.data$site_name == "Hohlenstein-Stadel" |
                      sign.data$site_name == "Bockstein-Törle", ]
+# display the head of some columns of the data
+head(subset(sign.data, select = c("object_id", "archaeological_unit", "site_name", "sign_coding")))
 ```
 
 # Simple Stats (before Preprocessing)
