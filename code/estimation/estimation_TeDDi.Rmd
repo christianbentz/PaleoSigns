@@ -76,12 +76,13 @@ for (i in 1:nrow(teddi.clean)){
   genre_broad <- teddi.clean$genre_broad[i]
   writing_system <- teddi.clean$writing_system[i]
   comments <- teddi.clean$comments[i]
-  
-  # get number of characters
-  num.char <- nchar(coding.sample)
 
   # split strings into UTF-8 characters
   chars <- unlist(strsplit(coding.sample, ""))
+  
+  # get number of characters
+  num.char <- length(chars)
+  
   # preprocess text with bag-of-words normalization
   # note: this is an important step! Without it, entropy rate estimation will fail
   # to yield realistic results due to issues with processing special characters.

@@ -44,7 +44,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 Load the files with the cleaned sequences. A period needs to be chosen here. Hence, the code needs to be run for periods separately.
 ```{r}
 # choose period (UrukIII, UrukIV, UrukV)
-period <- "UrukV"
+period <- "UrukIII"
 
 # cuneiform data from CDLI
 cunei.data <- read.csv(paste("~/Github/UpperPalCombinatorics/data/CDLI/", 
@@ -73,13 +73,13 @@ for (i in 1:nrow(cunei.data)){
   tablet.id <- cunei.data$tablet.id[i]
   coding.sample <- as.character(cunei.data$signs.expand.vec[i])
 
-  # remove underscores
-  # note: underscores will impact the feature values as they occur very often
-  # arguably, leaving underscores in will artificially decrease the unigram entropy, for example.
-  coding.sample <- gsub(" _ ", " ", coding.sample)
-  
-  # split strings into cuneiform sign types
-  chars <- unlist(strsplit(coding.sample, " "))
+  # split sequences per tablet into cuneiform signs
+  # this is here done by first splitting them on ' _ ' to get strings of signs
+  # the strings are then split into individual cuneiform signs by using white spaces
+  # note: the last step is necessary since sign transliterations consist of multiple characters,
+  # e.g. NO1, N14, SZE~a, etc.
+  strings <- unlist(strsplit(coding.sample, " _ ")) 
+  chars <- unlist(strsplit(strings, " "))
   
   # get number of "characters", i.e. proto-cuneiform signs in this case
   num.char <- length(chars)

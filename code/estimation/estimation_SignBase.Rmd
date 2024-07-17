@@ -69,18 +69,17 @@ for (i in 1:nrow(sign.data)){
   coding.sample <- as.character(sign.data$coding_clean[i])
   coding.sample.random <- as.character(sign.data$coding_random[i])
   
-  # remove white spaces around underscores
-  # note: white spaces are generally counted as UTF-8 characters, and will hence impact the feature values.
-  # For example, leaving white spaces around underscores will artificially decrease the unigram entropy.
-  coding.sample <- gsub(" _ ", "_", coding.sample, fixed = T)
-  coding.sample.random <- gsub(" _ ", "_", coding.sample.random, fixed = T)
+  # split sequences per object into UTF-8 characters
+  # this is here done by first splitting them on ' _ ' to get strings of characters
+  # the strings are then split into individual UTF-8 characters (white spaces included)
+  strings <- unlist(strsplit(coding.sample, " _ ")) 
+  chars <- unlist(strsplit(strings, ""))
+  strings.random <- unlist(strsplit(coding.sample.random, " _ ")) 
+  chars.random <- unlist(strsplit(strings.random, ""))
   
   # get number of characters
-  num.char <- nchar(coding.sample)
+  num.char <- length(chars)
 
-  # split strings into UTF-8 characters
-  chars <- unlist(strsplit(coding.sample, ""))
-  chars.random <- unlist(strsplit(coding.sample.random, ""))
   # preprocess text with bag-of-words normalization
   # note: this is an important step! Without it, entropy rate estimation will fail
   # to yield realistic results due to issues with processing special characters.
