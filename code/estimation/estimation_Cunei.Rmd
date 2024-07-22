@@ -44,7 +44,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 Load the files with the cleaned sequences. A period needs to be chosen here. Hence, the code needs to be run for periods separately.
 ```{r}
 # choose period (UrukIII, UrukIV, UrukV)
-period <- "UrukIII"
+period <- "UrukV"
 
 # cuneiform data from CDLI
 cunei.data <- read.csv(paste("~/Github/UpperPalCombinatorics/data/CDLI/", 
@@ -58,7 +58,8 @@ Estimations of quantitative features for the cuneiform data from CDLI.
 # set counter
 counter = 0
 # initialize dataframe to append results to
-estimations.df <- data.frame(tablet.id = character(0), num.char = numeric(0),
+estimations.df <- data.frame(tablet.id = character(0), num.tokens = numeric(0),
+                             num.types = numeric(0),
                              huni.chars = numeric (0), hrate.chars = numeric(0), 
                              ttr.chars = numeric(0), 
                              rm.chars = numeric(0)) 
@@ -81,8 +82,9 @@ for (i in 1:nrow(cunei.data)){
   strings <- unlist(strsplit(coding.sample, " _ ")) 
   chars <- unlist(strsplit(strings, " "))
   
-  # get number of "characters", i.e. proto-cuneiform signs in this case
-  num.char <- length(chars)
+  # get number of tokens and types, i.e. "characters" are proto-cuneiform signs in this case
+  num.tokens <- length(chars)
+  num.types <- length(unique(chars))
   
   # preprocess the signs with bag-of-words normalization
   # note: this is an important step! Without it, entropy rate estimation will fail
@@ -129,7 +131,7 @@ for (i in 1:nrow(cunei.data)){
   }
   
   # append results to dataframe
-  local.df <- data.frame(tablet.id, num.char, huni.chars, hrate.chars,
+  local.df <- data.frame(tablet.id, num.tokens, num.types, huni.chars, hrate.chars,
                          ttr.chars, rm.chars)
   estimations.df <- rbind(estimations.df, local.df)
 }) # end of try()
@@ -148,8 +150,8 @@ cunei.data.est <- merge(cunei.data, estimations.df, by = "tablet.id")
 
 Give head of estimation data frame (selected columns) for visual checking of the output data structure.
 ```{r}
-head(cunei.data.est[c("tablet.id", "signs.orig.vec", "num.char", "huni.chars", 
-                       "hrate.chars", "ttr.chars", "rm.chars")])
+head(cunei.data.est[c("tablet.id", "signs.orig.vec", "num.tokens", "num.types", 
+                      "huni.chars",  "hrate.chars", "ttr.chars", "rm.chars")])
 ```
 
 Safe outputs to file.

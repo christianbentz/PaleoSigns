@@ -55,9 +55,9 @@ estimations.df.selected <- estimations.df[estimations.df$writing_system == "Hans
 # Density Plots
 
 ## Length
-Density plot for lengths in number of characters.
+Density plot for lengths in number of tokens (characters in this case).
 ```{r}
-length.plot <- ggplot(estimations.df.selected, aes(x = num.char, y = writing_system, 
+length.plot <- ggplot(estimations.df.selected, aes(x = num.tokens, y = writing_system, 
                                     fill = writing_system)) + 
   # add density ridges with quantiles = 2, i.e. median as a line
   geom_density_ridges(alpha = 0.5, quantile_lines = TRUE, quantiles = 2) +
@@ -71,17 +71,17 @@ length.plot
 Get subset of data points to plot labels.
 ```{r}
 # how many data points with a given sequence length?
-table(estimations.df.selected$num.char)
+table(estimations.df.selected$num.tokens)
 
 # choose subset of data points for labeling
-labels.df <- estimations.df.selected[estimations.df.selected$num.char > 13 &
-                                       estimations.df.selected$num.char < 20, ]
+labels.df <- estimations.df.selected[estimations.df.selected$num.tokens > 13 &
+                                       estimations.df.selected$num.tokens < 20, ]
 ```
 
 ## Entropy rate vs. Unigram Entropy
 ```{r, fig.width = 5, fig.height = 5, warning = FALSE}
 huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y =  hrate.chars, 
-                                                             color = writing_system, size = num.char)) + 
+                                                             color = writing_system, size = num.tokens)) + 
   geom_point(alpha = 0.3) +
   labs(x = "Unigram entropy for characters/strokes", y = "Entropy rate for characters/strokes") +
   geom_text_repel(data = labels.df,
@@ -103,7 +103,7 @@ huni.hrate.chars.plot <- ggMarginal(huni.hrate.chars.plot, groupFill = T, groupC
 ## TTR vs. Repetition Rate
 ```{r, fig.width = 5, fig.height = 5, warning = FALSE}
 ttr.rm.chars.plot <- ggplot(estimations.df.selected, aes(x = ttr.chars, y = rm.chars, 
-                                    colour = writing_system, size = num.char)) + 
+                                    colour = writing_system, size = num.tokens)) + 
   geom_point(alpha = 0.3) +
   ylim(-0.1, 1) +
   theme(legend.position = "none") +

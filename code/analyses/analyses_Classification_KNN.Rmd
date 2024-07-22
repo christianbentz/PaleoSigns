@@ -68,11 +68,11 @@ estimations.subset <- na.omit(estimations.subset)
 ```
 
 # Normalization
-Center and scale the data
+Center and scale the data.
 ```{r}
-# first three columns are meta information, the others are the feature values
+# first four columns are meta information, the others are the feature values
 # be aware that this needs to be changed in case of other table format
-estimations.scaled <- cbind(estimations.subset[, c("subcorpus", "sequence", "num.char")], 
+estimations.scaled <- cbind(estimations.subset[, c("subcorpus", "sequence", "num.tokens", "num.types")], 
                             scale(estimations.subset[, c("huni.chars", "hrate.chars", 
                                                          "ttr.chars", "rm.chars")]))
 ```

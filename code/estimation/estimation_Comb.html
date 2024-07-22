@@ -398,11 +398,11 @@ sign.data &lt;- sign.data[sign.data$archaeological_unit == &quot;Aurignacien&quo
 
 # select columns for direct comparison with TeDDi sample
 sign.data.selected &lt;- select(sign.data, c(&#39;archaeological_unit&#39;, &#39;coding_clean&#39;, 
-                                          &#39;num.char&#39;, &#39;huni.chars&#39;, &#39;hrate.chars&#39;, 
-                                 &#39;ttr.chars&#39;, &#39;rm.chars&#39;))
+                                          &#39;num.tokens&#39;, &#39;num.types&#39;, &#39;huni.chars&#39;, &#39;hrate.chars&#39;, 
+                                          &#39;ttr.chars&#39;, &#39;rm.chars&#39;))
 # change column names
-colnames(sign.data.selected) &lt;- c(&#39;subcorpus&#39;, &#39;sequence&#39;, &#39;num.char&#39;,&#39;huni.chars&#39;, &#39;hrate.chars&#39;, 
-                         &#39;ttr.chars&#39;, &#39;rm.chars&#39;)</code></pre>
+colnames(sign.data.selected) &lt;- c(&#39;subcorpus&#39;, &#39;sequence&#39;, &#39;num.tokens&#39;, &#39;num.types&#39;, 
+                                  &#39;huni.chars&#39;, &#39;hrate.chars&#39;, &#39;ttr.chars&#39;, &#39;rm.chars&#39;)</code></pre>
 </div>
 <div id="cdli" class="section level2">
 <h2>CDLI</h2>
@@ -415,7 +415,7 @@ cuneiV.data$subcorpus &lt;- rep(&quot;Cuneiform (Uruk V)&quot;, nrow(cuneiV.data
 
 # select columns for direct comparison with other samples
 cuneiV.data.selected &lt;- select(cuneiV.data, c(&#39;subcorpus&#39;, &#39;signs.expand.vec&#39;, 
-                                              &#39;num.char&#39;, &#39;huni.chars&#39;, &#39;hrate.chars&#39;, 
+                                              &#39;num.tokens&#39;, &#39;num.types&#39;, &#39;huni.chars&#39;, &#39;hrate.chars&#39;, 
                                               &#39;ttr.chars&#39;, &#39;rm.chars&#39;))
 # rename column with sign sequences
 names(cuneiV.data.selected)[names(cuneiV.data.selected) == &quot;signs.expand.vec&quot;] &lt;- &quot;sequence&quot;
@@ -428,7 +428,7 @@ cuneiIV.data$subcorpus &lt;- rep(&quot;Cuneiform (Uruk IV)&quot;, nrow(cuneiIV.d
 
 # select columns for direct comparison with other sample
 cuneiIV.data.selected &lt;- select(cuneiIV.data, c(&#39;subcorpus&#39;, &#39;signs.expand.vec&#39;, 
-                                              &#39;num.char&#39;, &#39;huni.chars&#39;, &#39;hrate.chars&#39;, 
+                                              &#39;num.tokens&#39;, &#39;num.types&#39;, &#39;huni.chars&#39;, &#39;hrate.chars&#39;, 
                                               &#39;ttr.chars&#39;, &#39;rm.chars&#39;))
 # rename column with sign sequences
 names(cuneiIV.data.selected)[names(cuneiIV.data.selected) == &quot;signs.expand.vec&quot;] &lt;- &quot;sequence&quot;
@@ -441,7 +441,7 @@ cuneiIII.data$subcorpus &lt;- rep(&quot;Cuneiform (Uruk III)&quot;, nrow(cuneiII
 
 # select columns for direct comparison with other sample
 cuneiIII.data.selected &lt;- select(cuneiIII.data, c(&#39;subcorpus&#39;, &#39;signs.expand.vec&#39;, 
-                                              &#39;num.char&#39;, &#39;huni.chars&#39;, &#39;hrate.chars&#39;, 
+                                              &#39;num.tokens&#39;, &#39;num.types&#39;, &#39;huni.chars&#39;, &#39;hrate.chars&#39;, 
                                               &#39;ttr.chars&#39;, &#39;rm.chars&#39;))
 # rename column with sign sequences
 names(cuneiIII.data.selected)[names(cuneiIII.data.selected) == &quot;signs.expand.vec&quot;] &lt;- &quot;sequence&quot;</code></pre>
@@ -453,7 +453,7 @@ teddi.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/results/features/
 # add column with subcorpus information
 teddi.data$subcorpus &lt;- rep(&quot;TeDDi&quot;, nrow(teddi.data))
 # select columns
-teddi.selected &lt;- select(teddi.data, c(&#39;subcorpus&#39;,&#39;text&#39;, &#39;num.char&#39;,&#39;huni.chars&#39;, &#39;hrate.chars&#39;, 
+teddi.selected &lt;- select(teddi.data, c(&#39;subcorpus&#39;,&#39;text&#39;, &#39;num.tokens&#39;, &#39;num.types&#39;, &#39;huni.chars&#39;, &#39;hrate.chars&#39;, 
                            &#39;ttr.chars&#39;, &#39;rm.chars&#39;))
 # rename column with sign sequences
 names(teddi.selected)[names(teddi.selected) == &quot;text&quot;] &lt;- &quot;sequence&quot;</code></pre>
@@ -466,20 +466,20 @@ names(teddi.selected)[names(teddi.selected) == &quot;text&quot;] &lt;- &quot;seq
                         cuneiIV.data.selected, cuneiIII.data.selected,
                         teddi.selected)
 head(estimations.df)</code></pre>
-<pre><code>##     subcorpus           sequence num.char huni.chars hrate.chars  ttr.chars
-## 1 Aurignacien vvvvvvvvvvvvvvvvvv       18  0.0000000   0.6171397 0.05555556
-## 2 Aurignacien     ||| ////// _ V       11  1.6171896   1.3427012 0.36363636
-## 3 Aurignacien              vvvvv        5  0.0000000   0.5711903 0.20000000
-## 4 Aurignacien          vvvv vvvv        9  0.5032583   0.9060047 0.22222222
-## 5 Aurignacien     vvvvvvvvvvvvvv       14  0.0000000   0.6379550 0.07142857
-## 6 Aurignacien                |||        3  0.0000000   0.4308271 0.33333333
-##   rm.chars
-## 1     1.00
-## 2     0.70
-## 3     1.00
-## 4     0.75
-## 5     1.00
-## 6     1.00</code></pre>
+<pre><code>##     subcorpus           sequence num.tokens num.types huni.chars hrate.chars
+## 1 Aurignacien vvvvvvvvvvvvvvvvvv         18         1  0.0000000   0.6171397
+## 2 Aurignacien     ||| ////// _ V         11         4  1.6171896   1.3427012
+## 3 Aurignacien              vvvvv          5         1  0.0000000   0.5711903
+## 4 Aurignacien          vvvv vvvv          9         2  0.5032583   0.9060047
+## 5 Aurignacien     vvvvvvvvvvvvvv         14         1  0.0000000   0.6379550
+## 6 Aurignacien                |||          3         1  0.0000000   0.4308271
+##    ttr.chars rm.chars
+## 1 0.05555556     1.00
+## 2 0.36363636     0.70
+## 3 0.20000000     1.00
+## 4 0.22222222     0.75
+## 5 0.07142857     1.00
+## 6 0.33333333     1.00</code></pre>
 </div>
 <div id="simple-stats" class="section level1">
 <h1>Simple Stats</h1>

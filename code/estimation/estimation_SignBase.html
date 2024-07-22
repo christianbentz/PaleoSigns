@@ -403,8 +403,9 @@ codings as found in signBase.</p>
 counter = 0
 # initialize dataframe to append results to
 estimations.df &lt;- data.frame(object_id = character(0),
-                             num.char = numeric(0), huni.chars = numeric (0), 
-                             hrate.chars = numeric(0),hrate.chars.random = numeric(0),
+                             num.tokens = numeric(0), num.types = numeric(0), 
+                             huni.chars = numeric (0), hrate.chars = numeric(0),
+                             hrate.chars.random = numeric(0),
                              ttr.chars = numeric(0), rm.chars = numeric(0)) 
 
 # start time
@@ -426,8 +427,9 @@ for (i in 1:nrow(sign.data)){
   strings.random &lt;- unlist(strsplit(coding.sample.random, &quot; _ &quot;)) 
   chars.random &lt;- unlist(strsplit(strings.random, &quot;&quot;))
   
-  # get number of characters
-  num.char &lt;- length(chars)
+  # get number of sign tokens and types
+  num.tokens &lt;- length(chars)
+  num.types &lt;- length(unique(chars))
 
   # preprocess text with bag-of-words normalization
   # note: this is an important step! Without it, entropy rate estimation will fail
@@ -486,7 +488,7 @@ for (i in 1:nrow(sign.data)){
   }
   
   # append results to dataframe
-  local.df &lt;- data.frame(object_id, num.char, huni.chars, hrate.chars,
+  local.df &lt;- data.frame(object_id, num.tokens, num.types, huni.chars, hrate.chars,
                          hrate.chars.random, ttr.chars, rm.chars)
   estimations.df &lt;- rbind(estimations.df, local.df)
 }) # end of try()
@@ -496,29 +498,29 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 1.579263 secs</code></pre>
+<pre><code>## Time difference of 1.60458 secs</code></pre>
 <pre class="r"><code>#estimations.df</code></pre>
 <p>Merge estimations with original file.</p>
 <pre class="r"><code>sign.data.est &lt;- merge(sign.data, estimations.df, by = &quot;object_id&quot;)</code></pre>
 <p>Give head of estimation data frame (selected columns) for visual
 checking of the output data structure. Note that “coding_clean” gives
 the sequences with underscores.</p>
-<pre class="r"><code>head(sign.data.est[c(&quot;object_id&quot;, &quot;coding_clean&quot;, &quot;num.char&quot;, &quot;huni.chars&quot;, 
+<pre class="r"><code>head(sign.data.est[c(&quot;object_id&quot;, &quot;coding_clean&quot;, &quot;num.tokens&quot;, &quot;num.types&quot;, &quot;huni.chars&quot;, 
                        &quot;hrate.chars&quot;, &quot;ttr.chars&quot;, &quot;rm.chars&quot;)])</code></pre>
-<pre><code>##   object_id       coding_clean num.char huni.chars hrate.chars  ttr.chars
-## 1   bst0001 vvvvvvvvvvvvvvvvvv       18  0.0000000   0.6171397 0.05555556
-## 2   gkl0001     ||| ////// _ V       11  1.6171896   1.3427012 0.36363636
-## 3   gkl0002              vvvvv        5  0.0000000   0.5711903 0.20000000
-## 4   gkl0003          vvvv vvvv        9  0.5032583   0.9060047 0.22222222
-## 5   gkl0004     vvvvvvvvvvvvvv       14  0.0000000   0.6379550 0.07142857
-## 6   gkl0005                |||        3  0.0000000   0.4308271 0.33333333
-##   rm.chars
-## 1     1.00
-## 2     0.70
-## 3     1.00
-## 4     0.75
-## 5     1.00
-## 6     1.00</code></pre>
+<pre><code>##   object_id       coding_clean num.tokens num.types huni.chars hrate.chars
+## 1   bst0001 vvvvvvvvvvvvvvvvvv         18         1  0.0000000   0.6171397
+## 2   gkl0001     ||| ////// _ V         11         4  1.6171896   1.3427012
+## 3   gkl0002              vvvvv          5         1  0.0000000   0.5711903
+## 4   gkl0003          vvvv vvvv          9         2  0.5032583   0.9060047
+## 5   gkl0004     vvvvvvvvvvvvvv         14         1  0.0000000   0.6379550
+## 6   gkl0005                |||          3         1  0.0000000   0.4308271
+##    ttr.chars rm.chars
+## 1 0.05555556     1.00
+## 2 0.36363636     0.70
+## 3 0.20000000     1.00
+## 4 0.22222222     0.75
+## 5 0.07142857     1.00
+## 6 0.33333333     1.00</code></pre>
 <p>Safe outputs to file.</p>
 <pre class="r"><code>write.csv(sign.data.est, &quot;~/Github/UpperPalCombinatorics/results/features/signBase_features.csv&quot;, row.names = F)</code></pre>
 </div>

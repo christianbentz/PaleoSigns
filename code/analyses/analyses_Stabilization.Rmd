@@ -106,7 +106,7 @@ stabilization.df <- data.frame(id = character(0), corpus = character(0),
                                subcorpus = character(0), sequence = character(0),
                                huni.chars = numeric (0), hrate.chars = numeric(0), 
                                ttr.chars = numeric(0), rm.chars = numeric(0), 
-                               num.char = numeric(0)) 
+                               num.tokens = numeric(0)) 
 # start time
 start_time <- Sys.time()
 for (i in 1:nrow(data.combined)) 
@@ -120,7 +120,7 @@ for (i in 1:nrow(data.combined))
   corpus <- row.data$corpus
   subcorpus <- row.data$subcorpus
   sequence <- as.character(row.data$sequence)
-  num.char <- nchar(as.character(row.data$sequence))
+  num.tokens <- nchar(as.character(row.data$sequence))
   
   # if/else statement to distinguish between the proto-cuneiform signs
   # and individial UTF-8 characters in the other sequences
@@ -189,7 +189,7 @@ for (i in 1:nrow(data.combined))
     # append results to dataframe
     local.df <- data.frame(id, corpus, subcorpus, sequence,
                            huni.chars, hrate.chars, 
-                           ttr.chars, rm.chars, num.char = j*stepsize)
+                           ttr.chars, rm.chars, num.tokens = j*stepsize)
     stabilization.df <- rbind(stabilization.df, local.df)
   }
   # counter
@@ -206,7 +206,7 @@ head(stabilization.df)
 
 ## Unigram entropy characters
 ```{r, fig.width = 20, fig.height = 20, warning = FALSE}
-huni.chars.plot <- ggplot(stabilization.df, aes(x = num.char, y = huni.chars,
+huni.chars.plot <- ggplot(stabilization.df, aes(x = num.tokens, y = huni.chars,
                                                 color = corpus)) + 
   geom_point(alpha = 0.3, size  = 2) +
   geom_smooth() +
@@ -225,7 +225,7 @@ ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_huni_chars.pdf", hu
 
 ## Entropy rate characters
 ```{r, fig.width = 20, fig.height = 20, warning = FALSE}
-hrate.chars.plot <- ggplot(stabilization.df, aes(x = num.char, y = hrate.chars,
+hrate.chars.plot <- ggplot(stabilization.df, aes(x = num.tokens, y = hrate.chars,
                                                 colour = corpus)) + 
   geom_point(alpha = 0.3, size  = 2) +
   geom_smooth() +
@@ -244,7 +244,7 @@ ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_hrate_chars.pdf", h
 
 ## TTR characters
 ```{r, fig.width = 20, fig.height = 20, warning = FALSE}
-ttr.chars.plot <- ggplot(stabilization.df, aes(x = num.char, y = ttr.chars,
+ttr.chars.plot <- ggplot(stabilization.df, aes(x = num.tokens, y = ttr.chars,
                                                 colour = corpus)) + 
   geom_point(alpha = 0.3, size  = 2) +
   geom_smooth() +
@@ -263,7 +263,7 @@ ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_ttr_chars.pdf", ttr
 
 ## Repetition rate characters
 ```{r, fig.width = 20, fig.height = 20, warning = FALSE}
-rm.chars.plot <- ggplot(stabilization.df, aes(x = num.char, y = rm.chars,
+rm.chars.plot <- ggplot(stabilization.df, aes(x = num.tokens, y = rm.chars,
                                                 colour = corpus)) + 
   geom_point(alpha = 0.3, size  = 2) +
   geom_smooth() +

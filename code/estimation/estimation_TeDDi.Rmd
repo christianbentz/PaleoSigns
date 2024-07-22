@@ -55,9 +55,9 @@ estimations.df <- data.frame(id = numeric(0), text = character(0), filename = ch
                              language_name_glotto = character(0), iso639_3 = character(0),
                              mode = character(0), genre_broad = character(0), 
                              writing_system = character(0), comments = character(0),
-                             num.char = numeric(0), huni.chars = numeric (0), 
-                             hrate.chars = numeric(0), ttr.chars = numeric(0), 
-                             rm.chars = numeric(0)) 
+                             num.tokens = numeric(0), num.types = numeric (0),  
+                             huni.chars = numeric (0), hrate.chars = numeric(0), 
+                             ttr.chars = numeric(0), rm.chars = numeric(0)) 
 
 # start time
 start_time <- Sys.time()
@@ -80,8 +80,9 @@ for (i in 1:nrow(teddi.clean)){
   # split strings into UTF-8 characters
   chars <- unlist(strsplit(coding.sample, ""))
   
-  # get number of characters
-  num.char <- length(chars)
+  # get number of sign tokens and types
+  num.tokens <- length(chars)
+  num.types <- length(unique(chars))
   
   # preprocess text with bag-of-words normalization
   # note: this is an important step! Without it, entropy rate estimation will fail
@@ -132,7 +133,7 @@ for (i in 1:nrow(teddi.clean)){
   local.df <- data.frame(id, text, filename, language_name_glotto,
                          iso639_3, mode, genre_broad, 
                          writing_system, comments,
-                         num.char, huni.chars, hrate.chars,
+                         num.tokens, num.types, huni.chars, hrate.chars,
                          ttr.chars, rm.chars)
   estimations.df <- rbind(estimations.df, local.df)
 }) # end of try()

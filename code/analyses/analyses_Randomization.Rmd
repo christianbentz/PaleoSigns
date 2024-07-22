@@ -63,7 +63,7 @@ print(sample.size)
 Entropy rate for the original versus randomized sequences (i.e. strings of sign characters where randomized).
 ```{r, fig.width = 6, fig.height = 6, warning = FALSE}
 hrate.random.plot <- ggplot(sign.data, aes(x = hrate.chars, y =  hrate.chars.random)) + 
-  geom_point(aes(size = num.char), alpha = 0.3) +
+  geom_point(aes(size = num.tokens), alpha = 0.3) +
   geom_smooth(method = "loess") +
   theme(legend.position = c(.8, .25)) +
   annotate("text", x = c(0.5,0.5,0.5), y = c(1.7,1.6,1.5), 

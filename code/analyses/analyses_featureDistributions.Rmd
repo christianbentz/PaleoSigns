@@ -57,8 +57,8 @@ head(estimations.df)
 # Preprocessing
 ```{r}
 # select only sign strings of certain length
-#estimations.df <- estimations.df[estimations.df$num.char > 10 &
-#                                   estimations.df$num.char < 50,]
+#estimations.df <- estimations.df[estimations.df$num.tokens > 10 &
+#                                   estimations.df$num.tokens < 50,]
 
 # select only certain subcorpora for plotting
 estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignacien"|
@@ -76,10 +76,10 @@ nrow(estimations.df.selected)
 # number of rows (i.e. sequences) per subcorpus
 table(estimations.df.selected$subcorpus)
 # get mean values of lengths in characters per subcorpus
-aggregate(estimations.df.selected$num.char~
+aggregate(estimations.df.selected$num.tokens~
             estimations.df.selected$subcorpus, FUN = mean)
 # get median values of lengths in characters per subcorpus
-aggregate(estimations.df.selected$num.char~
+aggregate(estimations.df.selected$num.tokens~
             estimations.df.selected$subcorpus, FUN = median)
 ```
 
@@ -89,7 +89,7 @@ aggregate(estimations.df.selected$num.char~
 Density plot for lengths in number of characters.
 ```{r, fig.width = 2, fig.height = 5}
 length.plot <- ggplot(estimations.df.selected, 
-                      aes(x = num.char, y = fct_reorder(subcorpus, num.char), 
+                      aes(x = num.tokens, y = fct_reorder(subcorpus, num.tokens), 
                           fill = subcorpus)) + 
   # add density ridges with quantiles = 2, i.e. median as a line
   geom_density_ridges(alpha = 0.5, quantile_lines = TRUE, quantiles = 2, scale = 1) +
@@ -111,10 +111,10 @@ Safe complete figure to file
 Get subset of data points to plot labels.
 ```{r}
 # how many data points with a given sequence length?
-table(estimations.df.selected$num.char)
+table(estimations.df.selected$num.tokens)
 
 # choose subset of data points for labeling
-labels.df <- estimations.df.selected[estimations.df.selected$num.char == 10, ]
+labels.df <- estimations.df.selected[estimations.df.selected$num.tokens == 10, ]
                                        #estimations.df.selected$subcorpus != "Cuneiform (Uruk V)" &
                                        #estimations.df.selected$subcorpus != "Cuneiform (Uruk IV)" &
                                        #estimations.df.selected$subcorpus != "Cuneiform (Uruk III)", ]
@@ -185,7 +185,7 @@ ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf",
 # Correlation Plot
 Correlation plots for the statistical feature values.
 ```{r, fig.width = 12, fig.height = 12}
-cor.plot <- ggpairs(estimations.df.selected, columns = c("num.char", "huni.chars", "hrate.chars",
+cor.plot <- ggpairs(estimations.df.selected, columns = c("num.tokens", "num.types", "huni.chars", "hrate.chars",
                                "ttr.chars","rm.chars"), 
         aes(color = subcorpus,
             alpha = 0.5))

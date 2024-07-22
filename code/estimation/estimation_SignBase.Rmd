@@ -54,8 +54,9 @@ Estimations of quantitative features for the objects and their sign codings as f
 counter = 0
 # initialize dataframe to append results to
 estimations.df <- data.frame(object_id = character(0),
-                             num.char = numeric(0), huni.chars = numeric (0), 
-                             hrate.chars = numeric(0),hrate.chars.random = numeric(0),
+                             num.tokens = numeric(0), num.types = numeric(0), 
+                             huni.chars = numeric (0), hrate.chars = numeric(0),
+                             hrate.chars.random = numeric(0),
                              ttr.chars = numeric(0), rm.chars = numeric(0)) 
 
 # start time
@@ -77,8 +78,9 @@ for (i in 1:nrow(sign.data)){
   strings.random <- unlist(strsplit(coding.sample.random, " _ ")) 
   chars.random <- unlist(strsplit(strings.random, ""))
   
-  # get number of characters
-  num.char <- length(chars)
+  # get number of sign tokens and types
+  num.tokens <- length(chars)
+  num.types <- length(unique(chars))
 
   # preprocess text with bag-of-words normalization
   # note: this is an important step! Without it, entropy rate estimation will fail
@@ -137,7 +139,7 @@ for (i in 1:nrow(sign.data)){
   }
   
   # append results to dataframe
-  local.df <- data.frame(object_id, num.char, huni.chars, hrate.chars,
+  local.df <- data.frame(object_id, num.tokens, num.types, huni.chars, hrate.chars,
                          hrate.chars.random, ttr.chars, rm.chars)
   estimations.df <- rbind(estimations.df, local.df)
 }) # end of try()
@@ -157,7 +159,7 @@ sign.data.est <- merge(sign.data, estimations.df, by = "object_id")
 
 Give head of estimation data frame (selected columns) for visual checking of the output data structure. Note that "coding_clean" gives the sequences with underscores.
 ```{r}
-head(sign.data.est[c("object_id", "coding_clean", "num.char", "huni.chars", 
+head(sign.data.est[c("object_id", "coding_clean", "num.tokens", "num.types", "huni.chars", 
                        "hrate.chars", "ttr.chars", "rm.chars")])
 ```
 

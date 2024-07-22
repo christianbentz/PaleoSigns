@@ -402,9 +402,9 @@ estimations.df &lt;- data.frame(id = numeric(0), text = character(0), filename =
                              language_name_glotto = character(0), iso639_3 = character(0),
                              mode = character(0), genre_broad = character(0), 
                              writing_system = character(0), comments = character(0),
-                             num.char = numeric(0), huni.chars = numeric (0), 
-                             hrate.chars = numeric(0), ttr.chars = numeric(0), 
-                             rm.chars = numeric(0)) 
+                             num.tokens = numeric(0), num.types = numeric (0),  
+                             huni.chars = numeric (0), hrate.chars = numeric(0), 
+                             ttr.chars = numeric(0), rm.chars = numeric(0)) 
 
 # start time
 start_time &lt;- Sys.time()
@@ -427,8 +427,9 @@ for (i in 1:nrow(teddi.clean)){
   # split strings into UTF-8 characters
   chars &lt;- unlist(strsplit(coding.sample, &quot;&quot;))
   
-  # get number of characters
-  num.char &lt;- length(chars)
+  # get number of sign tokens and types
+  num.tokens &lt;- length(chars)
+  num.types &lt;- length(unique(chars))
   
   # preprocess text with bag-of-words normalization
   # note: this is an important step! Without it, entropy rate estimation will fail
@@ -479,7 +480,7 @@ for (i in 1:nrow(teddi.clean)){
   local.df &lt;- data.frame(id, text, filename, language_name_glotto,
                          iso639_3, mode, genre_broad, 
                          writing_system, comments,
-                         num.char, huni.chars, hrate.chars,
+                         num.tokens, num.types, huni.chars, hrate.chars,
                          ttr.chars, rm.chars)
   estimations.df &lt;- rbind(estimations.df, local.df)
 }) # end of try()
@@ -489,7 +490,7 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 6.129961 secs</code></pre>
+<pre><code>## Time difference of 6.184834 secs</code></pre>
 <p>Give head of estimation data frame (selected columns) for visual
 checking of the output data structure.</p>
 <pre class="r"><code>head(estimations.df)</code></pre>
@@ -528,13 +529,13 @@ checking of the output data structure.</p>
 ## 4                                                                                                                                                                                              &lt;NA&gt;
 ## 5                                                                                                                                                                                              &lt;NA&gt;
 ## 6                                                                                                                                                                                              &lt;NA&gt;
-##   num.char huni.chars hrate.chars ttr.chars    rm.chars
-## 1      187   3.954932    2.400201 0.1176471 0.005376344
-## 2       96   3.617791    2.436322 0.1770833 0.031578947
-## 3       34   3.573229    2.365557 0.4117647 0.000000000
-## 4       18   3.281036    2.222807 0.6111111 0.000000000
-## 5       43   4.045240    2.692185 0.4418605 0.023809524
-## 6       54   3.753867    2.481230 0.2962963 0.000000000</code></pre>
+##   num.tokens num.types huni.chars hrate.chars ttr.chars    rm.chars
+## 1        187        22   3.954932    2.400201 0.1176471 0.005376344
+## 2         96        17   3.617791    2.436322 0.1770833 0.031578947
+## 3         34        14   3.573229    2.365557 0.4117647 0.000000000
+## 4         18        11   3.281036    2.222807 0.6111111 0.000000000
+## 5         43        19   4.045240    2.692185 0.4418605 0.023809524
+## 6         54        16   3.753867    2.481230 0.2962963 0.000000000</code></pre>
 <p>Safe outputs to file.</p>
 <pre class="r"><code>write.csv(estimations.df, &quot;~/Github/UpperPalCombinatorics/results/features/teddi_features.csv&quot;, 
           row.names = F)</code></pre>
