@@ -458,9 +458,9 @@ for (i in 1:nrow(teddi.clean)){
   ttr.chars &lt;- nrow(chars.df)/sum(chars.df$Freq)
   
   # calculate repetition measure according to Sproat (2014)
-  # the maximum number of adjacent repetitions &quot;R&quot; possible is the sum of frequency counts minus 1. 
-  R &lt;- sum(chars.df$Freq)-1 
-  # calculate the number of adjacent repetitions &quot;r&quot;
+  # get the overall number of repetitions (note: &quot;R&quot; in Sproat) as the sum of frequency counts *for each type* minus 1. 
+  R &lt;- sum(chars.df$Freq-1) 
+  # calculate the number of adjacent repetitions &quot;r&quot; along the sequence
   r = 0
   if (length(chars) &gt; 1){
     for (i in 1:(length(chars)-1)){
@@ -469,11 +469,15 @@ for (i in 1:nrow(teddi.clean)){
       } else {
         r = r + 0
       }
-      }
-    # calculate the repetition measure
-    rm.chars &lt;- r/R
+    }
   } else {
-    rm.chars &lt;- &quot;NA&quot;  
+    r = r  
+  }
+  # calculate the repetition measure (&quot;r/R&quot; in Sproat)
+  if (R == 0 &amp; r == 0){ 
+    rm.chars = 0
+  } else {
+    rm.chars = r/R
   }
   
   # append results to dataframe
@@ -490,7 +494,7 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 6.184834 secs</code></pre>
+<pre><code>## Time difference of 6.5188 secs</code></pre>
 <p>Give head of estimation data frame (selected columns) for visual
 checking of the output data structure.</p>
 <pre class="r"><code>head(estimations.df)</code></pre>
@@ -530,11 +534,11 @@ checking of the output data structure.</p>
 ## 5                                                                                                                                                                                              &lt;NA&gt;
 ## 6                                                                                                                                                                                              &lt;NA&gt;
 ##   num.tokens num.types huni.chars hrate.chars ttr.chars    rm.chars
-## 1        187        22   3.954932    2.400201 0.1176471 0.005376344
-## 2         96        17   3.617791    2.436322 0.1770833 0.031578947
+## 1        187        22   3.954932    2.400201 0.1176471 0.006060606
+## 2         96        17   3.617791    2.436322 0.1770833 0.037974684
 ## 3         34        14   3.573229    2.365557 0.4117647 0.000000000
 ## 4         18        11   3.281036    2.222807 0.6111111 0.000000000
-## 5         43        19   4.045240    2.692185 0.4418605 0.023809524
+## 5         43        19   4.045240    2.692185 0.4418605 0.041666667
 ## 6         54        16   3.753867    2.481230 0.2962963 0.000000000</code></pre>
 <p>Safe outputs to file.</p>
 <pre class="r"><code>write.csv(estimations.df, &quot;~/Github/UpperPalCombinatorics/results/features/teddi_features.csv&quot;, 

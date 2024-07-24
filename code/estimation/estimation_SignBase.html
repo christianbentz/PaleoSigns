@@ -468,10 +468,9 @@ for (i in 1:nrow(sign.data)){
   ttr.chars &lt;- nrow(chars.df)/sum(chars.df$Freq)
   
   # calculate repetition measure according to Sproat (2014)
-  # note that this is the same for random ordering of strings
-  # the maximum number of adjacent repetitions &quot;R&quot; possible is the sum of frequency counts minus 1. 
-  R &lt;- sum(chars.df$Freq)-1 
-  # calculate the number of adjacent repetitions &quot;r&quot;
+  # get the overall number of repetitions (note: &quot;R&quot; in Sproat) as the sum of frequency counts *for each type* minus 1. 
+  R &lt;- sum(chars.df$Freq-1) 
+  # calculate the number of adjacent repetitions &quot;r&quot; along the sequence
   r = 0
   if (length(chars) &gt; 1){
     for (i in 1:(length(chars)-1)){
@@ -480,11 +479,15 @@ for (i in 1:nrow(sign.data)){
       } else {
         r = r + 0
       }
-      }
-    # calculate the repetition measure
-    rm.chars &lt;- r/R
+    }
   } else {
-    rm.chars &lt;- &quot;NA&quot;  
+    r = r  
+  }
+  # calculate the repetition measure (&quot;r/R&quot; in Sproat)
+  if (R == 0 &amp; r == 0){ 
+    rm.chars = 0
+  } else {
+    rm.chars = r/R
   }
   
   # append results to dataframe
@@ -498,7 +501,7 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 1.60458 secs</code></pre>
+<pre><code>## Time difference of 1.675907 secs</code></pre>
 <pre class="r"><code>#estimations.df</code></pre>
 <p>Merge estimations with original file.</p>
 <pre class="r"><code>sign.data.est &lt;- merge(sign.data, estimations.df, by = &quot;object_id&quot;)</code></pre>
@@ -514,13 +517,13 @@ the sequences with underscores.</p>
 ## 4   gkl0003          vvvv vvvv          9         2  0.5032583   0.9060047
 ## 5   gkl0004     vvvvvvvvvvvvvv         14         1  0.0000000   0.6379550
 ## 6   gkl0005                |||          3         1  0.0000000   0.4308271
-##    ttr.chars rm.chars
-## 1 0.05555556     1.00
-## 2 0.36363636     0.70
-## 3 0.20000000     1.00
-## 4 0.22222222     0.75
-## 5 0.07142857     1.00
-## 6 0.33333333     1.00</code></pre>
+##    ttr.chars  rm.chars
+## 1 0.05555556 1.0000000
+## 2 0.36363636 1.0000000
+## 3 0.20000000 1.0000000
+## 4 0.22222222 0.8571429
+## 5 0.07142857 1.0000000
+## 6 0.33333333 1.0000000</code></pre>
 <p>Safe outputs to file.</p>
 <pre class="r"><code>write.csv(sign.data.est, &quot;~/Github/UpperPalCombinatorics/results/features/signBase_features.csv&quot;, row.names = F)</code></pre>
 </div>

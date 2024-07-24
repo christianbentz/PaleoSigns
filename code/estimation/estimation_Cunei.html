@@ -393,7 +393,7 @@ library(Hrate)</code></pre>
 <p>Load the files with the cleaned sequences. A period needs to be
 chosen here. Hence, the code needs to be run for periods separately.</p>
 <pre class="r"><code># choose period (UrukIII, UrukIV, UrukV)
-period &lt;- &quot;UrukV&quot;
+period &lt;- &quot;UrukIII&quot;
 
 # cuneiform data from CDLI
 cunei.data &lt;- read.csv(paste(&quot;~/Github/UpperPalCombinatorics/data/CDLI/&quot;, 
@@ -461,9 +461,9 @@ for (i in 1:nrow(cunei.data)){
   ttr.chars &lt;- nrow(chars.df)/sum(chars.df$Freq)
   
   # calculate repetition measure according to Sproat (2014)
-  # the maximum number of adjacent repetitions &quot;R&quot; possible is the sum of frequency counts minus 1. 
-  R &lt;- sum(chars.df$Freq)-1 
-  # calculate the number of adjacent repetitions &quot;r&quot;
+  # get the overall number of repetitions (note: &quot;R&quot; in Sproat) as the sum of frequency counts *for each type* minus 1. 
+  R &lt;- sum(chars.df$Freq-1) 
+  # calculate the number of adjacent repetitions &quot;r&quot; along the sequence
   r = 0
   if (length(chars) &gt; 1){
     for (i in 1:(length(chars)-1)){
@@ -472,11 +472,15 @@ for (i in 1:nrow(cunei.data)){
       } else {
         r = r + 0
       }
-      }
-    # calculate the repetition measure
-    rm.chars &lt;- r/R
+    }
   } else {
-    rm.chars &lt;- &quot;NA&quot;  
+    r = r  
+  }
+  # calculate the repetition measure (&quot;r/R&quot; in Sproat)
+  if (R == 0 &amp; r == 0){ 
+    rm.chars = 0
+  } else {
+    rm.chars = r/R
   }
   
   # append results to dataframe
@@ -490,27 +494,34 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 0.286206 secs</code></pre>
+<pre><code>## Time difference of 2.861824 secs</code></pre>
 <p>Merge estimations with original file</p>
 <pre class="r"><code>cunei.data.est &lt;- merge(cunei.data, estimations.df, by = &quot;tablet.id&quot;)</code></pre>
 <p>Give head of estimation data frame (selected columns) for visual
 checking of the output data structure.</p>
 <pre class="r"><code>head(cunei.data.est[c(&quot;tablet.id&quot;, &quot;signs.orig.vec&quot;, &quot;num.tokens&quot;, &quot;num.types&quot;, 
                       &quot;huni.chars&quot;,  &quot;hrate.chars&quot;, &quot;ttr.chars&quot;, &quot;rm.chars&quot;)])</code></pre>
-<pre><code>##   tablet.id                                                 signs.orig.vec
-## 1   P000753 1(N14) _ 9(N01)# _ 5(N01) _ 3(N01)# _ 1(N01) _ 6(N01) _ 5(N01)
-## 2   P000754                           2(N01)# _ 2(N01)# _ 2(N01) _ 1(N01)#
-## 3   P000755                                              4(N14)# _ 4(N01)#
-## 4   P000793                                                4(N01) _ 1(N01)
-## 5   P000795                                                         3(N01)
-## 6   P000796                          5(N01)# _ 5(N01)# _ 1(N01)# _ 2(N01)#
-##   num.tokens num.types huni.chars hrate.chars  ttr.chars  rm.chars
-## 1         30         2  0.2108423   0.5962638 0.06666667 0.9655172
-## 2          7         1  0.0000000   0.6248764 0.14285714 1.0000000
-## 3          8         2  1.0000000   1.0098144 0.25000000 0.8571429
-## 4          5         1  0.0000000   0.5711903 0.20000000 1.0000000
-## 5          3         1  0.0000000   0.4308271 0.33333333 1.0000000
-## 6         13         1  0.0000000   0.6427636 0.07692308 1.0000000</code></pre>
+<pre><code>##   tablet.id
+## 1   P000001
+## 2   P000002
+## 3   P000008
+## 4   P000009
+## 5   P000010
+## 6   P000011
+##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           signs.orig.vec
+## 1                                                                                                                                                                                                                                                                                                                                                                     1(N01) _ 1(N01) _ TIM _ 1(N01) _ 1(N01) _ 1(N01) _ GAL~a# _ 1(N01) _ GAL~a _ UMUN2 _ 1(N01) _ DUB~a _ 1(N01) _ SUG5# _ 1(N01) _ UB
+## 2                                                                                                                                                                                                                                                                                                                                                                                                                        GAL~a# _ SZITA~a1 _ ABGAL# _ 1(N01) _ GAL~a _ SILA4~b _ 1(N01) _ GAL~a _ SZAB~a
+## 3                                                                                                                                                                                                                                                                                                                                                                                                                                                           ISZ~b# _ NI~b _ TUR _ 1(N01) _ SAL _ ZATU750
+## 4                                                                                                                                                                                                                                                                                                                                                                                          1(N01) _ GAL~a# _ 1(N01) _ GAL~a# _ 1(N01) _ SANGA~a# _ GURUSZDA# _ 1(N01) _ 1(N01) _ GAL~a _ 1(N01) _ 1(N01)
+## 5                                                                                                                                                                                                                                                                                                                                                                  1(N01) _ EN~a# _ NUN~a _ 1(N01) _ EN~a _ AMAR _ 1(N01) _ |SZU2.EN~a|# _ 1(N01) _ 1(N01) _ IB~a _ ZATU686~a _ 1(N01) _ 1(N01) _ 1(N01)
+## 6 1(N01) _ NAM2# _ DI _ 1(N01) _ NAM2 _ NAM2 _ 1(N01) _ NAM2 _ URU~a1 _ 1(N01) _ NAM2 _ ERIN _ 1(N01) _ GAL~a _ SZUBUR# _ 1(N01) _ 1(N01) _ ABGAL# _ 1(N01) _ KINGAL# _ 1(N01) _ GAL~a _ TE _ 1(N01) _ GAL~a _ SUKKAL _ 1(N01) _ GADA~a _ SUKKAL _ 1(N01) _ GAL~a# _ GA~a# _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ AN# _ BAR# _ 1(N01) _ NU# _ A# _ 1(N01) _ AN# _ NU# _ A# _ 1(N01) _ NU# _ 1(N01) _ NU# _ GIR~a# _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ GUG2 _ 1(N01) _ 1(N01)
+##   num.tokens num.types huni.chars hrate.chars ttr.chars  rm.chars
+## 1         16         7   2.091917    1.903627 0.4375000 0.3333333
+## 2          9         6   2.419382    1.548511 0.6666667 0.0000000
+## 3          6         6   2.584963    1.581976 1.0000000 0.0000000
+## 4         12         4   1.551098    1.257807 0.3333333 0.2500000
+## 5         15         7   2.173557    1.743173 0.4666667 0.3750000
+## 6         60        19   2.998706    2.559116 0.3166667 0.2926829</code></pre>
 <p>Safe outputs to file.</p>
 <pre class="r"><code>write.csv(cunei.data.est, paste(&quot;~/Github/UpperPalCombinatorics/results/features/cuneiform_&quot;, 
                       paste(period, &quot;_features.csv&quot;, sep = &quot;&quot;), 

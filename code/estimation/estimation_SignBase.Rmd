@@ -119,10 +119,9 @@ for (i in 1:nrow(sign.data)){
   ttr.chars <- nrow(chars.df)/sum(chars.df$Freq)
   
   # calculate repetition measure according to Sproat (2014)
-  # note that this is the same for random ordering of strings
-  # the maximum number of adjacent repetitions "R" possible is the sum of frequency counts minus 1. 
-  R <- sum(chars.df$Freq)-1 
-  # calculate the number of adjacent repetitions "r"
+  # get the overall number of repetitions (note: "R" in Sproat) as the sum of frequency counts *for each type* minus 1. 
+  R <- sum(chars.df$Freq-1) 
+  # calculate the number of adjacent repetitions "r" along the sequence
   r = 0
   if (length(chars) > 1){
     for (i in 1:(length(chars)-1)){
@@ -131,11 +130,15 @@ for (i in 1:nrow(sign.data)){
       } else {
         r = r + 0
       }
-      }
-    # calculate the repetition measure
-    rm.chars <- r/R
+    }
   } else {
-    rm.chars <- "NA"  
+    r = r  
+  }
+  # calculate the repetition measure ("r/R" in Sproat)
+  if (R == 0 & r == 0){ 
+    rm.chars = 0
+  } else {
+    rm.chars = r/R
   }
   
   # append results to dataframe
