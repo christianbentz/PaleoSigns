@@ -11,7 +11,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 # Description
-This file enables stabilization analyses for the feature value estimations. In other words, feature values are not estimated for a single, pre-defined number of characters, but are estimated for discrete steps (defined with "stepsize"), and for a given maximum number of characters (defined as ``n'').
+This file enables stabilization analyses for the feature value estimations. In other words, feature values are not estimated for a single, pre-defined number of tokens, but are estimated for discrete steps (defined with "stepsize"), and for a given maximum number of tokens (defined as ``n'').
 
 # Session Info
 Give the session info (reduced).
@@ -28,6 +28,7 @@ If the libraries are not installed yet, you need to install them using, for exam
 library(stringr)
 library(ggplot2)
 library(plyr)
+library(dplyr)
 library(entropy)
 library(ggExtra)
 library(gsubfn)
@@ -43,7 +44,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ```
 
 # Load Data
-Read the preprocessed files with character strings per row. 
+Read the preprocessed files with sequences per row. 
 ```{r}
 # give file paths to the files to be processed
 teddi <- read.csv("~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.csv")
@@ -69,16 +70,19 @@ signbase.selected <- signbase[c("object_id", "archaeological_unit", "site_name",
 colnames(signbase.selected) <- c("id", "corpus", "subcorpus", "sequence")
 
 # Proto-Cuneiform
+
 ## Uruk V
 cdli.urukV.selected <- cdli.urukV[c("tablet.id", "signs.expand.vec")]
 colnames(cdli.urukV.selected) <- c("id", "sequence")
 cdli.urukV.selected$corpus <- rep("Proto-Cuneiform", nrow(cdli.urukV.selected))
 cdli.urukV.selected$subcorpus <- rep("Uruk V", nrow(cdli.urukV.selected))
+
 ## Uruk IV
 cdli.urukIV.selected <- cdli.urukIV[c("tablet.id", "signs.expand.vec")]
 colnames(cdli.urukIV.selected) <- c("id", "sequence")
 cdli.urukIV.selected$corpus <- rep("Proto-Cuneiform", nrow(cdli.urukIV.selected))
 cdli.urukIV.selected$subcorpus <- rep("Uruk IV", nrow(cdli.urukIV.selected))
+
 ## Uruk III
 cdli.urukIII.selected <- cdli.urukIII[c("tablet.id", "signs.expand.vec")]
 colnames(cdli.urukIII.selected) <- c("id", "sequence")
@@ -94,13 +98,13 @@ data.combined <- rbind(teddi.selected, signbase.selected, cdli.urukV.selected,
 ```{r}
 # set counter
 counter = 0
-# set the maximal number of characters (max.n), the minimum number (min.n),
+# set the maximal number of tokens (max.n), the minimum number (min.n),
 # and the stepsize for stabilization analysis 
 # (i.e. in steps of how many units are values calculated?).
-# Note: it should be the case that min.n >= stepsize
-max.n = 200
-min.n = 100
-stepsize = 10
+# Note: it should be that min.n >= stepsize
+max.n = 50
+min.n = 2
+stepsize = 2
 # initialize dataframe to append results to
 stabilization.df <- data.frame(id = character(0), corpus = character(0), 
                                subcorpus = character(0), sequence = character(0),
@@ -204,79 +208,79 @@ head(stabilization.df)
 
 # Stabilization plots
 
-## Unigram entropy characters
-```{r, fig.width = 20, fig.height = 20, warning = FALSE}
+## Unigram entropy
+```{r, fig.width = 12, fig.height = 12, warning = FALSE}
 huni.chars.plot <- ggplot(stabilization.df, aes(x = num.tokens, y = huni.chars,
                                                 color = corpus)) + 
-  geom_point(alpha = 0.3, size  = 2) +
-  geom_smooth() +
-  theme(legend.position = "bottom") +
-  labs(x = "number of characters", y = "unigram entropy for characters") +
-  facet_wrap(~id)
+  geom_point(alpha = 0.1, size  = 2) +
+  geom_smooth(color = "black", linetype = 2) +
+  theme(legend.position = "none") +
+  labs(x = "Number of Tokens", y = "Unigram Entropy") +
+  facet_wrap(~ corpus + subcorpus)
 huni.chars.plot
 ```
 
 ## Safe figure to file
-```{r, fig.width = 20, fig.height = 20}
+```{r, warning = FALSE}
 ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_huni_chars.pdf", huni.chars.plot, dpi = 300, 
-       width = 20, height = 20, 
+       width = 12, height = 12, 
        scale = 1, device = cairo_pdf)
 ```
 
-## Entropy rate characters
-```{r, fig.width = 20, fig.height = 20, warning = FALSE}
+## Entropy rate
+```{r, fig.width = 12, fig.height = 12, warning = FALSE}
 hrate.chars.plot <- ggplot(stabilization.df, aes(x = num.tokens, y = hrate.chars,
                                                 colour = corpus)) + 
-  geom_point(alpha = 0.3, size  = 2) +
-  geom_smooth() +
-  theme(legend.position = "bottom") +
-  labs(x = "number of characters", y = "entropy rate for characters") + 
-  facet_wrap(~id)
+  geom_point(alpha = 0.1, size  = 2) +
+  geom_smooth(color = "black", linetype = 2) +
+  theme(legend.position = "none") +
+  labs(x = "Number of Tokens", y = "Entropy Rate") +
+  facet_wrap(~ corpus + subcorpus)
 hrate.chars.plot
 ```
 
 ## Safe figure to file
-```{r, fig.width = 20, fig.height = 20}
+```{r, warning = FALSE}
 ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_hrate_chars.pdf", hrate.chars.plot, dpi = 300, 
-       width = 20, height = 20, 
-       scale = 1, device = cairo_pdf)
+       width = 12, height = 12, 
+       scale = 1, device = cairo_pdf, limitsize = F)
 ```
 
-## TTR characters
-```{r, fig.width = 20, fig.height = 20, warning = FALSE}
+## TTR 
+```{r, fig.width = 12, fig.height = 12, warning = FALSE}
 ttr.chars.plot <- ggplot(stabilization.df, aes(x = num.tokens, y = ttr.chars,
                                                 colour = corpus)) + 
-  geom_point(alpha = 0.3, size  = 2) +
-  geom_smooth() +
-  theme(legend.position = "bottom") +
-  labs(x = "number of characters", y = "TTR for characters") +
-  facet_wrap(~id)
+  geom_point(alpha = 0.1, size  = 2) +
+  geom_smooth(color = "black", linetype = 2) +
+  theme(legend.position = "none") +
+  labs(x = "Number of Tokens", y = "Type-Token-Ratio") +
+  facet_wrap(~ corpus + subcorpus)
 ttr.chars.plot
 ```
 
 ## Safe figure to file
-```{r, fig.width = 20, fig.height = 20}
+```{r, warning = FALSE}
 ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_ttr_chars.pdf", ttr.chars.plot, dpi = 300, 
-       width = 20, height = 20, 
+       width = 12, height = 12, 
        scale = 1, device = cairo_pdf)
 ```
 
-## Repetition rate characters
-```{r, fig.width = 20, fig.height = 20, warning = FALSE}
+## Repetition rate
+```{r, fig.width = 12, fig.height = 12, warning = FALSE}
 rm.chars.plot <- ggplot(stabilization.df, aes(x = num.tokens, y = rm.chars,
                                                 colour = corpus)) + 
-  geom_point(alpha = 0.3, size  = 2) +
-  geom_smooth() +
-  theme(legend.position = "bottom") +
-  labs(x = "number of characters", y = "RM for characters") +
-  facet_wrap(~id)
+  geom_point(alpha = 0.1, size  = 2) +
+  geom_smooth(color = "black", linetype = 2) +
+  theme(legend.position = "none") +
+  labs(x = "Number of Tokens", y = "Repetition Rate") +
+  facet_wrap(~ corpus + subcorpus)
 rm.chars.plot
 ```
 
 ## Safe figure to file
-```{r, fig.width = 20, fig.height = 20}
+```{r, warning = FALSE}
 ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_rm_chars.pdf", rm.chars.plot, dpi = 300,
-       width = 20, height = 20, 
+       width = 12, height = 12, 
        scale = 1, device = cairo_pdf)
 ```
 
