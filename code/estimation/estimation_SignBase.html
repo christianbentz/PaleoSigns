@@ -425,12 +425,8 @@ for (i in 1:nrow(sign.data)){
   coding.sample.random &lt;- as.character(sign.data$coding_random[i])
   
   # split sequences per object into UTF-8 characters
-  # this is here done by first splitting them on &#39; _ &#39; to get strings of characters
-  # the strings are then split into individual UTF-8 characters (white spaces included)
-  strings &lt;- unlist(strsplit(coding.sample, &quot; _ &quot;)) 
-  chars &lt;- unlist(strsplit(strings, &quot;&quot;))
-  strings.random &lt;- unlist(strsplit(coding.sample.random, &quot; _ &quot;)) 
-  chars.random &lt;- unlist(strsplit(strings.random, &quot;&quot;))
+  chars &lt;- unlist(strsplit(coding.sample, &quot;&quot;))
+  chars.random &lt;- unlist(strsplit(coding.sample.random, &quot;&quot;))
   
   # get number of sign tokens and types
   num.tokens &lt;- length(chars)
@@ -486,29 +482,29 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 1.733876 secs</code></pre>
+<pre><code>## Time difference of 1.826861 secs</code></pre>
 <pre class="r"><code>#estimations.df</code></pre>
 <p>Merge estimations with original file.</p>
 <pre class="r"><code>sign.data.est &lt;- merge(sign.data, estimations.df, by = &quot;object_id&quot;)</code></pre>
 <p>Give head of estimation data frame (selected columns) for visual
 checking of the output data structure. Note that “coding_clean” gives
-the sequences with underscores.</p>
+the sequences with underscores and white spaces around them.</p>
 <pre class="r"><code>head(sign.data.est[c(&quot;object_id&quot;, &quot;coding_clean&quot;, &quot;num.tokens&quot;, &quot;num.types&quot;, &quot;huni.chars&quot;, 
                        &quot;hrate.chars&quot;, &quot;ttr.chars&quot;, &quot;rm.chars&quot;)])</code></pre>
 <pre><code>##   object_id       coding_clean num.tokens num.types huni.chars hrate.chars
 ## 1   bst0001 vvvvvvvvvvvvvvvvvv         18         1  0.0000000   0.6171397
-## 2   gkl0001     ||| ////// _ V         11         4  1.6171896   1.3427012
+## 2   gkl0001       ||| //////_V         12         5  1.8962406   1.5295563
 ## 3   gkl0002              vvvvv          5         1  0.0000000   0.5711903
 ## 4   gkl0003          vvvv vvvv          9         2  0.5032583   0.9060047
 ## 5   gkl0004     vvvvvvvvvvvvvv         14         1  0.0000000   0.6379550
 ## 6   gkl0005                |||          3         1  0.0000000   0.4308271
-##    ttr.chars rm.chars
-## 1 0.05555556     1.00
-## 2 0.36363636     0.70
-## 3 0.20000000     1.00
-## 4 0.22222222     0.75
-## 5 0.07142857     1.00
-## 6 0.33333333     1.00</code></pre>
+##    ttr.chars  rm.chars
+## 1 0.05555556 1.0000000
+## 2 0.41666667 0.6363636
+## 3 0.20000000 1.0000000
+## 4 0.22222222 0.7500000
+## 5 0.07142857 1.0000000
+## 6 0.33333333 1.0000000</code></pre>
 <p>Safe outputs to file.</p>
 <pre class="r"><code>write.csv(sign.data.est, &quot;~/Github/UpperPalCombinatorics/results/features/signBase_features.csv&quot;, row.names = F)</code></pre>
 </div>

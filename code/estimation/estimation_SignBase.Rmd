@@ -77,12 +77,8 @@ for (i in 1:nrow(sign.data)){
   coding.sample.random <- as.character(sign.data$coding_random[i])
   
   # split sequences per object into UTF-8 characters
-  # this is here done by first splitting them on ' _ ' to get strings of characters
-  # the strings are then split into individual UTF-8 characters (white spaces included)
-  strings <- unlist(strsplit(coding.sample, " _ ")) 
-  chars <- unlist(strsplit(strings, ""))
-  strings.random <- unlist(strsplit(coding.sample.random, " _ ")) 
-  chars.random <- unlist(strsplit(strings.random, ""))
+  chars <- unlist(strsplit(coding.sample, ""))
+  chars.random <- unlist(strsplit(coding.sample.random, ""))
   
   # get number of sign tokens and types
   num.tokens <- length(chars)
@@ -146,7 +142,7 @@ Merge estimations with original file.
 sign.data.est <- merge(sign.data, estimations.df, by = "object_id")
 ```
 
-Give head of estimation data frame (selected columns) for visual checking of the output data structure. Note that "coding_clean" gives the sequences with underscores.
+Give head of estimation data frame (selected columns) for visual checking of the output data structure. Note that "coding_clean" gives the sequences with underscores and white spaces around them.
 ```{r}
 head(sign.data.est[c("object_id", "coding_clean", "num.tokens", "num.types", "huni.chars", 
                        "hrate.chars", "ttr.chars", "rm.chars")])

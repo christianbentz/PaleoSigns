@@ -81,12 +81,10 @@ for (i in 1:nrow(cunei.data)){
   coding.sample <- as.character(cunei.data$signs.expand.vec[i])
 
   # split sequences per tablet into cuneiform signs
-  # this is here done by first splitting them on ' _ ' to get strings of signs
-  # the strings are then split into individual cuneiform signs by using white spaces
-  # note: the last step is necessary since sign transliterations consist of multiple characters,
+  # this is here done by using white spaces
+  # note: sign transliterations consist of multiple characters,
   # e.g. NO1, N14, SZE~a, etc.
-  strings <- unlist(strsplit(coding.sample, " _ ")) 
-  chars <- unlist(strsplit(strings, " "))
+  chars <- unlist(strsplit(coding.sample, " "))
   
   # get number of tokens and types, i.e. "characters" are proto-cuneiform signs in this case
   num.tokens <- length(chars)

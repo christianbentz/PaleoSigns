@@ -87,6 +87,8 @@ coding.clean <- gsub("\\[(.*?)\\]", "", coding.clean)
 coding.clean <- gsub("( _ )+", " _ ", coding.clean)
 # trim the underscores and white spaces from beginning and end of sequences
 coding.clean <- trimws(coding.clean, which = "both", whitespace = "[ \\_]")
+# remove white spaces around underscores
+coding.clean <- gsub(" _ ", "_", coding.clean)
 
 # add column to original data frame again
 sign.data$coding_clean <- coding.clean
@@ -123,11 +125,11 @@ for (i in 1:nrow(sign.data)){
   # use single coding per row
   coding.local <- sign.data[i, ]$coding_clean
   # split on underscores surrounded by white spaces
-  coding.split <- unlist(strsplit(as.character(coding.local), split = " _ "))
+  coding.split <- unlist(strsplit(as.character(coding.local), split = "_"))
   # randomize order
   coding.random.local <- sample(coding.split)
   # concatenate with underscore and white space again
-  coding.random.local <- paste(coding.random.local, collapse = " _ ")
+  coding.random.local <- paste(coding.random.local, collapse = "_")
   # add to vector
   coding.random <- c(coding.random, coding.random.local)
 }

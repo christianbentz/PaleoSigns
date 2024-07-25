@@ -429,12 +429,10 @@ for (i in 1:nrow(cunei.data)){
   coding.sample &lt;- as.character(cunei.data$signs.expand.vec[i])
 
   # split sequences per tablet into cuneiform signs
-  # this is here done by first splitting them on &#39; _ &#39; to get strings of signs
-  # the strings are then split into individual cuneiform signs by using white spaces
-  # note: the last step is necessary since sign transliterations consist of multiple characters,
+  # this is here done by using white spaces
+  # note: sign transliterations consist of multiple characters,
   # e.g. NO1, N14, SZE~a, etc.
-  strings &lt;- unlist(strsplit(coding.sample, &quot; _ &quot;)) 
-  chars &lt;- unlist(strsplit(strings, &quot; &quot;))
+  chars &lt;- unlist(strsplit(coding.sample, &quot; &quot;))
   
   # get number of tokens and types, i.e. &quot;characters&quot; are proto-cuneiform signs in this case
   num.tokens &lt;- length(chars)
@@ -479,7 +477,7 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 3.21143 secs</code></pre>
+<pre><code>## Time difference of 5.700444 secs</code></pre>
 <p>Merge estimations with original file</p>
 <pre class="r"><code>cunei.data.est &lt;- merge(cunei.data, estimations.df, by = &quot;tablet.id&quot;)</code></pre>
 <p>Give head of estimation data frame (selected columns) for visual
@@ -500,13 +498,13 @@ checking of the output data structure.</p>
 ## 4                                                                                                                                                                                                                                                                                                                                                                                          1(N01) _ GAL~a# _ 1(N01) _ GAL~a# _ 1(N01) _ SANGA~a# _ GURUSZDA# _ 1(N01) _ 1(N01) _ GAL~a _ 1(N01) _ 1(N01)
 ## 5                                                                                                                                                                                                                                                                                                                                                                  1(N01) _ EN~a# _ NUN~a _ 1(N01) _ EN~a _ AMAR _ 1(N01) _ |SZU2.EN~a|# _ 1(N01) _ 1(N01) _ IB~a _ ZATU686~a _ 1(N01) _ 1(N01) _ 1(N01)
 ## 6 1(N01) _ NAM2# _ DI _ 1(N01) _ NAM2 _ NAM2 _ 1(N01) _ NAM2 _ URU~a1 _ 1(N01) _ NAM2 _ ERIN _ 1(N01) _ GAL~a _ SZUBUR# _ 1(N01) _ 1(N01) _ ABGAL# _ 1(N01) _ KINGAL# _ 1(N01) _ GAL~a _ TE _ 1(N01) _ GAL~a _ SUKKAL _ 1(N01) _ GADA~a _ SUKKAL _ 1(N01) _ GAL~a# _ GA~a# _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ AN# _ BAR# _ 1(N01) _ NU# _ A# _ 1(N01) _ AN# _ NU# _ A# _ 1(N01) _ NU# _ 1(N01) _ NU# _ GIR~a# _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ GUG2 _ 1(N01) _ 1(N01)
-##   num.tokens num.types huni.chars hrate.chars ttr.chars  rm.chars
-## 1         16         7   2.091917    1.903627 0.4375000 0.2000000
-## 2          9         6   2.419382    1.548511 0.6666667 0.0000000
-## 3          6         6   2.584963    1.581976 1.0000000 0.0000000
-## 4         12         4   1.551098    1.257807 0.3333333 0.1818182
-## 5         15         7   2.173557    1.743173 0.4666667 0.2142857
-## 6         60        19   2.998706    2.559116 0.3166667 0.2033898</code></pre>
+##   num.tokens num.types huni.chars hrate.chars ttr.chars rm.chars
+## 1         31         8   2.078948    1.757506 0.2580645        0
+## 2         17         7   2.278352    1.609585 0.4117647        0
+## 3         11         7   2.404010    1.799732 0.6363636        0
+## 4         23         5   1.807905    1.223527 0.2173913        0
+## 5         29         8   2.123396    1.676167 0.2758621        0
+## 6        119        20   2.511902    2.085604 0.1680672        0</code></pre>
 <p>Safe outputs to file.</p>
 <pre class="r"><code>write.csv(cunei.data.est, paste(&quot;~/Github/UpperPalCombinatorics/results/features/cuneiform_&quot;, 
                       paste(period, &quot;_features.csv&quot;, sep = &quot;&quot;), 

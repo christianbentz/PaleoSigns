@@ -524,6 +524,8 @@ coding.clean &lt;- gsub(&quot;\\[(.*?)\\]&quot;, &quot;&quot;, coding.clean)
 coding.clean &lt;- gsub(&quot;( _ )+&quot;, &quot; _ &quot;, coding.clean)
 # trim the underscores and white spaces from beginning and end of sequences
 coding.clean &lt;- trimws(coding.clean, which = &quot;both&quot;, whitespace = &quot;[ \\_]&quot;)
+# remove white spaces around underscores
+coding.clean &lt;- gsub(&quot; _ &quot;, &quot;_&quot;, coding.clean)
 
 # add column to original data frame again
 sign.data$coding_clean &lt;- coding.clean
@@ -579,11 +581,11 @@ for (i in 1:nrow(sign.data)){
   # use single coding per row
   coding.local &lt;- sign.data[i, ]$coding_clean
   # split on underscores surrounded by white spaces
-  coding.split &lt;- unlist(strsplit(as.character(coding.local), split = &quot; _ &quot;))
+  coding.split &lt;- unlist(strsplit(as.character(coding.local), split = &quot;_&quot;))
   # randomize order
   coding.random.local &lt;- sample(coding.split)
   # concatenate with underscore and white space again
-  coding.random.local &lt;- paste(coding.random.local, collapse = &quot; _ &quot;)
+  coding.random.local &lt;- paste(coding.random.local, collapse = &quot;_&quot;)
   # add to vector
   coding.random &lt;- c(coding.random, coding.random.local)
 }
