@@ -35,6 +35,7 @@ library(performance)
 library(see)
 library(GGally)
 library(MASS)
+library(forcats)
 ```
 
 Give the package versions.
@@ -64,9 +65,10 @@ table(sign.data$object_type)
 ```
 
 # Preprocessing
-Exclude certain levels of column coding_certainty to check the robustness of results.
+Exclude certain levels of column coding_certainty, and certain numbers of tokens, to check the robustness of results.
 ```{r}
 #sign.data <- sign.data[sign.data$coding_certainty != "Uncertain", ]
+#sign.data <- sign.data[sign.data$num.tokens > 5, ]
 ```
 
 Add columns for object volume and dates.
@@ -105,39 +107,159 @@ sign.data$object_type <- fct_collapse(sign.data$object_type,
 site.barplot <- ggplot(sign.data, aes(x = site_name, fill = site_name)) +
   geom_bar() +
   ylim(0, 200) +
-  geom_text(aes(label = after_stat(count)), stat = "count", vjust = -1, hjust = -1) +
+  geom_text(aes(label = after_stat(count)), stat = "count", vjust = -2.5, hjust = 0.5) +
   geom_text(aes(label = paste(round(after_stat(prop)*100, 1), "%")), 
-            stat = "prop", vjust = 1, hjust = -0.2) +
+            stat = "prop", vjust = -1, hjust = 0.5) +
   theme(legend.position = "none") +
-  xlab("Cave Site") +
-  coord_flip()
-site.barplot
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  xlab("Cave Site")
+  #coord_flip()
+print(site.barplot)
 
 # barplot for object counts per material
 material.barplot <- ggplot(sign.data, aes(x = material, fill = material)) +
   geom_bar() +
   ylim(0, 200) +
-  geom_text(aes(label = after_stat(count)), stat = "count", vjust = -1, hjust = -1) +
+  geom_text(aes(label = after_stat(count)), stat = "count", vjust = -2.5, hjust = 0.5) +
   geom_text(aes(label = paste(round(after_stat(prop)*100, 1), "%")), 
-            stat = "prop", vjust = 1, hjust = -0.2) +
+            stat = "prop", vjust = -1, hjust = 0.5) +
   theme(legend.position = "none") +
-  xlab("Material") +
-  coord_flip()
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  xlab("Material")
+  #coord_flip()
 material.barplot
 
 # barplot for object counts per object_type
 type.barplot <- ggplot(sign.data, aes(x = object_type, fill = object_type)) +
   geom_bar() +
   ylim(0, 200) +
-  geom_text(aes(label = after_stat(count)), stat = "count", vjust = -1, hjust = -1) +
+  geom_text(aes(label = after_stat(count)), stat = "count", vjust = -2.5, hjust = 0.5) +
   geom_text(aes(label = paste(round(after_stat(prop)*100, 1), "%")), 
-            stat = "prop", vjust = 1, hjust = -0.2) +
+            stat = "prop", vjust = -1, hjust = 0.5) +
   theme(legend.position = "none") +
-  xlab("Object-Type (Carrier)") +
-  coord_flip()
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  xlab("Object-Type (Carrier)")
+  #coord_flip()
 type.barplot
 ```
 
+## Figures Combined
+Combine figures.
+```{r, fig.width = 12, fig.height = 4, warning = F, message = F}
+combined.barplot <- ggarrange(site.barplot, type.barplot, material.barplot,
+                           ncol = 3, nrow = 1,
+                           labels = "AUTO")
+combined.barplot
+```
+
+Safe complete figure to file.
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/barPlots_Aurignacian.pdf", 
+       combined.barplot, dpi = 300, width = 12, height = 4, device = cairo_pdf)
+```
+
+# Sign Stats
+
+## Cave Sites
+Get frequency counts for individual sign types per cave site.
+```{r}
+# initialize dataframe to append results to
+caveSigns.df <- data.frame(signs = character(0),
+                             Freq = numeric(0), 
+                             site_name = character(0))
+
+for (site_name in unique(sign.data$site_name)){
+  # get all cleaned codings per cave
+  codings <- sign.data[sign.data$site_name == site_name, ]$coding_clean 
+  # collapse to one sequence
+  codings.collapsed <- paste(codings, collapse = "")
+  # remove underscores
+  codings.collapsed <- gsub("_", "", codings.collapsed)
+  # split into individual signs
+  signs <- unlist(strsplit(codings.collapsed, ""))
+  # get data frame with frequency counts
+  signs.df <- as.data.frame(table(signs))
+  # order by frequency
+  signs.df <- signs.df[order(-signs.df$Freq), ]
+  # add column with site_name
+  signs.df$site_name <- rep(site_name, nrow(signs.df))
+  # append results to dataframe
+  caveSigns.df <- rbind(caveSigns.df, signs.df)
+}
+```
+
+Barplot for frequency counts per sign type and cave site.
+```{r, fig.height = 6, fig.width = 10}
+signs.barplot <- ggplot(caveSigns.df, aes(x = reorder(signs, Freq), 
+                                          y = Freq, fill = signs)) +
+  ylim(0, 700) +
+  geom_text(aes(label = signs), hjust = -1) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~site_name, ncol = 5) +
+  theme(legend.position = "none") +
+  coord_flip() +
+  xlab("Sign Types") +
+  ylab("Token Frequency")
+signs.barplot
+```
+
+Safe complete figure to file.
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/signFreqCaves_Aurignacian.pdf", 
+       signs.barplot, dpi = 300, width = 10, height = 6, device = cairo_pdf)
+```
+
+## Object Type
+Get frequency counts for individual sign types per object type.
+```{r}
+# initialize dataframe to append results to
+objectSigns.df <- data.frame(signs = character(0),
+                             Freq = numeric(0), 
+                             object_type = character(0))
+
+for (object_type in unique(sign.data$object_type)){
+  # get all cleaned codings per object type
+  codings <- sign.data[sign.data$object_type == object_type, ]$coding_clean 
+  # collapse to one sequence
+  codings.collapsed <- paste(codings, collapse = "")
+  # remove underscores
+  codings.collapsed <- gsub("_", "", codings.collapsed)
+  # split into individual signs
+  signs <- unlist(strsplit(codings.collapsed, ""))
+  # get data frame with frequency counts
+  signs.df <- as.data.frame(table(signs))
+  # order by frequency
+  signs.df <- signs.df[order(-signs.df$Freq), ]
+  # add column with site_name
+  signs.df$object_type <- rep(object_type, nrow(signs.df))
+  # append results to dataframe
+  objectSigns.df <- rbind(objectSigns.df, signs.df)
+}
+```
+
+Barplot for frequency counts per sign type and cave site.
+```{r, fig.height = 6, fig.width = 10}
+objectSigns.barplot <- ggplot(objectSigns.df, aes(x = reorder(signs, Freq), 
+                                          y = Freq, fill = signs)) +
+  ylim(0, 500) +
+  geom_text(aes(label = signs), hjust = -1) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~object_type, ncol = 6) +
+  theme(legend.position = "none") +
+  coord_flip() +
+  xlab("Sign Types") +
+  ylab("Token Frequency")
+objectSigns.barplot
+```
+
+Safe complete figure to file.
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/signFreqObjects_Aurignacian.pdf", 
+       objectSigns.barplot, dpi = 300, width = 10, height = 6, device = cairo_pdf)
+```
+
+
+# Statistical Model
 
 ## Select Feature
 ```{r}
@@ -243,19 +365,18 @@ date.plot
 
 ## Figures Combined
 Combine figures.
-```{r, fig.width = 12, fig.height = 12, warning = F, message = F}
-combined.plot <- ggarrange(type.barplot, material.barplot, site.barplot,
-                           objectType.plot, material.plot, site.plot,
+```{r, fig.width = 12, fig.height = 7, warning = F, message = F}
+combined.plot <- ggarrange(objectType.plot, material.plot, site.plot,
                            preservation.plot, volume.plot, date.plot, 
-                           ncol = 3, nrow = 3,
+                           ncol = 3, nrow = 2,
                            labels = "AUTO")
 combined.plot
 ```
 
-Safe complete figure to file
+Safe complete figure to file.
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_Aurignacian.pdf", 
-       combined.plot, dpi = 300, width = 12, height = 12, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 12, height = 7, device = cairo_pdf)
 ```
 
 # Linear Models
