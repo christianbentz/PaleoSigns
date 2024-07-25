@@ -388,6 +388,11 @@ library(Hrate)</code></pre>
 <pre><code>##   Hrate  gsubfn   proto entropy stringr 
 ##   &quot;0.2&quot;   &quot;0.7&quot; &quot;1.0.0&quot; &quot;1.3.1&quot; &quot;1.5.1&quot;</code></pre>
 </div>
+<div id="external-functions" class="section level1">
+<h1>External functions</h1>
+<pre class="r"><code># repetition rate function rrate()
+source(&quot;~/Github/UpperPalCombinatorics/code/functions/repRate_function.R&quot;)</code></pre>
+</div>
 <div id="load-files" class="section level1">
 <h1>Load files</h1>
 <p>Load the file with cleaned TeDDi sample lines.</p>
@@ -457,28 +462,8 @@ for (i in 1:nrow(teddi.clean)){
   # calculate type-token ratio (TTR)
   ttr.chars &lt;- nrow(chars.df)/sum(chars.df$Freq)
   
-  # calculate repetition measure according to Sproat (2014)
-  # get the overall number of repetitions (note: &quot;R&quot; in Sproat) as the sum of frequency counts *for each type* minus 1. 
-  R &lt;- sum(chars.df$Freq-1) 
-  # calculate the number of adjacent repetitions &quot;r&quot; along the sequence
-  r = 0
-  if (length(chars) &gt; 1){
-    for (i in 1:(length(chars)-1)){
-      if (chars[i] == chars[i+1]){
-        r = r + 1
-      } else {
-        r = r + 0
-      }
-    }
-  } else {
-    r = r  
-  }
-  # calculate the repetition measure (&quot;r/R&quot; in Sproat)
-  if (R == 0 &amp; r == 0){ 
-    rm.chars = 0
-  } else {
-    rm.chars = r/R
-  }
+  # calculate repetition rate
+  rm.chars &lt;- rrate(chars, method = &quot;lsmo&quot;)
   
   # append results to dataframe
   local.df &lt;- data.frame(id, text, filename, language_name_glotto,
@@ -494,7 +479,7 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 6.5188 secs</code></pre>
+<pre><code>## Time difference of 6.844627 secs</code></pre>
 <p>Give head of estimation data frame (selected columns) for visual
 checking of the output data structure.</p>
 <pre class="r"><code>head(estimations.df)</code></pre>
@@ -534,11 +519,11 @@ checking of the output data structure.</p>
 ## 5                                                                                                                                                                                              &lt;NA&gt;
 ## 6                                                                                                                                                                                              &lt;NA&gt;
 ##   num.tokens num.types huni.chars hrate.chars ttr.chars    rm.chars
-## 1        187        22   3.954932    2.400201 0.1176471 0.006060606
-## 2         96        17   3.617791    2.436322 0.1770833 0.037974684
+## 1        187        22   3.954932    2.400201 0.1176471 0.005376344
+## 2         96        17   3.617791    2.436322 0.1770833 0.031578947
 ## 3         34        14   3.573229    2.365557 0.4117647 0.000000000
 ## 4         18        11   3.281036    2.222807 0.6111111 0.000000000
-## 5         43        19   4.045240    2.692185 0.4418605 0.041666667
+## 5         43        19   4.045240    2.692185 0.4418605 0.023809524
 ## 6         54        16   3.753867    2.481230 0.2962963 0.000000000</code></pre>
 <p>Safe outputs to file.</p>
 <pre class="r"><code>write.csv(estimations.df, &quot;~/Github/UpperPalCombinatorics/results/features/teddi_features.csv&quot;, 

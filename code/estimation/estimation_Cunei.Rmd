@@ -40,6 +40,12 @@ Give the package versions.
 installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ```
 
+# External functions
+```{r sourceCode, echo = TRUE}
+# repetition rate function rrate()
+source("~/Github/UpperPalCombinatorics/code/functions/repRate_function.R")
+```
+
 # Load files
 Load the files with the cleaned sequences. A period needs to be chosen here. Hence, the code needs to be run for periods separately.
 ```{r}
@@ -111,28 +117,8 @@ for (i in 1:nrow(cunei.data)){
   # calculate type-token ratio (TTR) 
   ttr.chars <- nrow(chars.df)/sum(chars.df$Freq)
   
-  # calculate repetition measure according to Sproat (2014)
-  # get the overall number of repetitions (note: "R" in Sproat) as the sum of frequency counts *for each type* minus 1. 
-  R <- sum(chars.df$Freq-1) 
-  # calculate the number of adjacent repetitions "r" along the sequence
-  r = 0
-  if (length(chars) > 1){
-    for (i in 1:(length(chars)-1)){
-      if (chars[i] == chars[i+1]){
-        r = r + 1
-      } else {
-        r = r + 0
-      }
-    }
-  } else {
-    r = r  
-  }
-  # calculate the repetition measure ("r/R" in Sproat)
-  if (R == 0 & r == 0){ 
-    rm.chars = 0
-  } else {
-    rm.chars = r/R
-  }
+ # calculate repetition rate
+  rm.chars <- rrate(chars, method = "lsmo")
   
   # append results to dataframe
   local.df <- data.frame(tablet.id, num.tokens, num.types, huni.chars, hrate.chars,

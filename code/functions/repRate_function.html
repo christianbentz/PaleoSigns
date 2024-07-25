@@ -12,7 +12,7 @@
 <meta name="author" content />
 
 
-<title>Estimations of Quantitative Features for SignBase Objects</title>
+<title>Repetition rate function</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -349,8 +349,7 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Estimations of Quantitative Features for
-SignBase Objects</h1>
+<h1 class="title toc-ignore">Repetition rate function</h1>
 <h4 class="author"></h4>
 
 </div>
@@ -358,11 +357,7 @@ SignBase Objects</h1>
 
 <div id="description" class="section level1">
 <h1>Description</h1>
-<p>This file contains the code for estimating the feature values (TTR,
-unigram entropy, entropy rate, repetition rate) per sign sequence on
-paleolithic objects from the Swabian Aurignacian. These features where
-tested on a wider sample of linguistic and non-linguistic sign sequences
-in Bentz (2023). The repetition measure was tested also in Sproat
+<p>Function for calculating the repetition rate according to Sproat
 (2014).</p>
 </div>
 <div id="session-info" class="section level1">
@@ -371,168 +366,103 @@ in Bentz (2023). The repetition measure was tested also in Sproat
 <pre><code>## [1] &quot;R version 4.4.0 (2024-04-24)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
 </div>
-<div id="load-libraries" class="section level1">
-<h1>Load libraries</h1>
+<div id="load-packages" class="section level1">
+<h1>Load Packages</h1>
 <p>If the libraries are not installed yet, you need to install them
-using, for example, the command: install.packages(“ggplot2”). For the
-Hrate package this is different, since it comes from github. The
-devtools library needs to be installed, and then the install_github()
-function is used.</p>
-<pre class="r"><code>library(stringr)
-library(entropy)
-library(gsubfn)</code></pre>
-<pre><code>## Loading required package: proto</code></pre>
-<pre class="r"><code>#library(devtools)
-#install_github(&quot;dimalik/Hrate&quot;)
-library(Hrate)</code></pre>
+using, for example, the command: install.packages(“ggplot2”).</p>
 <p>Give the package versions.</p>
-<pre><code>##   Hrate  gsubfn   proto entropy stringr 
-##   &quot;0.2&quot;   &quot;0.7&quot; &quot;1.0.0&quot; &quot;1.3.1&quot; &quot;1.5.1&quot;</code></pre>
+<pre><code>## character(0)</code></pre>
 </div>
-<div id="external-functions" class="section level1">
-<h1>External functions</h1>
-<pre class="r"><code># repetition rate function rrate()
-source(&quot;~/Github/UpperPalCombinatorics/code/functions/repRate_function.R&quot;)</code></pre>
-</div>
-<div id="load-files" class="section level1">
-<h1>Load files</h1>
-<p>Load the files with the cleaned and randomized sequences.</p>
-<pre class="r"><code># signBase data
-sign.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/signBase/signBase_randomized.csv&quot;)</code></pre>
-</div>
-<div id="signbase-swabian-aurignacian-estimations" class="section level1">
-<h1>SignBase (Swabian Aurignacian) Estimations</h1>
-<p>Estimations of quantitative features for the objects and their sign
-codings as found in signBase.</p>
-<pre class="r"><code># set counter
-counter = 0
-# initialize dataframe to append results to
-estimations.df &lt;- data.frame(object_id = character(0),
-                             num.tokens = numeric(0), num.types = numeric(0), 
-                             huni.chars = numeric (0), hrate.chars = numeric(0),
-                             hrate.chars.random = numeric(0),
-                             ttr.chars = numeric(0), rm.chars = numeric(0)) 
-
-# start time
-start_time &lt;- Sys.time()
-for (i in 1:nrow(sign.data)){
-  try({ # if the processing fails for a certain row, there will be no output for this row,
-  # but the try() function allows the loop to keep running  
-  
-  # collect info from row
-  object_id &lt;- sign.data$object_id[i]
-  coding.sample &lt;- as.character(sign.data$coding_clean[i])
-  coding.sample.random &lt;- as.character(sign.data$coding_random[i])
-  
-  # split sequences per object into UTF-8 characters
-  # this is here done by first splitting them on &#39; _ &#39; to get strings of characters
-  # the strings are then split into individual UTF-8 characters (white spaces included)
-  strings &lt;- unlist(strsplit(coding.sample, &quot; _ &quot;)) 
-  chars &lt;- unlist(strsplit(strings, &quot;&quot;))
-  strings.random &lt;- unlist(strsplit(coding.sample.random, &quot; _ &quot;)) 
-  chars.random &lt;- unlist(strsplit(strings.random, &quot;&quot;))
-  
-  # get number of sign tokens and types
-  num.tokens &lt;- length(chars)
-  num.types &lt;- length(unique(chars))
-
-  # preprocess text with bag-of-words normalization
-  # note: this is an important step! Without it, entropy rate estimation will fail
-  # to yield realistic results due to issues with processing special characters.
-  chars &lt;- PreprocessText(chars)
-  chars.random &lt;- PreprocessText(chars.random)
-  
-  # unigram entropy estimation
-  # calculate unigram entropy for characters (note that this is the same
-  # for random ordering of chracter strings)
-  chars.df &lt;- as.data.frame(table(chars))
-  # print(chars.df)
-  huni.chars &lt;- entropy(chars.df$Freq, method = &quot;ML&quot;, unit = &quot;log2&quot;)
-  
-  # entropy rate estimation
-  # the values chosen for max.length and every.word will crucially 
-  # impact processing time. In case of &quot;max.length = NULL&quot; the length is n units
-  # here use the try() function since entropy rate estimation can fail when particular
-  # special characters are in the strings
-  hrate.chars &lt;- try(get.estimate(text = chars, every.word = 1, max.length = NULL))
-  if (class(hrate.chars) == &quot;numeric&quot;) {
-    hrate.chars &lt;- hrate.chars
+<div id="function" class="section level1">
+<h1>Function</h1>
+<p>The function takes the parameter “data” as input. This has to be a
+vector of elements of a sequence. Also, it takes a “method” argument
+which has to be either “lsmo” (the normalizing R is then the “length of
+sequence minus one”), or “sproat” (the normalizing R is then the sum of
+frequencies sum of frequency counts <em>for each type minus 1</em>).</p>
+<pre class="r"><code>rrate &lt;- function(data, method = c(&quot;lsmo&quot;, &quot;sproat&quot;)){
+  # create data frame with frequency counts  
+  freq.df &lt;- as.data.frame(table(data))
+  if (method == &quot;sproat&quot;){
+    # get the overall number of repetitions (i.e. adjacent and non-adjacent) 
+    # as the sum of frequency counts *for each type minus 1*.
+    R &lt;- sum(freq.df$Freq-1)
+  } else if(method == &quot;lsmo&quot;) {
+    # get the possible number of repetitions as the length of the sequence minus one.
+    R &lt;- length(data)-1
   } else {
-    hrate.chars = &quot;NA&quot;
+    print(&quot;Error: wrong method value&quot;)
   }
-  # for random ordering of characters strings
-  hrate.chars.random &lt;- try(get.estimate(text = chars.random, every.word = 1, max.length = NULL))
-  if (class(hrate.chars.random) == &quot;numeric&quot;) {
-    hrate.chars.random &lt;- hrate.chars.random
+  # calculate the number of adjacent repetitions &quot;r&quot; along the sequence
+  r = 0
+  if (length(data) &gt; 1){
+    for (i in 1:(length(data)-1)){
+      if (data[i] == data[i+1]){
+        r = r + 1
+      } else {
+        r = r + 0
+      }
+    }
   } else {
-    hrate.chars.random = &quot;NA&quot;
+    r = r  
   }
-  
-  # calculate type-token ratio (ttr) 
-  # note that this is the same for random ordering of strings
-  ttr.chars &lt;- nrow(chars.df)/sum(chars.df$Freq)
-  
-  # calculate repetition rate
-  rm.chars &lt;- rrate(chars, method = &quot;lsmo&quot;)
-  
-  # append results to dataframe
-  local.df &lt;- data.frame(object_id, num.tokens, num.types, huni.chars, hrate.chars,
-                         hrate.chars.random, ttr.chars, rm.chars)
-  estimations.df &lt;- rbind(estimations.df, local.df)
-}) # end of try()
-# counter
-counter &lt;- counter + 1
-# print(counter)
-}
-end_time &lt;- Sys.time()
-end_time - start_time</code></pre>
-<pre><code>## Time difference of 1.733876 secs</code></pre>
-<pre class="r"><code>#estimations.df</code></pre>
-<p>Merge estimations with original file.</p>
-<pre class="r"><code>sign.data.est &lt;- merge(sign.data, estimations.df, by = &quot;object_id&quot;)</code></pre>
-<p>Give head of estimation data frame (selected columns) for visual
-checking of the output data structure. Note that “coding_clean” gives
-the sequences with underscores.</p>
-<pre class="r"><code>head(sign.data.est[c(&quot;object_id&quot;, &quot;coding_clean&quot;, &quot;num.tokens&quot;, &quot;num.types&quot;, &quot;huni.chars&quot;, 
-                       &quot;hrate.chars&quot;, &quot;ttr.chars&quot;, &quot;rm.chars&quot;)])</code></pre>
-<pre><code>##   object_id       coding_clean num.tokens num.types huni.chars hrate.chars
-## 1   bst0001 vvvvvvvvvvvvvvvvvv         18         1  0.0000000   0.6171397
-## 2   gkl0001     ||| ////// _ V         11         4  1.6171896   1.3427012
-## 3   gkl0002              vvvvv          5         1  0.0000000   0.5711903
-## 4   gkl0003          vvvv vvvv          9         2  0.5032583   0.9060047
-## 5   gkl0004     vvvvvvvvvvvvvv         14         1  0.0000000   0.6379550
-## 6   gkl0005                |||          3         1  0.0000000   0.4308271
-##    ttr.chars rm.chars
-## 1 0.05555556     1.00
-## 2 0.36363636     0.70
-## 3 0.20000000     1.00
-## 4 0.22222222     0.75
-## 5 0.07142857     1.00
-## 6 0.33333333     1.00</code></pre>
-<p>Safe outputs to file.</p>
-<pre class="r"><code>write.csv(sign.data.est, &quot;~/Github/UpperPalCombinatorics/results/features/signBase_features.csv&quot;, row.names = F)</code></pre>
+  # calculate the repetition measure (&quot;r/R&quot; in Sproat)
+  # note: since the ratio is not defined for R = 0 (will give NaN), 
+  # we here hard code rrate = 0 in this case  
+  if (R == 0){ 
+    rrate = 0
+  } else {
+    rrate = r/R
+  }
+  #print(rrate)
+}</code></pre>
 </div>
-<div id="package-references" class="section level1">
-<h1>Package References</h1>
-<pre><code>## Bentz C, Alikaniotis D (2017). _Hrate: Implements LZ estimator for
-## texts_. R package version 0.2, commit
-## a393e0b1d326edf1d691cb894786afe37f226907,
-## &lt;https://github.com/dimalik/Hrate&gt;.</code></pre>
-<pre><code>## Wickham H (2023). _stringr: Simple, Consistent Wrappers for Common
-## String Operations_. R package version 1.5.1,
-## &lt;https://CRAN.R-project.org/package=stringr&gt;.</code></pre>
-<pre><code>## Grothendieck G (2018). _gsubfn: Utilities for Strings and Function
-## Arguments_. R package version 0.7,
-## &lt;https://CRAN.R-project.org/package=gsubfn&gt;.</code></pre>
-<pre><code>## Hausser J, Strimmer K (2021). _entropy: Estimation of Entropy, Mutual
-## Information and Related Quantities_. R package version 1.3.1,
-## &lt;https://CRAN.R-project.org/package=entropy&gt;.</code></pre>
+<div id="examples" class="section level1">
+<h1>Examples</h1>
+<pre class="r"><code>sequence1 &lt;- c(&quot;a&quot;)
+sequence2 &lt;- c(&quot;a&quot;, &quot;a&quot;)
+sequence3 &lt;- c(&quot;a&quot;, &quot;b&quot;)
+sequence4 &lt;- c(&quot;a&quot;, &quot;b&quot;, &quot;a&quot;)
+sequence5 &lt;- c(&quot;a&quot;, &quot;a&quot;, &quot;a&quot;, &quot;a&quot;)
+sequence6 &lt;- c(&quot;a&quot;, &quot;a&quot;, &quot;b&quot;, &quot;a&quot;)
+sequence7 &lt;- c(&quot;不&quot;,&quot;不&quot;,&quot;是&quot;, &quot;真&quot;, &quot;的&quot;, &quot;沒&quot;, &quot;有&quot;)
+sequence8 &lt;- c(&quot;.&quot;,&quot;*&quot;,&quot;*&quot;,&quot;:&quot;, &quot;,&quot;, &quot;,&quot;, &quot;;&quot;, &quot;.&quot;)
+
+print(rrate(sequence1, method = &quot;lsmo&quot;))</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>print(rrate(sequence2, method = &quot;lsmo&quot;))</code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code>print(rrate(sequence3, method = &quot;lsmo&quot;))</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>print(rrate(sequence4, method = &quot;lsmo&quot;))</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>print(rrate(sequence5, method = &quot;lsmo&quot;))</code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code>print(rrate(sequence6, method = &quot;lsmo&quot;))</code></pre>
+<pre><code>## [1] 0.3333333</code></pre>
+<pre class="r"><code>print(rrate(sequence7, method = &quot;lsmo&quot;))</code></pre>
+<pre><code>## [1] 0.1666667</code></pre>
+<pre class="r"><code>print(rrate(sequence8, method = &quot;lsmo&quot;))</code></pre>
+<pre><code>## [1] 0.2857143</code></pre>
+<pre class="r"><code>print(rrate(sequence1, method = &quot;sproat&quot;))</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>print(rrate(sequence2, method = &quot;sproat&quot;))</code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code>print(rrate(sequence3, method = &quot;sproat&quot;))</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>print(rrate(sequence4, method = &quot;sproat&quot;))</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>print(rrate(sequence5, method = &quot;sproat&quot;))</code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code>print(rrate(sequence6, method = &quot;sproat&quot;))</code></pre>
+<pre><code>## [1] 0.5</code></pre>
+<pre class="r"><code>print(rrate(sequence7, method = &quot;sproat&quot;))</code></pre>
+<pre><code>## [1] 1</code></pre>
+<pre class="r"><code>print(rrate(sequence8, method = &quot;sproat&quot;))</code></pre>
+<pre><code>## [1] 0.6666667</code></pre>
 </div>
 <div id="literature-references" class="section level1">
 <h1>Literature References</h1>
-<p>Bentz, C. (2023). The Zipfian Challenge: Learning the statistical
-fingerprint of natural languages. In Proceedings of the 27th Conference
-on Computational Natural Language Learning (CoNLL), pp. 27-37.</p>
 <p>Sproat, R. (2014). A statistical comparison of written language and
 nonlinguistic symbol systems. Language, 457-481.</p>
 </div>

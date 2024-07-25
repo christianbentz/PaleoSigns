@@ -1676,8 +1676,13 @@ library(Hrate)</code></pre>
 ##  stringr 
 ##  &quot;1.5.1&quot;</code></pre>
 </div>
+<div id="external-functions" class="section level1">
+<h1>External functions</h1>
+<pre class="r"><code># repetition rate function rrate()
+source(&quot;~/Github/UpperPalCombinatorics/code/functions/repRate_function.R&quot;)</code></pre>
+</div>
 <div id="load-data" class="section level1">
-<h1>Load Data</h1>
+<h1>Load data</h1>
 <p>Read the preprocessed files with sequences per row.</p>
 <pre class="r"><code># give file paths to the files to be processed
 teddi &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.csv&quot;)
@@ -1788,38 +1793,22 @@ for (i in 1:nrow(data.combined))
   {  
     # unigram entropy estimation
     # define substring of chars vector by stepsize
-    sub.chars &lt;- chars[1:(j*stepsize)]
+    subchars &lt;- chars[1:(j*stepsize)]
     # calculate unigram entropy for characters
-    chars.df &lt;- as.data.frame(table(sub.chars))
+    subchars.df &lt;- as.data.frame(table(subchars))
     # print(chars.df)
-    huni.chars &lt;- entropy(chars.df$Freq, method = &quot;ML&quot;, unit = &quot;log2&quot;)
+    huni.chars &lt;- entropy(subchars.df$Freq, method = &quot;ML&quot;, unit = &quot;log2&quot;)
     # entropy rate estimation
     # note: the values chosen for max.length and every.word will crucially 
     # impact processing time. max.length = NULL means all units in the file are     
     # considered.
-    hrate.chars &lt;- get.estimate(text = sub.chars, every.word = 1, 
+    hrate.chars &lt;- get.estimate(text = subchars, every.word = 1, 
                                 max.length = NULL)  
     # calculate type-token ratio (ttr)
-    ttr.chars &lt;- nrow(chars.df)/sum(chars.df$Freq)
+    ttr.chars &lt;- nrow(subchars.df)/sum(subchars.df$Freq)
     
-    # calculate repetition measure according to Sproat (2014)
-    # the overall number of repetitions is the sum of frequency counts minus 1. 
-    R &lt;- sum(chars.df$Freq)-1 
-    # calculate the number of adjacent repetitions
-    r = 0
-    if (length(sub.chars) &gt; 1){
-      for (m in 1:(length(sub.chars)-1)){
-        if (sub.chars[m] == sub.chars[m+1]){
-          r = r + 1
-        } else {
-          r = r + 0
-        }
-      }
-      # calculate the repetition measure
-      rm.chars &lt;- r/R
-    } else {
-      rm.chars &lt;- &quot;NA&quot;  
-    }
+    # calculate repetition rate
+    rm.chars &lt;- rrate(subchars, method = &quot;lsmo&quot;)
     
     # append results to dataframe
     local.df &lt;- data.frame(id, corpus, subcorpus, sequence,
@@ -1834,7 +1823,7 @@ for (i in 1:nrow(data.combined))
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 2.636906 mins</code></pre>
+<pre><code>## Time difference of 2.929297 mins</code></pre>
 <pre class="r"><code>head(stabilization.df)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">

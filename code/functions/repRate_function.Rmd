@@ -1,0 +1,108 @@
+---
+title: "Repetition rate function"
+author: ""
+date: ""
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Description
+Function for calculating the repetition rate according to Sproat (2014).
+
+# Session Info
+Give the session info (reduced).
+```{r, echo = F}
+# R version
+sessionInfo()$R.version$version.string
+# platform
+sessionInfo()$R.version$platform 
+```
+
+# Load Packages
+If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
+```{r, message = F}
+
+```
+
+Give the package versions.
+```{r, echo = F}
+# version of packages loaded
+installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
+```
+
+# Function
+The function takes the parameter "data" as input. This has to be a vector of elements of a sequence. Also, it takes a "method" argument which has to be either "lsmo" (the normalizing R is then the "length of sequence minus one"), or "sproat" (the normalizing R is then the sum of frequencies sum of frequency counts *for each type minus 1*).
+```{r}
+rrate <- function(data, method = c("lsmo", "sproat")){
+  # create data frame with frequency counts  
+  freq.df <- as.data.frame(table(data))
+  if (method == "sproat"){
+    # get the overall number of repetitions (i.e. adjacent and non-adjacent) 
+    # as the sum of frequency counts *for each type minus 1*.
+    R <- sum(freq.df$Freq-1)
+  } else if(method == "lsmo") {
+    # get the possible number of repetitions as the length of the sequence minus one.
+    R <- length(data)-1
+  } else {
+    print("Error: wrong method value")
+  }
+  # calculate the number of adjacent repetitions "r" along the sequence
+  r = 0
+  if (length(data) > 1){
+    for (i in 1:(length(data)-1)){
+      if (data[i] == data[i+1]){
+        r = r + 1
+      } else {
+        r = r + 0
+      }
+    }
+  } else {
+    r = r  
+  }
+  # calculate the repetition measure ("r/R" in Sproat)
+  # note: since the ratio is not defined for R = 0 (will give NaN), 
+  # we here hard code rrate = 0 in this case  
+  if (R == 0){ 
+    rrate = 0
+  } else {
+    rrate = r/R
+  }
+  #print(rrate)
+}
+```
+
+# Examples
+```{r}
+sequence1 <- c("a")
+sequence2 <- c("a", "a")
+sequence3 <- c("a", "b")
+sequence4 <- c("a", "b", "a")
+sequence5 <- c("a", "a", "a", "a")
+sequence6 <- c("a", "a", "b", "a")
+sequence7 <- c("不","不","是", "真", "的", "沒", "有")
+sequence8 <- c(".","*","*",":", ",", ",", ";", ".")
+
+print(rrate(sequence1, method = "lsmo"))
+print(rrate(sequence2, method = "lsmo"))
+print(rrate(sequence3, method = "lsmo"))
+print(rrate(sequence4, method = "lsmo"))
+print(rrate(sequence5, method = "lsmo"))
+print(rrate(sequence6, method = "lsmo"))
+print(rrate(sequence7, method = "lsmo"))
+print(rrate(sequence8, method = "lsmo"))
+
+print(rrate(sequence1, method = "sproat"))
+print(rrate(sequence2, method = "sproat"))
+print(rrate(sequence3, method = "sproat"))
+print(rrate(sequence4, method = "sproat"))
+print(rrate(sequence5, method = "sproat"))
+print(rrate(sequence6, method = "sproat"))
+print(rrate(sequence7, method = "sproat"))
+print(rrate(sequence8, method = "sproat"))
+```
+
+# Literature References
+Sproat, R. (2014). A statistical comparison of written language and nonlinguistic symbol systems. Language, 457-481.
