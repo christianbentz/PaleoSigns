@@ -38,7 +38,7 @@ sign.typology <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sign-202
 print(sign.typology[,1:4])
 
 # sign codings and meta info per object
-sign.data <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-06-13.csv")
+sign.data <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-07-26.csv")
 # select objects of the Swabian Aurignacien
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien" &
                      sign.data$site_name == "Vogelherd" |
@@ -76,7 +76,7 @@ sign.data <- sign.data[!sign.data$coding_certainty == "Very uncertain", ]
 Remove UTF-8 characters which do not represent actual signs on the objects, i.e annotations. A table with these distinctions is also provided at www.signbase.org. 
 ```{r}
 # remove some special characters 
-coding.clean <- gsub('[!?]', '', sign.data$sign_coding)
+coding.clean <- gsub('[!?{}]', '', sign.data$sign_coding)
 # remove sign strings which are not discrete, i.e. overlapping sign types 
 # -> indicated by parentheses '()' 
 coding.clean <- gsub("\\([^()]*\\)", "", coding.clean)

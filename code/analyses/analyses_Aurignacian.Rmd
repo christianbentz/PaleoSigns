@@ -93,7 +93,7 @@ sign.data$object_type <- fct_collapse(sign.data$object_type,
              figurine_anthropomorph = c("figurine anthropomorph",
                           "plaquette"), 
              # note: the "plaquette" is the so-called Adorant with an anthropomorph figure on it.
-             figurine_zoomorph = c("figurine zoomorph"),
+             figurine_zoomorph = grep('figurine zoomorph.', unique(sign.data$object_type), value = TRUE),
              tool = c("awl", "bâton percé",
                       "rod/bâton", "spatula/lissoir"),
              tube_flute = c("flute", "tube", "tube/flute"),
@@ -192,7 +192,7 @@ Barplot for frequency counts per sign type and cave site.
 ```{r, fig.height = 6, fig.width = 10}
 caveSigns.barplot <- ggplot(caveSigns.df, aes(x = reorder(signs, Freq), 
                                           y = Freq, fill = signs)) +
-  ylim(0, 700) +
+  #ylim(0, 700) +
   geom_text(aes(label = signs), hjust = -1) +
   geom_bar(stat = "identity") +
   facet_wrap(~site_name, ncol = 5) +
@@ -235,7 +235,7 @@ Barplot for frequency counts per sign type and cave site.
 ```{r, fig.height = 6, fig.width = 10}
 objectSigns.barplot <- ggplot(objectSigns.df, aes(x = reorder(signs, Freq), 
                                           y = Freq, fill = signs)) +
-  ylim(0, 500) +
+  #ylim(0, 500) +
   geom_text(aes(label = signs), hjust = -1) +
   geom_bar(stat = "identity") +
   facet_wrap(~object_type, ncol = 6) +
@@ -278,7 +278,7 @@ Barplot for frequency counts per sign type and cave site.
 ```{r, fig.height = 6, fig.width = 10}
 materialSigns.barplot <- ggplot(materialSigns.df, aes(x = reorder(signs, Freq), 
                                           y = Freq, fill = signs)) +
-  ylim(0, 700) +
+  #ylim(0, 700) +
   geom_text(aes(label = signs), hjust = -1) +
   geom_bar(stat = "identity") +
   facet_wrap(~ material, ncol = 4) +

@@ -446,7 +446,7 @@ print(sign.typology[,1:4])</code></pre>
 ## 47  2         l       sign                     short line
 ## 48  1         |       sign                      long line</code></pre>
 <pre class="r"><code># sign codings and meta info per object
-sign.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-06-13.csv&quot;)
+sign.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-07-26.csv&quot;)
 # select objects of the Swabian Aurignacien
 sign.data &lt;- sign.data[sign.data$archaeological_unit == &quot;Aurignacien&quot; &amp;
                      sign.data$site_name == &quot;Vogelherd&quot; |
@@ -486,18 +486,34 @@ table(sign.data$material)</code></pre>
 <pre class="r"><code># object_type
 table(sign.data$object_type)</code></pre>
 <pre><code>## 
-##          antler object                    awl            bâton percé 
-##                      3                      6                      4 
-## figurine anthropomorph        figurine undet.      figurine zoomorph 
-##                      6                      8                     25 
-##                  flute                  other      personal ornament 
-##                     10                      1                     18 
-##              plaquette                  point      possible figurine 
-##                      1                      1                     24 
-##         possible flute              rod/bâton        spatula/lissoir 
-##                     15                     20                     12 
-##                   tube             tube/flute           undetermined 
-##                      1                     24                     81</code></pre>
+##                    antler object     antler object (Mammuthus pr) 
+##                                2                                1 
+##                              awl                      bâton percé 
+##                                6                                4 
+##           figurine anthropomorph                  figurine undet. 
+##                                6                                8 
+##                figurine zoomorph     figurine zoomorph (Anatidae) 
+##                                8                                1 
+## figurine zoomorph (Bison priscus  figurine zoomorph (Equus ferus) 
+##                                1                                1 
+## figurine zoomorph (Mammuthus pr) figurine zoomorph (Osteichthyes) 
+##                                5                                1 
+## figurine zoomorph (Ovibos mosch) figurine zoomorph (Panthera sp.) 
+##                                1                                3 
+##       figurine zoomorph (undet.)    figurine zoomorph (Ursus sp.) 
+##                                2                                2 
+##                            flute                            other 
+##                               10                                1 
+##                personal ornament                        plaquette 
+##                               18                                1 
+##                            point                possible figurine 
+##                                1                               24 
+##                   possible flute                        rod/bâton 
+##                               15                               20 
+##                  spatula/lissoir                             tube 
+##                               12                                1 
+##                       tube/flute                     undetermined 
+##                               24                               81</code></pre>
 </div>
 <div id="preprocessing" class="section level1">
 <h1>Preprocessing</h1>
@@ -513,7 +529,7 @@ sign.data &lt;- sign.data[!sign.data$coding_certainty == &quot;Very uncertain&qu
 objects, i.e annotations. A table with these distinctions is also
 provided at www.signbase.org.</p>
 <pre class="r"><code># remove some special characters 
-coding.clean &lt;- gsub(&#39;[!?]&#39;, &#39;&#39;, sign.data$sign_coding)
+coding.clean &lt;- gsub(&#39;[!?{}]&#39;, &#39;&#39;, sign.data$sign_coding)
 # remove sign strings which are not discrete, i.e. overlapping sign types 
 # -&gt; indicated by parentheses &#39;()&#39; 
 coding.clean &lt;- gsub(&quot;\\([^()]*\\)&quot;, &quot;&quot;, coding.clean)
@@ -538,36 +554,50 @@ sign.data &lt;- sign.data[nchar(sign.data$coding_clean) &gt; 1, ]</code></pre>
 <h1>Simple Stats (after Preprocessing)</h1>
 <pre class="r"><code># number of sequences/objects
 nrow(sign.data)</code></pre>
-<pre><code>## [1] 212</code></pre>
+<pre><code>## [1] 211</code></pre>
 <pre class="r"><code># cave sites
 table(sign.data$site_name)</code></pre>
 <pre><code>## 
 ##    Bockstein-Törle   Geissenklösterle         Hohle Fels Hohlenstein-Stadel 
-##                  1                 28                 34                  2 
+##                  1                 28                 33                  2 
 ##          Vogelherd 
 ##                147</code></pre>
 <pre class="r"><code># material
 table(sign.data$material)</code></pre>
 <pre><code>## 
 ## animal tooth       antler         bone       fossil        ivory    sandstone 
-##            1            6           67            1          135            1 
+##            1            6           67            1          134            1 
 ##        slate 
 ##            1</code></pre>
 <pre class="r"><code># object_type
 table(sign.data$object_type)</code></pre>
 <pre><code>## 
-##          antler object                    awl            bâton percé 
-##                      3                      4                      3 
-## figurine anthropomorph        figurine undet.      figurine zoomorph 
-##                      6                      6                     22 
-##                  flute      personal ornament              plaquette 
-##                      8                     16                      1 
-##      possible figurine         possible flute              rod/bâton 
-##                     20                     15                     15 
-##        spatula/lissoir                   tube             tube/flute 
-##                     10                      1                     20 
-##           undetermined 
-##                     62</code></pre>
+##                    antler object     antler object (Mammuthus pr) 
+##                                2                                1 
+##                              awl                      bâton percé 
+##                                4                                3 
+##           figurine anthropomorph                  figurine undet. 
+##                                6                                6 
+##                figurine zoomorph     figurine zoomorph (Anatidae) 
+##                                4                                1 
+## figurine zoomorph (Bison priscus  figurine zoomorph (Equus ferus) 
+##                                1                                1 
+## figurine zoomorph (Mammuthus pr) figurine zoomorph (Osteichthyes) 
+##                                5                                1 
+## figurine zoomorph (Ovibos mosch) figurine zoomorph (Panthera sp.) 
+##                                1                                3 
+##       figurine zoomorph (undet.)    figurine zoomorph (Ursus sp.) 
+##                                2                                2 
+##                            flute                personal ornament 
+##                                8                               16 
+##                        plaquette                possible figurine 
+##                                1                               20 
+##                   possible flute                        rod/bâton 
+##                               15                               15 
+##                  spatula/lissoir                             tube 
+##                               10                                1 
+##                       tube/flute                     undetermined 
+##                               20                               62</code></pre>
 </div>
 <div id="randomization-1" class="section level1">
 <h1>Randomization</h1>
