@@ -190,7 +190,7 @@ for (site_name in unique(sign.data$site_name)){
 
 Barplot for frequency counts per sign type and cave site.
 ```{r, fig.height = 6, fig.width = 10}
-signs.barplot <- ggplot(caveSigns.df, aes(x = reorder(signs, Freq), 
+caveSigns.barplot <- ggplot(caveSigns.df, aes(x = reorder(signs, Freq), 
                                           y = Freq, fill = signs)) +
   ylim(0, 700) +
   geom_text(aes(label = signs), hjust = -1) +
@@ -200,13 +200,7 @@ signs.barplot <- ggplot(caveSigns.df, aes(x = reorder(signs, Freq),
   coord_flip() +
   xlab("Sign Types") +
   ylab("Token Frequency")
-signs.barplot
-```
-
-Safe complete figure to file.
-```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/signFreqCaves_Aurignacian.pdf", 
-       signs.barplot, dpi = 300, width = 10, height = 6, device = cairo_pdf)
+caveSigns.barplot
 ```
 
 ## Object Type
@@ -252,10 +246,62 @@ objectSigns.barplot <- ggplot(objectSigns.df, aes(x = reorder(signs, Freq),
 objectSigns.barplot
 ```
 
+## Material
+Get frequency counts for individual sign types per material.
+```{r}
+# initialize dataframe to append results to
+materialSigns.df <- data.frame(signs = character(0),
+                             Freq = numeric(0), 
+                             material = character(0))
+
+for (material in unique(sign.data$material)){
+  # get all cleaned codings per cave
+  codings <- sign.data[sign.data$material == material, ]$coding_clean 
+  # collapse to one sequence
+  codings.collapsed <- paste(codings, collapse = "")
+  # remove underscores
+  codings.collapsed <- gsub("_", "", codings.collapsed)
+  # split into individual signs
+  signs <- unlist(strsplit(codings.collapsed, ""))
+  # get data frame with frequency counts
+  signs.df <- as.data.frame(table(signs))
+  # order by frequency
+  signs.df <- signs.df[order(-signs.df$Freq), ]
+  # add column with site_name
+  signs.df$material <- rep(material, nrow(signs.df))
+  # append results to dataframe
+  materialSigns.df <- rbind(materialSigns.df, signs.df)
+}
+```
+
+Barplot for frequency counts per sign type and cave site.
+```{r, fig.height = 6, fig.width = 10}
+materialSigns.barplot <- ggplot(materialSigns.df, aes(x = reorder(signs, Freq), 
+                                          y = Freq, fill = signs)) +
+  ylim(0, 700) +
+  geom_text(aes(label = signs), hjust = -1) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ material, ncol = 4) +
+  theme(legend.position = "none") +
+  coord_flip() +
+  xlab("Sign Types") +
+  ylab("Token Frequency")
+materialSigns.barplot
+```
+
+## Figures Combined
+Combine figures.
+```{r, fig.width = 10, fig.height = 18, warning = F, message = F}
+signsCombined.barplot <- ggarrange(caveSigns.barplot, objectSigns.barplot, materialSigns.barplot,
+                           nrow = 3,
+                           labels = "AUTO")
+signsCombined.barplot
+```
+
 Safe complete figure to file.
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/signFreqObjects_Aurignacian.pdf", 
-       objectSigns.barplot, dpi = 300, width = 10, height = 6, device = cairo_pdf)
+ggsave("~/Github/UpperPalCombinatorics/figures/signsCombinedPlot_Aurignacian.pdf", 
+       signsCombined.barplot, dpi = 300, width = 10, height = 14, device = cairo_pdf)
 ```
 
 
