@@ -75,10 +75,10 @@ estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignaci
 nrow(estimations.df.selected)
 # number of rows (i.e. sequences) per subcorpus
 table(estimations.df.selected$subcorpus)
-# get mean values of lengths in characters per subcorpus
+# get mean values of lengths in tokens per subcorpus
 aggregate(estimations.df.selected$num.tokens~
             estimations.df.selected$subcorpus, FUN = mean)
-# get median values of lengths in characters per subcorpus
+# get median values of lengths in tokens per subcorpus
 aggregate(estimations.df.selected$num.tokens~
             estimations.df.selected$subcorpus, FUN = median)
 ```
@@ -86,7 +86,7 @@ aggregate(estimations.df.selected$num.tokens~
 # Density Plots
 
 ## Length
-Density plot for lengths in number of characters.
+Density plot for lengths in number of tokens.
 ```{r, fig.width = 2, fig.height = 5}
 length.plot <- ggplot(estimations.df.selected, 
                       aes(x = num.tokens, y = fct_reorder(subcorpus, num.tokens), 
@@ -96,7 +96,7 @@ length.plot <- ggplot(estimations.df.selected,
   geom_point(shape = 124, alpha = 0.3, size = 3) +
   # limit the x-range 
   xlim(0, 100) +
-  xlab("Number of Characters") +
+  xlab("Number of tokens") +
   ylab("Subcorpus") +
   theme(legend.position = "none")
 #length.plot
@@ -130,7 +130,7 @@ huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y =
   scale_colour_discrete(guide = "none") +
   geom_hex(bins = 20) +
   scale_fill_continuous(type = "viridis") +
-  labs(x = "Unigram entropy for characters", y = "Entropy rate for characters") +
+  labs(x = "Unigram entropy for tokens", y = "Entropy rate for tokens") +
   # geom_label_repel(data = labels.df,
   #                 aes(label = sequence),
   #                 size = 2,
@@ -154,7 +154,7 @@ ttr.rm.chars.plot <- ggplot(estimations.df.selected, aes(x = ttr.chars, y = rm.c
   scale_colour_discrete(guide = "none") +
   geom_hex(bins = 20) +
   scale_fill_continuous(type = "viridis") +
-  labs(x = "TTR for characters", y = "Repetition rate for characters") +
+  labs(x = "TTR for tokens", y = "Repetition rate for tokens") +
   # geom_label_repel(data = labels.df,
   #                  aes(label = sequence),
   #                  size = 2,

@@ -402,18 +402,18 @@ estimations.df &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/results/featu
 head(estimations.df)</code></pre>
 <pre><code>##     subcorpus           sequence num.tokens num.types huni.chars hrate.chars
 ## 1 Aurignacien vvvvvvvvvvvvvvvvvv         18         1  0.0000000   0.6171397
-## 2 Aurignacien     ||| ////// _ V         11         4  1.6171896   1.3427012
+## 2 Aurignacien       ||| //////_V         12         5  1.8962406   1.5295563
 ## 3 Aurignacien              vvvvv          5         1  0.0000000   0.5711903
 ## 4 Aurignacien          vvvv vvvv          9         2  0.5032583   0.9060047
 ## 5 Aurignacien     vvvvvvvvvvvvvv         14         1  0.0000000   0.6379550
 ## 6 Aurignacien                |||          3         1  0.0000000   0.4308271
-##    ttr.chars rm.chars
-## 1 0.05555556     1.00
-## 2 0.36363636     0.70
-## 3 0.20000000     1.00
-## 4 0.22222222     0.75
-## 5 0.07142857     1.00
-## 6 0.33333333     1.00</code></pre>
+##    ttr.chars  rm.chars
+## 1 0.05555556 1.0000000
+## 2 0.41666667 0.6363636
+## 3 0.20000000 1.0000000
+## 4 0.22222222 0.7500000
+## 5 0.07142857 1.0000000
+## 6 0.33333333 1.0000000</code></pre>
 <p>Select subcorpora for binary classification.</p>
 <pre class="r"><code># choose subcorpora to compare: &quot;Aurignacien&quot;, &quot;TeDDi&quot;, &quot;Cuneiform (Uruk V)&quot;,
 # &quot;Cuneiform (Uruk IV)&quot;, &quot;Cuneiform (Uruk III)&quot;.
@@ -517,16 +517,16 @@ for (k in 1:n){
 }
 print(knn.results)</code></pre>
 <pre><code>##     k baseline accuracy accuracy.pvalue precision recall   f1 test.n
-## 1   1     0.85     0.99    3.601757e-24      0.98   0.97 0.97    401
-## 2   2     0.85     0.99    3.601757e-24      1.00   0.95 0.97    401
-## 3   3     0.85     1.00    1.516770e-25      1.00   0.97 0.98    401
-## 4   4     0.85     0.99    3.601757e-24      1.00   0.95 0.97    401
-## 5   5     0.85     0.99    3.601757e-24      1.00   0.95 0.97    401
-## 6   6     0.85     0.99    3.601757e-24      1.00   0.95 0.97    401
-## 7   7     0.85     0.99    3.601757e-24      1.00   0.95 0.97    401
-## 8   8     0.85     0.99    3.601757e-24      1.00   0.95 0.97    401
-## 9   9     0.85     0.99    3.601757e-24      1.00   0.95 0.97    401
-## 10 10     0.85     0.99    3.601757e-24      1.00   0.95 0.97    401</code></pre>
+## 1   1     0.85     0.99    3.601757e-24         1   0.95 0.97    401
+## 2   2     0.85     1.00    1.516770e-25         1   0.97 0.98    401
+## 3   3     0.85     0.99    3.601757e-24         1   0.95 0.97    401
+## 4   4     0.85     0.99    3.601757e-24         1   0.95 0.97    401
+## 5   5     0.85     0.99    3.601757e-24         1   0.95 0.97    401
+## 6   6     0.85     0.99    3.601757e-24         1   0.95 0.97    401
+## 7   7     0.85     0.99    3.601757e-24         1   0.95 0.97    401
+## 8   8     0.85     0.99    3.601757e-24         1   0.95 0.97    401
+## 9   9     0.85     0.99    3.601757e-24         1   0.95 0.97    401
+## 10 10     0.85     0.99    9.078559e-22         1   0.92 0.96    401</code></pre>
 <p>Write results to file.</p>
 <pre class="r"><code># write results
 write.csv(knn.results, file = paste(c(&quot;~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_&quot;,

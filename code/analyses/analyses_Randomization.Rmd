@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Description
-This file provides code to estimate to what extend randomized sign sequences deviate from the original sequences given in SignBase in terms of the quantitative features. This is necessary since the order of strings into sequences (strings are delimited by underscore in SignBase) is arbitrary. Note that randomization does only affect the entropy rate calculated over the sign characters in sequences. All the other measures (TTR, unigram entropy, repetition measure) yield the same values for randomized sequences.  
+This file provides code to estimate to what extend randomized sign sequences deviate from the original sequences given in SignBase in terms of the quantitative features. This is necessary since the order of strings into sequences (strings are delimited by underscore in SignBase) is arbitrary. Note that randomization does only affect the entropy rate calculated over the sign tokens in sequences. All the other measures (TTR, unigram entropy, repetition measure) yield the same values for randomized sequences.  
 
 # Session Info
 Give the session info (reduced).
@@ -60,7 +60,7 @@ print(sample.size)
 # Plot
 
 ## Entropy rate 
-Entropy rate for the original versus randomized sequences (i.e. strings of sign characters where randomized).
+Entropy rate for the original versus randomized sequences (i.e. strings of sign tokens where randomized).
 ```{r, fig.width = 6, fig.height = 6, warning = FALSE}
 hrate.random.plot <- ggplot(sign.data, aes(x = hrate.chars, y =  hrate.chars.random)) + 
   geom_point(aes(size = num.tokens), alpha = 0.3) +
@@ -70,8 +70,8 @@ hrate.random.plot <- ggplot(sign.data, aes(x = hrate.chars, y =  hrate.chars.ran
            label = c(paste("r = ", cor.value, sep =""), 
                      "p-value < 0.0001",
                      paste("n = ", sample.size, sep ="")), size = 4) +
-  labs(x = " Entropy rate for characters (original)", 
-       y = "Entropy rate for characters (randomized)") +
+  labs(x = " Entropy rate for tokens (original)", 
+       y = "Entropy rate for tokens (randomized)") +
   guides(size = guide_legend(title="No. of signs"))
 hrate.random.plot <- ggMarginal(hrate.random.plot,
                                   type = "density")

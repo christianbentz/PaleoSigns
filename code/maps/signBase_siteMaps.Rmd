@@ -45,7 +45,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 # Load data
 Run this code to load the file with data on Aurignacian objects. 
 ```{r}
-objects <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-06-13.csv")
+objects <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-07-26.csv")
 nrow(objects)
 # Select Aurignacian objects from Swabian Jura Caves
 objects <- objects[objects$archaeological_unit == "Aurignacien", ]
