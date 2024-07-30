@@ -382,7 +382,7 @@ Cuneiform Digital Library Initiative (CDLI). December 15, 2004. <a href="https:/
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
 <p>Give the session info (reduced).</p>
-<pre><code>## [1] &quot;R version 4.4.0 (2024-04-24)&quot;</code></pre>
+<pre><code>## [1] &quot;R version 4.4.1 (2024-06-14)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
 </div>
 <div id="load-libraries" class="section level1">
@@ -397,7 +397,7 @@ Cuneiform Digital Library Initiative (CDLI). December 15, 2004. <a href="https:/
 library(readr)</code></pre>
 <p>Give the package versions.</p>
 <pre><code>##   readr stringr   Hmisc 
-## &quot;2.1.5&quot; &quot;1.5.1&quot; &quot;5.1-2&quot;</code></pre>
+## &quot;2.1.5&quot; &quot;1.5.1&quot; &quot;5.1-3&quot;</code></pre>
 </div>
 <div id="load-transliteration-and-sign-list" class="section level1">
 <h1>Load Transliteration and Sign List</h1>
@@ -405,7 +405,7 @@ library(readr)</code></pre>
 the github repo under data/CDLI). Note that different datasets have to
 be loaded by choosing the period as a character string below.</p>
 <pre class="r"><code># choose period (UrukIII, UrukIV, UrukV)
-period &lt;- &quot;UrukIII&quot;
+period &lt;- &quot;UrukV&quot;
 
 # transliteration as text file with line breaks 
 translit.file = paste(&quot;~/Github/UpperPalCombinatorics/data/CDLI/&quot;, 
@@ -417,12 +417,8 @@ textlines &lt;- scan(translit.file, what = &quot;char&quot;, quote = &quot;&quot
 textstring &lt;- read_file(translit.file)
 # give beginning for illustration purposes
 head(textlines)</code></pre>
-<pre><code>## [1] &quot;&amp;P000001 = CDLI Lexical 000002, ex. 065&quot;
-## [2] &quot;#atf: lang qpc&quot;                         
-## [3] &quot;@tablet&quot;                                
-## [4] &quot;@obverse&quot;                               
-## [5] &quot;@column 1&quot;                              
-## [6] &quot;$ beginning broken&quot;</code></pre>
+<pre><code>## [1] &quot;&amp;P005303 = MSVO 1, 236&quot; &quot;#atf: lang qpc &quot;        &quot;@tablet &quot;              
+## [4] &quot;@obverse &quot;              &quot;@column 1 &quot;             &quot;1. 8(N01)# , &quot;</code></pre>
 <pre class="r"><code># load sign list
 signlist.file = paste(&quot;~/Github/UpperPalCombinatorics/data/CDLI/&quot;, 
                       paste(period, &quot;/signlist.txt&quot;, sep = &quot;&quot;), 
@@ -431,7 +427,7 @@ signlist &lt;- scan(signlist.file, what = &quot;char&quot;, quote = &quot;&quot;
                    encoding = &quot;UTF-8&quot;, sep = &quot;\n&quot; , skip = 0)
 # give beginning of signlist
 head(signlist)</code></pre>
-<pre><code>## [1] &quot;1(N01)&quot;   &quot;1(N01@f)&quot; &quot;1(N02)&quot;   &quot;1(N04)&quot;   &quot;1(N05)&quot;   &quot;1(N06)&quot;</code></pre>
+<pre><code>## [1] &quot;1(N01)&quot;   &quot;1(N01@r)&quot; &quot;1(N14)&quot;   &quot;1(N24)&quot;   &quot;1(N34)&quot;   &quot;1(N45)&quot;</code></pre>
 </div>
 <div id="process-transliteration" class="section level1">
 <h1>Process Transliteration</h1>
@@ -440,14 +436,14 @@ head(signlist)</code></pre>
 tablet.id &lt;- textlines[grep(pattern = &quot;\\&amp;P&quot;, textlines)]
 # check length
 length(tablet.id)</code></pre>
-<pre><code>## [1] 1000</code></pre>
+<pre><code>## [1] 141</code></pre>
 <pre class="r"><code># remove ampersand
 tablet.id &lt;- gsub(pattern = &quot;\\&amp;&quot;, &quot;&quot;, tablet.id)
 # get just the ID
 tablet.id &lt;- substr(tablet.id, 1, 7)
 # give beginning of tablet ID vector
 head(tablet.id)</code></pre>
-<pre><code>## [1] &quot;P000001&quot; &quot;P000002&quot; &quot;P000008&quot; &quot;P000009&quot; &quot;P000010&quot; &quot;P000011&quot;</code></pre>
+<pre><code>## [1] &quot;P005303&quot; &quot;P005304&quot; &quot;P008560&quot; &quot;P008673&quot; &quot;P005067&quot; &quot;P009401&quot;</code></pre>
 <p>Extract and concatenate the transliterations.</p>
 <pre class="r"><code># get chunks of text by ampersand plus &quot;P&quot; (at the beginning of each tablet)
 textchunks &lt;- str_split(textstring, pattern = &quot;\\&amp;P&quot;)
@@ -519,27 +515,20 @@ cunei.data &lt;- data.frame(tablet.id, signs.orig.vec, signs.expand.vec)</code><
 <pre class="r"><code>cunei.data &lt;- cunei.data[lengths(strsplit(cunei.data$signs.expand.vec, &quot; &quot;)) &gt; 1, ]</code></pre>
 <p>Give head of final data frame for illustration purposes.</p>
 <pre class="r"><code>head(cunei.data)</code></pre>
-<pre><code>##   tablet.id
-## 1   P000001
-## 2   P000002
-## 3   P000008
-## 4   P000009
-## 5   P000010
-## 6   P000011
-##                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           signs.orig.vec
-## 1                                                                                                                                                                                                                                                                                                                                                                     1(N01) _ 1(N01) _ TIM _ 1(N01) _ 1(N01) _ 1(N01) _ GAL~a# _ 1(N01) _ GAL~a _ UMUN2 _ 1(N01) _ DUB~a _ 1(N01) _ SUG5# _ 1(N01) _ UB
-## 2                                                                                                                                                                                                                                                                                                                                                                                                                        GAL~a# _ SZITA~a1 _ ABGAL# _ 1(N01) _ GAL~a _ SILA4~b _ 1(N01) _ GAL~a _ SZAB~a
-## 3                                                                                                                                                                                                                                                                                                                                                                                                                                                           ISZ~b# _ NI~b _ TUR _ 1(N01) _ SAL _ ZATU750
-## 4                                                                                                                                                                                                                                                                                                                                                                                          1(N01) _ GAL~a# _ 1(N01) _ GAL~a# _ 1(N01) _ SANGA~a# _ GURUSZDA# _ 1(N01) _ 1(N01) _ GAL~a _ 1(N01) _ 1(N01)
-## 5                                                                                                                                                                                                                                                                                                                                                                  1(N01) _ EN~a# _ NUN~a _ 1(N01) _ EN~a _ AMAR _ 1(N01) _ |SZU2.EN~a|# _ 1(N01) _ 1(N01) _ IB~a _ ZATU686~a _ 1(N01) _ 1(N01) _ 1(N01)
-## 6 1(N01) _ NAM2# _ DI _ 1(N01) _ NAM2 _ NAM2 _ 1(N01) _ NAM2 _ URU~a1 _ 1(N01) _ NAM2 _ ERIN _ 1(N01) _ GAL~a _ SZUBUR# _ 1(N01) _ 1(N01) _ ABGAL# _ 1(N01) _ KINGAL# _ 1(N01) _ GAL~a _ TE _ 1(N01) _ GAL~a _ SUKKAL _ 1(N01) _ GADA~a _ SUKKAL _ 1(N01) _ GAL~a# _ GA~a# _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ AN# _ BAR# _ 1(N01) _ NU# _ A# _ 1(N01) _ AN# _ NU# _ A# _ 1(N01) _ NU# _ 1(N01) _ NU# _ GIR~a# _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ 1(N01) _ GUG2 _ 1(N01) _ 1(N01)
-##                                                                                                                                                                                                                                                                                                                                                                                  signs.expand.vec
-## 1                                                                                                                                                                                                                                                                                           N01 _ N01 _ TIM _ N01 _ N01 _ N01 _ GAL~a _ N01 _ GAL~a _ UMUN2 _ N01 _ DUB~a _ N01 _ SUG5 _ N01 _ UB
-## 2                                                                                                                                                                                                                                                                                                                         GAL~a _ SZITA~a1 _ ABGAL _ N01 _ GAL~a _ SILA4~b _ N01 _ GAL~a _ SZAB~a
-## 3                                                                                                                                                                                                                                                                                                                                                        ISZ~b _ NI~b _ TUR _ N01 _ SAL _ ZATU750
-## 4                                                                                                                                                                                                                                                                                                            N01 _ GAL~a _ N01 _ GAL~a _ N01 _ SANGA~a _ GURUSZDA _ N01 _ N01 _ GAL~a _ N01 _ N01
-## 5                                                                                                                                                                                                                                                                                     N01 _ EN~a _ NUN~a _ N01 _ EN~a _ AMAR _ N01 _ |SZU2.EN~a| _ N01 _ N01 _ IB~a _ ZATU686~a _ N01 _ N01 _ N01
-## 6 N01 _ NAM2 _ DI _ N01 _ NAM2 _ NAM2 _ N01 _ NAM2 _ URU~a1 _ N01 _ NAM2 _ ERIN _ N01 _ GAL~a _ SZUBUR _ N01 _ N01 _ ABGAL _ N01 _ KINGAL _ N01 _ GAL~a _ TE _ N01 _ GAL~a _ SUKKAL _ N01 _ GADA~a _ SUKKAL _ N01 _ GAL~a _ GA~a _ N01 _ N01 _ N01 _ N01 _ N01 _ N01 _ AN _ BAR _ N01 _ NU _ A _ N01 _ AN _ NU _ A _ N01 _ NU _ N01 _ NU _ GIR~a _ N01 _ N01 _ N01 _ N01 _ N01 _ GUG2 _ N01 _ N01</code></pre>
+<pre><code>##   tablet.id                     signs.orig.vec
+## 1   P005303                            8(N01)#
+## 2   P005304                    5(N14) _ 3(N14)
+## 3   P008560           6(N14) _ 4(N14) _ 6(N14)
+## 4   P008673 2(N14) _ 5(N14) _ 9(N14)# _ 9(N14)
+## 5   P005067                    3(N14) _ 3(N01)
+## 7   P009447                    2(N14) _ 3(N01)
+##                                                                                            signs.expand.vec
+## 1                                                                           N01 N01 N01 N01 N01 N01 N01 N01
+## 2                                                                         N14 N14 N14 N14 N14 _ N14 N14 N14
+## 3                                       N14 N14 N14 N14 N14 N14 _ N14 N14 N14 N14 _ N14 N14 N14 N14 N14 N14
+## 4 N14 N14 _ N14 N14 N14 N14 N14 _ N14 N14 N14 N14 N14 N14 N14 N14 N14 _ N14 N14 N14 N14 N14 N14 N14 N14 N14
+## 5                                                                                 N14 N14 N14 _ N01 N01 N01
+## 7                                                                                     N14 N14 _ N01 N01 N01</code></pre>
 <p>Safe to file.</p>
 <pre class="r"><code>write.csv(cunei.data, file = paste(&quot;~/Github/UpperPalCombinatorics/data/CDLI/&quot;, 
                       paste(period, &quot;/signs_clean.csv&quot;, sep = &quot;&quot;), 
@@ -548,7 +537,7 @@ cunei.data &lt;- data.frame(tablet.id, signs.orig.vec, signs.expand.vec)</code><
 <div id="package-references" class="section level1">
 <h1>Package References</h1>
 <pre><code>## Harrell Jr F (2024). _Hmisc: Harrell Miscellaneous_. R package version
-## 5.1-2, &lt;https://CRAN.R-project.org/package=Hmisc&gt;.</code></pre>
+## 5.1-3, &lt;https://CRAN.R-project.org/package=Hmisc&gt;.</code></pre>
 <pre><code>## Wickham H (2023). _stringr: Simple, Consistent Wrappers for Common
 ## String Operations_. R package version 1.5.1,
 ## &lt;https://CRAN.R-project.org/package=stringr&gt;.</code></pre>

@@ -134,7 +134,9 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ## Load Data
 ```{r}
 # list files in the performance folders
-files.mlp.performance <- list.files(path = "~/Github/UpperPalCombinatorics/results/classifier/MLP/performance", full.names = T)
+# use "performance" for results with all sequences, and "performance300" for
+# results with 300 sequences for all combinations of corpora
+files.mlp.performance <- list.files(path = "~/Github/UpperPalCombinatorics/results/classifier/MLP/performance300", full.names = T)
 ```
 
 ## Preprocessing
@@ -239,7 +241,9 @@ pvalue.mlp.plot
 ## Load Data
 ```{r}
 # list files in the performance folders
-files.knn.performance <- list.files(path = "~/Github/UpperPalCombinatorics/results/classifier/KNN/performance", full.names = T)
+# use "performance" for results with all sequences, and "performance300" for
+# results with 300 sequences for all combinations of corpora
+files.knn.performance <- list.files(path = "~/Github/UpperPalCombinatorics/results/classifier/KNN/performance300", full.names = T)
 ```
 
 ## Preprocessing
@@ -342,8 +346,8 @@ combined.plot
 
 Safe to file.
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot.pdf", 
-       combined.plot, dpi = 300, width = 10, height = 5, device = cairo_pdf)
+ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot300.pdf", 
+       combined.plot, dpi = 300, width = 10, height = 6, device = cairo_pdf)
 ```
 
 # Package References

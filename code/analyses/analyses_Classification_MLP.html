@@ -379,7 +379,7 @@ represent biases.
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
 <p>Give the session info (reduced).</p>
-<pre><code>## [1] &quot;R version 4.4.0 (2024-04-24)&quot;</code></pre>
+<pre><code>## [1] &quot;R version 4.4.1 (2024-06-14)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
 </div>
 <div id="load-packages" class="section level1">
@@ -392,10 +392,11 @@ function is used.</p>
 <pre class="r"><code># install the latest version of neuralnet with bug fixes: devtools::install_github(&quot;bips-hb/neuralnet&quot;)
 library(neuralnet)
 library(sigmoid)
-library(caret)</code></pre>
+library(caret)
+library(dplyr)</code></pre>
 <p>Give the package versions.</p>
-<pre><code>##     caret   lattice   ggplot2   sigmoid neuralnet 
-##  &quot;6.0-94&quot;  &quot;0.22-5&quot;   &quot;3.5.1&quot;   &quot;1.4.0&quot;  &quot;1.44.2&quot;</code></pre>
+<pre><code>##     dplyr     caret   lattice   ggplot2   sigmoid neuralnet 
+##   &quot;1.1.4&quot;  &quot;6.0-94&quot;  &quot;0.22-5&quot;   &quot;3.5.1&quot;   &quot;1.4.0&quot;  &quot;1.44.2&quot;</code></pre>
 </div>
 <div id="load-data" class="section level1">
 <h1>Load Data</h1>
@@ -405,25 +406,28 @@ estimations.df &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/results/featu
 head(estimations.df)</code></pre>
 <pre><code>##     subcorpus           sequence num.tokens num.types huni.chars hrate.chars
 ## 1 Aurignacien vvvvvvvvvvvvvvvvvv         18         1  0.0000000   0.6171397
-## 2 Aurignacien     ||| ////// _ V         11         4  1.6171896   1.3427012
+## 2 Aurignacien       ||| //////_V         12         5  1.8962406   1.5295563
 ## 3 Aurignacien              vvvvv          5         1  0.0000000   0.5711903
 ## 4 Aurignacien          vvvv vvvv          9         2  0.5032583   0.9060047
 ## 5 Aurignacien     vvvvvvvvvvvvvv         14         1  0.0000000   0.6379550
 ## 6 Aurignacien                |||          3         1  0.0000000   0.4308271
-##    ttr.chars rm.chars
-## 1 0.05555556     1.00
-## 2 0.36363636     0.70
-## 3 0.20000000     1.00
-## 4 0.22222222     0.75
-## 5 0.07142857     1.00
-## 6 0.33333333     1.00</code></pre>
+##    ttr.chars  rm.chars
+## 1 0.05555556 1.0000000
+## 2 0.41666667 0.6363636
+## 3 0.20000000 1.0000000
+## 4 0.22222222 0.7500000
+## 5 0.07142857 1.0000000
+## 6 0.33333333 1.0000000</code></pre>
 <p>Choose subcorpora for binary classification.</p>
 <pre class="r"><code># choose subcorpora to compare: &quot;Aurignacien&quot;, &quot;TeDDi&quot;, &quot;Cuneiform (Uruk V)&quot;,
 # &quot;Cuneiform (Uruk IV)&quot;, &quot;Cuneiform (Uruk III)&quot;.
-subcorpus1 &lt;- &quot;Aurignacien&quot;
-subcorpus2 &lt;- &quot;Cuneiform (Uruk V)&quot;
+subcorpus1 &lt;- &quot;Cuneiform (Uruk III)&quot;
+subcorpus2 &lt;- &quot;TeDDi&quot;
 selected &lt;- c(subcorpus1, subcorpus2)
-estimations.subset &lt;- estimations.df[estimations.df$subcorpus %in% selected, ]</code></pre>
+estimations.subset &lt;- estimations.df[estimations.df$subcorpus %in% selected, ]
+# downsample to have the same number of sequences across different combinations of corpora
+# comment this out to use all the sequence (unbalanced across combinations of corpora)
+estimations.subset &lt;- sample_n(estimations.subset, 300)</code></pre>
 <p>Remove NAs (whole row)</p>
 <pre class="r"><code>estimations.subset &lt;- na.omit(estimations.subset)</code></pre>
 </div>
@@ -438,7 +442,7 @@ estimations.scaled &lt;- cbind(estimations.subset[, c(&quot;subcorpus&quot;, &qu
 <div id="create-training-and-test-sets" class="section level1">
 <h1>Create Training and Test Sets</h1>
 <pre class="r"><code># Generating seed
-set.seed(1234)
+set.seed(09012020)
 # Randomly generating our training and test samples with a respective ratio of 2/3 and 1/3
 datasample &lt;- sample(2, nrow(estimations.scaled), replace = TRUE, prob = c(0.67, 0.33))
 # Generate training set (select rows randomly by using datasample vector)
@@ -542,7 +546,7 @@ for (hidden in hidden.list) {
   
   # safe predictions for post hoc analyses
   write.csv(mlp.predictions.df, file = 
-              paste(c(&quot;~/Github/UpperPalCombinatorics/results/classifier/MLP/predictions/predictions_MLP_&quot;,
+              paste(c(&quot;~/Github/UpperPalCombinatorics/results/classifier/MLP/predictions300/predictions_MLP_&quot;,
                                               subcorpus1, &quot;_&quot;,
                                               subcorpus2, &quot;_&quot;,
                                               paste(&quot;hidden&quot;, paste(unlist(hidden), collapse = &quot;&quot;), sep = &quot;&quot;),
@@ -635,8 +639,6 @@ for (hidden in hidden.list) {
 ## [1] 41
 ## [1] 42
 ## [1] 43
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 44
 ## [1] 45
 ## [1] 46
@@ -663,10 +665,10 @@ for (hidden in hidden.list) {
 ## [1] 65
 ## [1] 66
 ## [1] 67
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 68
 ## [1] 69
+## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
+##   requires numeric/complex matrix/vector arguments
 ## [1] 70
 ## [1] 71
 ## [1] 72
@@ -675,10 +677,10 @@ for (hidden in hidden.list) {
 <pre class="r"><code>end_time &lt;- Sys.time()
 proc.time &lt;- end_time - start_time
 print(proc.time)</code></pre>
-<pre><code>## Time difference of 1.677819 mins</code></pre>
+<pre><code>## Time difference of 19.74743 secs</code></pre>
 <p>Write performance metrics to file.</p>
 <pre class="r"><code># classification results summaries 
-write.csv(results.df, file = paste(c(&quot;~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_&quot;,
+write.csv(results.df, file = paste(c(&quot;~/Github/UpperPalCombinatorics/results/classifier/MLP/performance300/performance_MLP_&quot;,
                                               subcorpus1, &quot;_&quot;,
                                               subcorpus2,
                                               &quot;.csv&quot;
