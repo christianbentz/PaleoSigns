@@ -421,13 +421,17 @@ head(estimations.df)</code></pre>
 <p>Choose subcorpora for binary classification.</p>
 <pre class="r"><code># choose subcorpora to compare: &quot;Aurignacien&quot;, &quot;TeDDi&quot;, &quot;Cuneiform (Uruk V)&quot;,
 # &quot;Cuneiform (Uruk IV)&quot;, &quot;Cuneiform (Uruk III)&quot;.
-subcorpus1 &lt;- &quot;Cuneiform (Uruk III)&quot;
-subcorpus2 &lt;- &quot;TeDDi&quot;
+subcorpus1 &lt;- &quot;Aurignacien&quot;
+subcorpus2 &lt;- &quot;Cuneiform (Uruk III)&quot;
 selected &lt;- c(subcorpus1, subcorpus2)
 estimations.subset &lt;- estimations.df[estimations.df$subcorpus %in% selected, ]
+
 # downsample to have the same number of sequences across different combinations of corpora
-# comment this out to use all the sequence (unbalanced across combinations of corpora)
-estimations.subset &lt;- sample_n(estimations.subset, 300)</code></pre>
+# comment this out to use all the sequences (unbalanced across combinations of corpora)
+estimations.subset &lt;- sample_n(estimations.subset, 300)
+
+# exclude sequences under a certain length
+# estimations.subset &lt;- estimations.subset[estimations.subset$num.tokens &gt; 10, ]</code></pre>
 <p>Remove NAs (whole row)</p>
 <pre class="r"><code>estimations.subset &lt;- na.omit(estimations.subset)</code></pre>
 </div>
@@ -546,7 +550,7 @@ for (hidden in hidden.list) {
   
   # safe predictions for post hoc analyses
   write.csv(mlp.predictions.df, file = 
-              paste(c(&quot;~/Github/UpperPalCombinatorics/results/classifier/MLP/predictions300/predictions_MLP_&quot;,
+              paste(c(&quot;~/Github/UpperPalCombinatorics/results/classifier/MLP/predictions/predictions_MLP_&quot;,
                                               subcorpus1, &quot;_&quot;,
                                               subcorpus2, &quot;_&quot;,
                                               paste(&quot;hidden&quot;, paste(unlist(hidden), collapse = &quot;&quot;), sep = &quot;&quot;),
@@ -649,8 +653,6 @@ for (hidden in hidden.list) {
 ## [1] 51
 ## [1] 52
 ## [1] 53
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 54
 ## [1] 55
 ## [1] 56
@@ -667,8 +669,6 @@ for (hidden in hidden.list) {
 ## [1] 67
 ## [1] 68
 ## [1] 69
-## Error in cbind(1, pred) %*% weights[[num_hidden_layers + 1]] : 
-##   requires numeric/complex matrix/vector arguments
 ## [1] 70
 ## [1] 71
 ## [1] 72
@@ -676,11 +676,10 @@ for (hidden in hidden.list) {
 ## [1] 74</code></pre>
 <pre class="r"><code>end_time &lt;- Sys.time()
 proc.time &lt;- end_time - start_time
-print(proc.time)</code></pre>
-<pre><code>## Time difference of 19.74743 secs</code></pre>
+#print(proc.time)</code></pre>
 <p>Write performance metrics to file.</p>
 <pre class="r"><code># classification results summaries 
-write.csv(results.df, file = paste(c(&quot;~/Github/UpperPalCombinatorics/results/classifier/MLP/performance300/performance_MLP_&quot;,
+write.csv(results.df, file = paste(c(&quot;~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_&quot;,
                                               subcorpus1, &quot;_&quot;,
                                               subcorpus2,
                                               &quot;.csv&quot;

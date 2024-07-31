@@ -68,7 +68,7 @@ table(sign.data$object_type)
 Exclude certain levels of column coding_certainty, and certain numbers of tokens, to check the robustness of results.
 ```{r}
 #sign.data <- sign.data[sign.data$coding_certainty != "Uncertain", ]
-#sign.data <- sign.data[sign.data$num.tokens > 5, ]
+#sign.data <- sign.data[sign.data$num.tokens > 10, ]
 ```
 
 Add columns for object volume and dates.
@@ -440,7 +440,7 @@ summary(linear.model)
 AIC(linear.model) 
 ```
 
-Interpretation: In the model summary above, the reference level for object_type is "tool". Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average *higher* than the once found on objects classified as tools. A similar effect occurs for zoomorph figurines which also carry more information than tools. Inversely, entropy rates of sequences on tubes and flutes as well as personal ornaments are somewhat *lower* than on tools. Moreover, there is a small but significant positive effect of the volume of an object on the entropy rate, namely, it increases for each cubic centimeter of volume. Lastly, the objects from Hohlenstein-Stadel cave have a higher average entropy ratethan the once from Geissenklösterle (reference level). However, there are only two objects from Hohlenstein-Stadel -- one of them being the famous "lion-man", another one a personal ornament (pendant).    
+Interpretation: In the model summary above, the reference level for object_type is "tool". Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average *higher* than the once found on objects classified as tools (borderline significant). A similar effect occurs for zoomorph figurines which also carry more information than tools (significant). Inversely, entropy rates of sequences on tubes and flutes as well as personal ornaments are somewhat *lower* than on tools (significant). Moreover, there is a small positive (but non-siginficant) effect of the volume of an object on the entropy rate, namely, it increases for each cubic centimeter of volume. Younger sequences (c. 30 000 years old) have slightly higher entropy rate than older sequences (c. 40 000 years old), but this effect is non-significant. Lastly, fragmented objects have lower entropy rate than almost complete, and complete once (significant). 
 
 \newpage
 
@@ -462,7 +462,7 @@ dev.off()
 shapiro.test(rstandard(linear.model))
 ```
 
-Interpretation: There is a slight deviation from linearity and homogeneity of variance for the residuals (first two panels above), though this is due to just one or two data points deviating for the highest fitted values. There are no overly influential observations, and no collinearity between predictors (middle panels above). There is a slight positive skew visible in the distribution of the residuals, cf. the last two panels. However, the Shapiro-Wilk test for normality gives a p-value > 0.05, meaning that the distribution does not significantly deviate from the expectation of a normal distribution (null hypothesis).
+Interpretation: There is a slight deviation from homogeneity of variance for the residuals (upper right panel), though this is due to just one or two data points deviating for the highest fitted values. There are no overly influential observations, and no collinearity between predictors (middle panels). There is a slight positive skew visible in the distribution of the residuals (lower panels). However, the Shapiro-Wilk test for normality gives a p-value > 0.05, meaning that the distribution does not significantly deviate from the expectation of a normal distribution (null hypothesis).
 
 # Package References
 ```{r, echo = F}
