@@ -334,8 +334,8 @@ pvalue.knn.plot
 ## Combine Plots
 ```{r, fig.width = 10, fig.height = 5}
 combined.plot <- ggarrange(accuracy.mlp.plot, pvalue.mlp.plot, 
-                           #accuracy.knn.plot, pvalue.knn.plot, 
-                           ncol = 2, nrow = 1,
+                           accuracy.knn.plot, pvalue.knn.plot, 
+                           ncol = 2, nrow = 2,
                            widths = c(1.5, 1), labels = "AUTO")
 combined.plot
 ```
@@ -343,7 +343,7 @@ combined.plot
 Safe to file.
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot.pdf", 
-       combined.plot, dpi = 300, width = 10, height = 3, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 10, height = 5, device = cairo_pdf)
 ```
 
 # Package References
