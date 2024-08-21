@@ -110,18 +110,33 @@ Safe complete figure to file
 
 Get subset of data points to plot labels.
 ```{r}
-# how many data points with a given sequence length?
-table(estimations.df.selected$num.tokens)
-
-# choose subset of data points for labeling
-labels.df <- estimations.df.selected[estimations.df.selected$num.tokens == 10, ]
-                                       #estimations.df.selected$subcorpus != "Cuneiform (Uruk V)" &
-                                       #estimations.df.selected$subcorpus != "Cuneiform (Uruk IV)" &
-                                       #estimations.df.selected$subcorpus != "Cuneiform (Uruk III)", ]
-# further downsample labels (otherwise they overplot heavily)
-set.seed(15022018)
-labels.df <- sample_n(labels.df, 20)
+# choose subset of data points for illustration
+selected.sequences <- ("XXXXXYYY_X_XXXX_XVXXY_°°°_°°°°°°°_XXXX_>>>XXX_⊞_XXXXX",
+                       )
+estimations.df.illustration <- estimations.df.selected[estimations.df.selected$sequence == "XXXXXYYY_X_XXXX_XVXXY_°°°_°°°°°°°_XXXX_>>>XXX_⊞_XXXXX" |
+estimations.df.selected$sequence ==                                           , ]
 ```
+
+# Illustration Plots
+```{r, fig.width = 5, fig.height = 5, warning = FALSE}
+huni.hrate.chars.plot <- ggplot(estimations.df.illustration, aes(x = huni.chars, y =  hrate.chars, color = subcorpus)) + 
+  scale_colour_discrete(guide = "none") +
+  geom_point() +
+  labs(x = "Unigram entropy for tokens", y = "Entropy rate for tokens") + 
+  geom_label_repel(data = labels.df,
+                  aes(label = sequence),
+                  size = 2,
+                  hjust = 0,
+                  direction = 'y',
+                  fontface = "bold",
+                  nudge_x = 2,
+                  max.overlaps = Inf,
+                  show.legend = FALSE) 
+  #guides(size = guide_legend(title = "No. of chars")) +
+huni.hrate.chars.plot
+```
+
+# Full Feature Distribution Plots
 
 ## Entropy rate vs. Unigram Entropy
 ```{r, fig.width = 15, fig.height = 5, warning = FALSE}

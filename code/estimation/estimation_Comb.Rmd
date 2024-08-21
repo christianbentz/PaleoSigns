@@ -46,11 +46,11 @@ sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/signBase_
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ] 
 
 # select columns for direct comparison with TeDDi sample
-sign.data.selected <- select(sign.data, c('archaeological_unit', 'coding_clean', 
+sign.data.selected <- select(sign.data, c('object_id','archaeological_unit', 'coding_clean', 
                                           'num.tokens', 'num.types', 'huni.chars', 'hrate.chars', 
                                           'ttr.chars', 'rm.chars'))
 # change column names
-colnames(sign.data.selected) <- c('subcorpus', 'sequence', 'num.tokens', 'num.types', 
+colnames(sign.data.selected) <- c('id', 'subcorpus', 'sequence', 'num.tokens', 'num.types', 
                                   'huni.chars', 'hrate.chars', 'ttr.chars', 'rm.chars')
 ```
 
@@ -64,11 +64,12 @@ cuneiV.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/cuneifo
 cuneiV.data$subcorpus <- rep("Cuneiform (Uruk V)", nrow(cuneiV.data))
 
 # select columns for direct comparison with other samples
-cuneiV.data.selected <- select(cuneiV.data, c('subcorpus', 'signs.expand.vec', 
+cuneiV.data.selected <- select(cuneiV.data, c('tablet.id', 'subcorpus', 'signs.expand.vec', 
                                               'num.tokens', 'num.types', 'huni.chars', 'hrate.chars', 
                                               'ttr.chars', 'rm.chars'))
-# rename column with sign sequences
+# rename columns
 names(cuneiV.data.selected)[names(cuneiV.data.selected) == "signs.expand.vec"] <- "sequence"
+names(cuneiV.data.selected)[names(cuneiV.data.selected) == "tablet.id"] <- "id"
 
 # Uruk IV
 cuneiIV.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/cuneiform_UrukIV_features.csv")
@@ -77,11 +78,12 @@ cuneiIV.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/cuneif
 cuneiIV.data$subcorpus <- rep("Cuneiform (Uruk IV)", nrow(cuneiIV.data))
 
 # select columns for direct comparison with other sample
-cuneiIV.data.selected <- select(cuneiIV.data, c('subcorpus', 'signs.expand.vec', 
+cuneiIV.data.selected <- select(cuneiIV.data, c('tablet.id', 'subcorpus', 'signs.expand.vec', 
                                               'num.tokens', 'num.types', 'huni.chars', 'hrate.chars', 
                                               'ttr.chars', 'rm.chars'))
 # rename column with sign sequences
 names(cuneiIV.data.selected)[names(cuneiIV.data.selected) == "signs.expand.vec"] <- "sequence"
+names(cuneiIV.data.selected)[names(cuneiIV.data.selected) == "tablet.id"] <- "id"
 
 # Uruk III
 cuneiIII.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/cuneiform_UrukIII_features.csv")
@@ -90,11 +92,12 @@ cuneiIII.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/cunei
 cuneiIII.data$subcorpus <- rep("Cuneiform (Uruk III)", nrow(cuneiIII.data))
 
 # select columns for direct comparison with other sample
-cuneiIII.data.selected <- select(cuneiIII.data, c('subcorpus', 'signs.expand.vec', 
+cuneiIII.data.selected <- select(cuneiIII.data, c('tablet.id', 'subcorpus', 'signs.expand.vec', 
                                               'num.tokens', 'num.types', 'huni.chars', 'hrate.chars', 
                                               'ttr.chars', 'rm.chars'))
 # rename column with sign sequences
 names(cuneiIII.data.selected)[names(cuneiIII.data.selected) == "signs.expand.vec"] <- "sequence"
+names(cuneiIII.data.selected)[names(cuneiIII.data.selected) == "tablet.id"] <- "id"
 ```
 
 ## TeDDI
@@ -104,7 +107,7 @@ teddi.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/teddi_fe
 # add column with subcorpus information
 teddi.data$subcorpus <- rep("TeDDi", nrow(teddi.data))
 # select columns
-teddi.selected <- select(teddi.data, c('subcorpus','text', 'num.tokens', 'num.types', 'huni.chars', 'hrate.chars', 
+teddi.selected <- select(teddi.data, c('id', 'subcorpus','text', 'num.tokens', 'num.types', 'huni.chars', 'hrate.chars', 
                            'ttr.chars', 'rm.chars'))
 # rename column with sign sequences
 names(teddi.selected)[names(teddi.selected) == "text"] <- "sequence"

@@ -400,29 +400,29 @@ library(caret)</code></pre>
 <pre class="r"><code># load feature value estimations 
 estimations.df &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/results/features/features_combined.csv&quot;)
 head(estimations.df)</code></pre>
-<pre><code>##     subcorpus           sequence num.tokens num.types huni.chars hrate.chars
-## 1 Aurignacien vvvvvvvvvvvvvvvvvv         18         1  0.0000000   0.6171397
-## 2 Aurignacien       ||| //////_V         12         5  1.8962406   1.5295563
-## 3 Aurignacien              vvvvv          5         1  0.0000000   0.5711903
-## 4 Aurignacien          vvvv vvvv          9         2  0.5032583   0.9060047
-## 5 Aurignacien     vvvvvvvvvvvvvv         14         1  0.0000000   0.6379550
-## 6 Aurignacien                |||          3         1  0.0000000   0.4308271
-##    ttr.chars  rm.chars
-## 1 0.05555556 1.0000000
-## 2 0.41666667 0.6363636
-## 3 0.20000000 1.0000000
-## 4 0.22222222 0.7500000
-## 5 0.07142857 1.0000000
-## 6 0.33333333 1.0000000</code></pre>
+<pre><code>##        id   subcorpus           sequence num.tokens num.types huni.chars
+## 1 bst0001 Aurignacien vvvvvvvvvvvvvvvvvv         18         1  0.0000000
+## 2 gkl0001 Aurignacien       ||| //////_V         12         5  1.8962406
+## 3 gkl0002 Aurignacien              vvvvv          5         1  0.0000000
+## 4 gkl0003 Aurignacien          vvvv vvvv          9         2  0.5032583
+## 5 gkl0004 Aurignacien     vvvvvvvvvvvvvv         14         1  0.0000000
+## 6 gkl0005 Aurignacien                |||          3         1  0.0000000
+##   hrate.chars  ttr.chars  rm.chars
+## 1   0.6171397 0.05555556 1.0000000
+## 2   1.5295563 0.41666667 0.6363636
+## 3   0.5711903 0.20000000 1.0000000
+## 4   0.9060047 0.22222222 0.7500000
+## 5   0.6379550 0.07142857 1.0000000
+## 6   0.4308271 0.33333333 1.0000000</code></pre>
 <p>Select subcorpora for binary classification.</p>
 <pre class="r"><code># choose subcorpora to compare: &quot;Aurignacien&quot;, &quot;TeDDi&quot;, &quot;Cuneiform (Uruk V)&quot;,
 # &quot;Cuneiform (Uruk IV)&quot;, &quot;Cuneiform (Uruk III)&quot;.
 subcorpus1 &lt;- &quot;Aurignacien&quot;
-subcorpus2 &lt;- &quot;Cuneiform (Uruk III)&quot;
+subcorpus2 &lt;- &quot;TeDDi&quot;
 selected &lt;- c(subcorpus1, subcorpus2)
 estimations.subset &lt;- estimations.df[estimations.df$subcorpus %in% selected, ]
 nrow(estimations.subset)</code></pre>
-<pre><code>## [1] 1066</code></pre>
+<pre><code>## [1] 1251</code></pre>
 <pre class="r"><code># downsample to have the same number of sequences across different combinations of corpora
 # comment this out to use all the sequences (unbalanced across combinations of corpora)
 set.seed(02152018)
@@ -438,7 +438,7 @@ estimations.subset &lt;- sample_n(estimations.subset, 300)
 <p>Center and scale the data.</p>
 <pre class="r"><code># first four columns are meta information, the others are the feature values
 # be aware that this needs to be changed in case of other table format
-estimations.scaled &lt;- cbind(estimations.subset[, c(&quot;subcorpus&quot;, &quot;sequence&quot;, &quot;num.tokens&quot;, &quot;num.types&quot;)], 
+estimations.scaled &lt;- cbind(estimations.subset[, c(&quot;id&quot;, &quot;subcorpus&quot;, &quot;sequence&quot;, &quot;num.tokens&quot;, &quot;num.types&quot;)], 
                             scale(estimations.subset[, c(&quot;huni.chars&quot;, &quot;hrate.chars&quot;, 
                                                          &quot;ttr.chars&quot;, &quot;rm.chars&quot;)]))</code></pre>
 </div>
@@ -525,17 +525,17 @@ for (k in 1:n){
                                       row.names = F)
 }
 print(knn.results)</code></pre>
-<pre><code>##     k baseline accuracy accuracy.pvalue precision recall   f1 test.n
-## 1   1     0.84     0.89    0.1063549992      0.61   0.88 0.72    101
-## 2   2     0.84     0.90    0.0608773620      0.64   0.88 0.74    101
-## 3   3     0.84     0.93    0.0061390522      0.74   0.88 0.80    101
-## 4   4     0.84     0.92    0.0148090253      0.70   0.88 0.78    101
-## 5   5     0.84     0.95    0.0006846695      0.82   0.88 0.85    101
-## 6   6     0.84     0.95    0.0006846695      0.82   0.88 0.85    101
-## 7   7     0.84     0.95    0.0006846695      0.82   0.88 0.85    101
-## 8   8     0.84     0.95    0.0006846695      0.82   0.88 0.85    101
-## 9   9     0.84     0.96    0.0001751848      0.83   0.94 0.88    101
-## 10 10     0.84     0.96    0.0001751848      0.83   0.94 0.88    101</code></pre>
+<pre><code>##     k baseline accuracy accuracy.pvalue precision recall f1 test.n
+## 1   1      0.9        1    2.671295e-05         1      1  1    101
+## 2   2      0.9        1    2.671295e-05         1      1  1    101
+## 3   3      0.9        1    2.671295e-05         1      1  1    101
+## 4   4      0.9        1    2.671295e-05         1      1  1    101
+## 5   5      0.9        1    2.671295e-05         1      1  1    101
+## 6   6      0.9        1    2.671295e-05         1      1  1    101
+## 7   7      0.9        1    2.671295e-05         1      1  1    101
+## 8   8      0.9        1    2.671295e-05         1      1  1    101
+## 9   9      0.9        1    2.671295e-05         1      1  1    101
+## 10 10      0.9        1    2.671295e-05         1      1  1    101</code></pre>
 <p>Write results to file.</p>
 <pre class="r"><code># write results
 write.csv(knn.results, file = paste(c(&quot;~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_&quot;,

@@ -57,7 +57,7 @@ Select subcorpora for binary classification.
 # choose subcorpora to compare: "Aurignacien", "TeDDi", "Cuneiform (Uruk V)",
 # "Cuneiform (Uruk IV)", "Cuneiform (Uruk III)".
 subcorpus1 <- "Aurignacien"
-subcorpus2 <- "Cuneiform (Uruk III)"
+subcorpus2 <- "TeDDi"
 selected <- c(subcorpus1, subcorpus2)
 estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]
 nrow(estimations.subset)
@@ -81,7 +81,7 @@ Center and scale the data.
 ```{r}
 # first four columns are meta information, the others are the feature values
 # be aware that this needs to be changed in case of other table format
-estimations.scaled <- cbind(estimations.subset[, c("subcorpus", "sequence", "num.tokens", "num.types")], 
+estimations.scaled <- cbind(estimations.subset[, c("id", "subcorpus", "sequence", "num.tokens", "num.types")], 
                             scale(estimations.subset[, c("huni.chars", "hrate.chars", 
                                                          "ttr.chars", "rm.chars")]))
 ```
