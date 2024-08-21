@@ -111,29 +111,62 @@ Safe complete figure to file
 Get subset of data points to plot labels.
 ```{r}
 # choose subset of data points for illustration
-selected.sequences <- ("XXXXXYYY_X_XXXX_XVXXY_°°°_°°°°°°°_XXXX_>>>XXX_⊞_XXXXX",
-                       )
-estimations.df.illustration <- estimations.df.selected[estimations.df.selected$sequence == "XXXXXYYY_X_XXXX_XVXXY_°°°_°°°°°°°_XXXX_>>>XXX_⊞_XXXXX" |
-estimations.df.selected$sequence ==                                           , ]
+selected.ids <- c("vhc0017", "P000842", "P001084", "P000196", 
+                  "639415", "5410574", "9589824", "17247600",
+                  "14002638", "5021755")
+estimations.df.illustration <- estimations.df.selected[estimations.df.selected$id %in% selected.ids, ]
 ```
 
 # Illustration Plots
 ```{r, fig.width = 5, fig.height = 5, warning = FALSE}
-huni.hrate.chars.plot <- ggplot(estimations.df.illustration, aes(x = huni.chars, y =  hrate.chars, color = subcorpus)) + 
-  scale_colour_discrete(guide = "none") +
+# Unigram entropy vs. Entropy rate
+huni.hrate.plot <- ggplot(estimations.df.illustration, aes(x = huni.chars, y =  hrate.chars, color = subcorpus)) + 
   geom_point() +
+  scale_colour_discrete(guide = "none") +
   labs(x = "Unigram entropy for tokens", y = "Entropy rate for tokens") + 
-  geom_label_repel(data = labels.df,
-                  aes(label = sequence),
+  geom_text_repel(aes(label = sequence),
                   size = 2,
                   hjust = 0,
                   direction = 'y',
                   fontface = "bold",
-                  nudge_x = 2,
+                  nudge_x = 1.5,
+                  nudge_y = 0.1,
                   max.overlaps = Inf,
-                  show.legend = FALSE) 
-  #guides(size = guide_legend(title = "No. of chars")) +
-huni.hrate.chars.plot
+                  show.legend = F) 
+  #facet_grid(~factor(subcorpus, levels = c('Aurignacien', 'Cuneiform (Uruk V)', 
+  #                                       'Cuneiform (Uruk IV)', 'Cuneiform (Uruk III)',
+  #                                       'TeDDi')))
+
+# TTR vs. Repetition rate
+ttr.rm.plot <- ggplot(estimations.df.illustration, aes(x = ttr.chars, y =  rm.chars, color = subcorpus)) + 
+  geom_point() +
+  scale_colour_discrete(guide = "none") +
+  labs(x = "TTR for tokens", y = "Repetition rate for tokens") + 
+  geom_text_repel(aes(label = sequence),
+                  size = 2,
+                  hjust = 0,
+                  direction = 'y',
+                  fontface = "bold",
+                  nudge_x = 0.4,
+                  nudge_y = 0.1,
+                  max.overlaps = Inf,
+                  show.legend = F)
+  #facet_grid(~factor(subcorpus, levels = c('Aurignacien', 'Cuneiform (Uruk V)', 
+  #                                       'Cuneiform (Uruk IV)', 'Cuneiform (Uruk III)',
+  #                                       'TeDDi')))
+```
+
+Combine figures.
+```{r, fig.width = 6, fig.height = 3}
+combined.plot.illustration <- ggarrange(huni.hrate.plot, ttr.rm.plot, ncol = 2,
+                               labels = c("A", "B"))
+combined.plot.illustration
+```
+
+Safe complete figure to file
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_illustration.pdf", 
+       combined.plot.illustration, dpi = 300, width = 12, height = 6, device = cairo_pdf)
 ```
 
 # Full Feature Distribution Plots
