@@ -241,7 +241,7 @@ biplot <- ggbiplot(pca,
               ellipse = TRUE,
               ellipse.alpha = 0.1,
               circle = FALSE,
-              var.axes = T,
+              #var.axes = T,
               #ellipse.prob = 0.68, # NULL = 0.68
               alpha = 0.3) +
   theme(legend.position = 'top') 
@@ -261,7 +261,7 @@ Safe complete figure to file
 Combine figures.
 ```{r}
 combined.plot2 <- ggarrange(length.plot, biplot, ncol = 2, 
-                            widths = c(1,1.5), labels = c("C", "D"))
+                            widths = c(1,2), labels = c("C", "D"))
 ```
 
 # Final Combination of Plot Panels

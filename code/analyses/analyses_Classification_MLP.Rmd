@@ -14,8 +14,8 @@ knitr::opts_chunk$set(echo = TRUE)
 # Description
 Classification of the feature vectors per character sequence (loaded from ~/results/features_combined.csv) using Multi-Layer-Perceptrons (MLP), also known as feed-forward neural networks. The input layer consists of four nodes which take the estimated feature values per sequence, i.e. TTR, unigram entropy, entropy rate, and repetition rate. The hyperparameters are largely adopted from an earlier study (Bentz 2023). 100 random architectures in terms of hidden size (number of nodes), and depth (number of layers) are tested. See also visualization of one example architecture below.  
 
-```{r foo, out.width="100%", fig.cap="One of the best performing architectures from Bentz (2023). This includes two hidden layers of four hidden units each. Blue arrows represent biases."}
-knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/MLP_illustration.pdf")
+```{r foo, out.width="100%", fig.cap="Example of one of the more complex architectures. This includes four hidden layers of four and five hidden units."}
+knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/mlpExample.png")
 ```
 
 # Session Info
@@ -62,6 +62,7 @@ estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]
 
 # downsample to have the same number of sequences across different combinations of corpora
 # comment this out to use all the sequences (unbalanced across combinations of corpora)
+set.seed(02152018)
 estimations.subset <- sample_n(estimations.subset, 300)
 
 # exclude sequences under a certain length

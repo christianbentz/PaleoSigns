@@ -183,7 +183,7 @@ Density distributions of accuracies and F1-scores by comparison. Note: the order
 ### F1 Distributions 
 Distributions of F1-scores by comparison.
 ```{r}
-f1.mlp.plot <- ggplot(performance.mlp.combined, aes(x = jitter(f1, amount = 0), 
+f1.mlp.plot <- ggplot(performance.mlp.combined, aes(x = f1, 
                                             y = fct_reorder(comparison, f1),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -199,7 +199,7 @@ f1.mlp.plot
 
 ## Accuracy Distributions 
 ```{r}
-accuracy.mlp.plot <- ggplot(performance.mlp.combined, aes(x = jitter(accuracy, amount = 0), 
+accuracy.mlp.plot <- ggplot(performance.mlp.combined, aes(x = accuracy, 
                                             y = fct_reorder(comparison, accuracy),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -279,7 +279,7 @@ head(performance.knn.combined)
 ### F1 Distributions 
 Distributions of F1-scores by comparison.
 ```{r}
-f1.knn.plot <- ggplot(performance.knn.combined, aes(x = jitter(f1, amount = 0), 
+f1.knn.plot <- ggplot(performance.knn.combined, aes(x = f1, 
                                             y = fct_reorder(comparison, f1),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -296,7 +296,7 @@ f1.knn.plot
 ## Accuracy Distributions 
 Distributions of accuracies by comparison.
 ```{r}
-accuracy.knn.plot <- ggplot(performance.knn.combined, aes(x = jitter(accuracy, amount = 0), 
+accuracy.knn.plot <- ggplot(performance.knn.combined, aes(x = accuracy, 
                                             y = fct_reorder(comparison, accuracy),
                                             fill = after_stat(x))) + 
   geom_density_ridges_gradient(scale = 1, color = "white",
@@ -332,18 +332,18 @@ pvalue.knn.plot
 ```
 
 ## Combine Plots
-```{r, fig.width = 10, fig.height = 5}
+```{r, fig.width = 10, fig.height = 3}
 combined.plot <- ggarrange(accuracy.mlp.plot, pvalue.mlp.plot, 
-                           accuracy.knn.plot, pvalue.knn.plot, 
-                           ncol = 2, nrow = 2,
-                           widths = c(1.5, 1), labels = c("B", "C", "D", "E"))
+                           #accuracy.knn.plot, pvalue.knn.plot, 
+                           ncol = 2, nrow = 1,
+                           widths = c(1.5, 1), labels = c("E", "F"))
 combined.plot
 ```
 
 Safe to file.
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot.pdf", 
-       combined.plot, dpi = 300, width = 10, height = 5, device = cairo_pdf)
+       combined.plot, dpi = 300, width = 10, height = 3, device = cairo_pdf)
 ```
 
 # Package References

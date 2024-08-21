@@ -57,13 +57,14 @@ Select subcorpora for binary classification.
 # choose subcorpora to compare: "Aurignacien", "TeDDi", "Cuneiform (Uruk V)",
 # "Cuneiform (Uruk IV)", "Cuneiform (Uruk III)".
 subcorpus1 <- "Aurignacien"
-subcorpus2 <- "TeDDi"
+subcorpus2 <- "Cuneiform (Uruk III)"
 selected <- c(subcorpus1, subcorpus2)
 estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]
 nrow(estimations.subset)
 
 # downsample to have the same number of sequences across different combinations of corpora
 # comment this out to use all the sequences (unbalanced across combinations of corpora)
+set.seed(02152018)
 estimations.subset <- sample_n(estimations.subset, 300)
 
 # exclude sequences under a certain length

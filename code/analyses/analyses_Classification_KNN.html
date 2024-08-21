@@ -418,13 +418,14 @@ head(estimations.df)</code></pre>
 <pre class="r"><code># choose subcorpora to compare: &quot;Aurignacien&quot;, &quot;TeDDi&quot;, &quot;Cuneiform (Uruk V)&quot;,
 # &quot;Cuneiform (Uruk IV)&quot;, &quot;Cuneiform (Uruk III)&quot;.
 subcorpus1 &lt;- &quot;Aurignacien&quot;
-subcorpus2 &lt;- &quot;TeDDi&quot;
+subcorpus2 &lt;- &quot;Cuneiform (Uruk III)&quot;
 selected &lt;- c(subcorpus1, subcorpus2)
 estimations.subset &lt;- estimations.df[estimations.df$subcorpus %in% selected, ]
 nrow(estimations.subset)</code></pre>
-<pre><code>## [1] 1251</code></pre>
+<pre><code>## [1] 1066</code></pre>
 <pre class="r"><code># downsample to have the same number of sequences across different combinations of corpora
 # comment this out to use all the sequences (unbalanced across combinations of corpora)
+set.seed(02152018)
 estimations.subset &lt;- sample_n(estimations.subset, 300)
 
 # exclude sequences under a certain length
@@ -525,16 +526,16 @@ for (k in 1:n){
 }
 print(knn.results)</code></pre>
 <pre><code>##     k baseline accuracy accuracy.pvalue precision recall   f1 test.n
-## 1   1     0.85     1.00    8.869208e-08      1.00   1.00 1.00    101
-## 2   2     0.85     0.98    1.527691e-05      0.93   0.93 0.93    101
-## 3   3     0.85     0.98    1.527691e-05      0.93   0.93 0.93    101
-## 4   4     0.85     0.98    1.527691e-05      0.93   0.93 0.93    101
-## 5   5     0.85     0.98    1.527691e-05      0.93   0.93 0.93    101
-## 6   6     0.85     0.98    1.527691e-05      0.93   0.93 0.93    101
-## 7   7     0.85     0.98    1.527691e-05      0.93   0.93 0.93    101
-## 8   8     0.85     0.98    1.527691e-05      0.93   0.93 0.93    101
-## 9   9     0.85     0.98    1.527691e-05      0.93   0.93 0.93    101
-## 10 10     0.85     0.98    1.527691e-05      0.93   0.93 0.93    101</code></pre>
+## 1   1     0.84     0.89    0.1063549992      0.61   0.88 0.72    101
+## 2   2     0.84     0.90    0.0608773620      0.64   0.88 0.74    101
+## 3   3     0.84     0.93    0.0061390522      0.74   0.88 0.80    101
+## 4   4     0.84     0.92    0.0148090253      0.70   0.88 0.78    101
+## 5   5     0.84     0.95    0.0006846695      0.82   0.88 0.85    101
+## 6   6     0.84     0.95    0.0006846695      0.82   0.88 0.85    101
+## 7   7     0.84     0.95    0.0006846695      0.82   0.88 0.85    101
+## 8   8     0.84     0.95    0.0006846695      0.82   0.88 0.85    101
+## 9   9     0.84     0.96    0.0001751848      0.83   0.94 0.88    101
+## 10 10     0.84     0.96    0.0001751848      0.83   0.94 0.88    101</code></pre>
 <p>Write results to file.</p>
 <pre class="r"><code># write results
 write.csv(knn.results, file = paste(c(&quot;~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_&quot;,
