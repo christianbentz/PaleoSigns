@@ -129,7 +129,7 @@ huni.hrate.plot <- ggplot(estimations.df.illustration, aes(x = huni.chars, y =  
                   hjust = 0,
                   direction = 'y',
                   fontface = "bold",
-                  nudge_x = 1.5,
+                  nudge_x = 1,
                   nudge_y = 0.1,
                   max.overlaps = Inf,
                   show.legend = F) 
@@ -148,7 +148,7 @@ ttr.rm.plot <- ggplot(estimations.df.illustration, aes(x = ttr.chars, y =  rm.ch
                   direction = 'y',
                   fontface = "bold",
                   nudge_x = 0.4,
-                  nudge_y = 0.1,
+                  nudge_y = 0.2,
                   max.overlaps = Inf,
                   show.legend = F)
   #facet_grid(~factor(subcorpus, levels = c('Aurignacien', 'Cuneiform (Uruk V)', 
@@ -166,7 +166,7 @@ combined.plot.illustration
 Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_illustration.pdf", 
-       combined.plot.illustration, dpi = 300, width = 12, height = 6, device = cairo_pdf)
+       combined.plot.illustration, dpi = 300, width = 6, height = 3, device = cairo_pdf)
 ```
 
 # Full Feature Distribution Plots

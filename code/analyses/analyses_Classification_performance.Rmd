@@ -26,10 +26,10 @@ The accuracy is then calculated as
 accuracy = \frac{A + D}{A + D + B + C}.
 \end{equation}
 
-The function also provides the so-called "no information rate" baseline, which corresponds to the accuracy achieved by simply always choosing the most frequent class label in the test set. For example, for the classification of Aurignacien vs. Uruk V Proto-Cuneiform, there are 101 sequences in the test set overall, of which 65 are Aurignacien sequences, and 36 are Uruk V Proto-Cuneiform sequences (examples of predictions of the last model run with the observed values are given in the folder results/classifier/MLP/predictions). Thus, the baseline in this case is 
+The function also provides the so-called "no information rate" baseline, which corresponds to the accuracy achieved by simply always choosing the most frequent class label in the test set. For example, for the classification of Aurignacien vs. Uruk V Proto-Cuneiform, there are 101 sequences in the test set overall, of which 69 are Aurignacien sequences, and 32 are Uruk V Proto-Cuneiform sequences (examples of predictions of the last model run with the observed values are given in the folder results/classifier/MLP/predictions). Thus, the baseline in this case is 
 
 \begin{equation}
-accuracy.baseline = \frac{65}{101} = 0.6435644.
+accuracy.baseline = \frac{69}{101} =  0.6831683.
 \end{equation}
 
 Note that this baseline is marked with a red vertical line in the accuracy plots given below. Moreover, the confusionMatrix() function provides a p-value for a one-sided binomial test (via binom.test) for whether the actual accuracy value of the model is significantly higher than the baseline (cf. Kuhn, 2008, p. 15). Assuming a binomial distribution for random draws of two outcomes (e.g. 0 and 1 typically, or class labels UrukV and Aurignacien in our case) we have the null hypothesis and alternative hypothesis given as
@@ -44,16 +44,16 @@ and
 H_1: p > p_0
 \end{equation}
 
-respectively (cf. Hollander et al., 2013, pp. 11). Where $p_0$ in our case represents the "no information rate" baseline, and p is the probability (in this case relative frequency) with which a given model identifies the correct class label. In the example given earlier, we have 101 sequences, i.e. $n = 101$ trials of classification. The expected value (mean) of successes (here termed $B$) under the null hypothesis ($p_0 = 0.6435644$) is
+respectively (cf. Hollander et al., 2014, pp. 11). Where $p_0$ in our case represents the "no information rate" baseline, and p is the probability (in this case relative frequency) with which a given model identifies the correct class label. In the example given earlier, we have 101 sequences, i.e. $n = 101$ trials of classification. The expected value (mean) of successes (here termed $B$) under the null hypothesis ($p_0 = 0.6831683$) is
 
 \begin{equation}
-E_{p0}(B) = n\times p_0 = 101 \times 0.6435644 = 65, 
+E_{p0}(B) = n\times p_0 = 101 \times 0.6831683 = 69, 
 \end{equation}
 
 and the variance is 
 
 \begin{equation}
-\sigma^2_{p0}(B) = n \times p_0(1-p_0) = 101 \times 0.6435644 \times 0.3564356 = 23.16832.
+\sigma^2_{p0}(B) = n \times p_0 \times (1-p_0) = 101 \times 0.6831683 \times 0.3168317 = 21.86139.
 \end{equation}
 
 The standardized version of B is then
@@ -67,10 +67,10 @@ Under $H_0$ the standardized $B^*$ is assumed to follow a normal binomial distri
 As a worked example, assume that in one of the runs of the MLP architecture classifying Aurignacien and Uruk V sequences the success rate is 75. In this case, we have:
 
 \begin{equation}
-B^* = \frac{B - E_{p0}(B)}{\sqrt{\sigma^2_{p0}(B)}} = \frac{75 - 65}{\sqrt{23.16832}} \sim 2.1
+B^* = \frac{B - E_{p0}(B)}{\sqrt{\sigma^2_{p0}(B)}} = \frac{75 - 69}{\sqrt{21.86139}} \sim 1.28
 \end{equation}
 
-Hence, $B^* > z_{\alpha}$, and we would reject $H_0$, meaning that the MLP classification is significantly better than the "no information rate" baseline. The model has learned (from the training set) to distinguish between these sequences, and is better than a method which would simply choose the most frequent label in the test set. 
+Hence, $B^* < z_{\alpha}$, and we would accept $H_0$, meaning that the MLP classification is not significantly better than the "no information rate" baseline. The model has not learned (from the training set) to distinguish between these sequences better than the baseline (i.e. if it just chose the most frequent label). 
 
 Apart from the accuracy, we also report the $F_\beta$-score, which can be generally defined as:
 
@@ -83,7 +83,6 @@ In the confusionMatrix() function the special case $\beta^2 = 1$ is implemented,
 \begin{equation}
 F_1 = \frac{2 \times precision \times recall}{precision + recall}. 
 \end{equation}
-
 
 Furthermore, precision is defined as
 
@@ -336,7 +335,7 @@ pvalue.knn.plot
 combined.plot <- ggarrange(accuracy.mlp.plot, pvalue.mlp.plot, 
                            accuracy.knn.plot, pvalue.knn.plot, 
                            ncol = 2, nrow = 2,
-                           widths = c(1.5, 1), labels = c("E", "F"))
+                           widths = c(1.5, 1), labels = "AUTO")
 combined.plot
 ```
 
@@ -361,7 +360,7 @@ print(citation("caret"), style = "text")
 
 # Literature References
 
-Hollander, M., Wolfe, D. A., & Chicken, E. (2013). Nonparametric statistical methods. John Wiley & Sons.
+Hollander, M., Wolfe, D. A., & Chicken, E. (2014). Nonparametric statistical methods. John Wiley & Sons.
 
 Kuhn, M. (2008). Building predictive models in R using the caret package. Journal of Statistical Software, 28, 1-26.
 
