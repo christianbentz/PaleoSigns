@@ -36,6 +36,7 @@ library(see)
 library(GGally)
 library(MASS)
 library(forcats)
+library(jtools) # for effect plots by predictor variable
 ```
 
 Give the package versions.
@@ -304,8 +305,7 @@ ggsave("~/Github/UpperPalCombinatorics/figures/signsCombinedPlot_Aurignacian.pdf
        signsCombined.barplot, dpi = 300, width = 10, height = 14, device = cairo_pdf)
 ```
 
-
-# Statistical Model
+## Properties of Objects
 
 ## Select Feature
 ```{r}
@@ -313,8 +313,6 @@ ggsave("~/Github/UpperPalCombinatorics/figures/signsCombinedPlot_Aurignacian.pdf
 feature.name <- "hrate.chars"
 feature.values <- get(feature.name, sign.data)
 ```
-
-## Properties of Objects
 
 ### Object Type (Carrier)
 ```{r}
@@ -425,21 +423,33 @@ ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_Aurignacian.pdf",
        combined.plot, dpi = 300, width = 12, height = 7, device = cairo_pdf)
 ```
 
+# Statistical Model
+
 # Linear Models
-We here fit a linear model with feature values (e.g. entropy rates) as response variable, and meta information (e.g. volume, type of object, material etc.) as predictor variables. Some of the predictors are numerical (e.g. volume) while others are categorical (e.g. material, object_type). Arguably, a linear multiple regression model is appropriate since each object and its respective sequence of signs can be seen as an independent data point. Of course, it is theoretically possible, though very unlikely, that the same paleolithic person has produced a subset of the objects. However, there is no way of knowing this with certainty. Hence, there is no clear evidence for "repeated measures" as in controlled experiments with humans (with subjects and items, cf. Baayen, 2014) -- which would require a mixed-effects structure. 
+We here fit linear modela with feature values (e.g. entropy rates) as response variable, and meta information (e.g. volume, type of object, material etc.) as predictor variables. Some of the predictors are numerical (e.g. volume) while others are categorical (e.g. material, object_type). We also consider interaction terms. Arguably, a linear multiple regression model is appropriate since each object and its respective sequence of signs can be seen as an independent data point. Of course, it is theoretically possible, though very unlikely, that the same paleolithic person has produced a subset of the objects. However, there is no way of knowing this with certainty. Hence, there is no clear evidence for "repeated measures" as in controlled experiments with humans (with subjects and items, cf. Baayen, 2014) -- which would require a mixed-effects structure. 
 
 ```{r}
-# model with object type as predictor
+# model with all predictors (no interaction)
 linear.model <- lm(feature.values ~ object_type + material + volume + date + preservation + site_name, 
                data = sign.data)
-```
-
-## Model Summaries
-```{r}
-summary(linear.model)
 AIC(linear.model) 
-```
 
+# model with interaction between object_type and volume
+linear.model.interaction <- lm(feature.values ~ object_type*volume + material + date + preservation + site_name, 
+               data = sign.data)
+AIC(linear.model.interaction)
+
+# model with interaction between object_type and volume
+linear.model.interaction2 <- lm(feature.values ~ object_type + material + date + preservation*volume + site_name, 
+               data = sign.data)
+AIC(linear.model.interaction2)
+```
+Interpretation: Adding an interaction term between object type and volume as well as volume and preservation does not improve the model in terms of AIC (a standard criterion is that the AIC would have to decrease by 2 at least.)
+
+## Model Summary
+```{r}
+summ(linear.model)
+```
 Interpretation: In the model summary above, the reference level for object_type is "tool". Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average *higher* than the once found on objects classified as tools (borderline significant). A similar effect occurs for zoomorph figurines which also carry more information than tools (significant). Inversely, entropy rates of sequences on tubes and flutes as well as personal ornaments are somewhat *lower* than on tools (significant). Moreover, there is a small positive (but non-siginficant) effect of the volume of an object on the entropy rate, namely, it increases for each cubic centimeter of volume. Younger sequences (c. 30 000 years old) have slightly higher entropy rate than older sequences (c. 40 000 years old), but this effect is non-significant. Lastly, fragmented objects have lower entropy rate than almost complete, and complete once (significant). 
 
 \newpage
@@ -463,6 +473,23 @@ shapiro.test(rstandard(linear.model))
 ```
 
 Interpretation: There is a slight deviation from homogeneity of variance for the residuals (upper right panel), though this is due to just one or two data points deviating for the highest fitted values. There are no overly influential observations, and no collinearity between predictors (middle panels). There is a slight positive skew visible in the distribution of the residuals (lower panels). However, the Shapiro-Wilk test for normality gives a p-value > 0.05, meaning that the distribution does not significantly deviate from the expectation of a normal distribution (null hypothesis).
+
+# Plot Linear Model Coefficients
+```{r}
+plot_coefs(linear.model, plot.distributions = TRUE, 
+           coefs = c("Object type: figurine anthropomorph" = "object_typefigurine_anthropomorph",
+                     "Object type: figurine zoomorph" = "object_typefigurine_zoomorph",
+                     "Object type: tube or flute" = "object_typetube_flute",
+                     "Object type: personal ornament" = "object_typepersonal_ornament",
+                     "Material: bone" = "materialbone",
+                     "Material: ivory" = "materialivory",
+                     "Volume" = "volume",
+                     "Age of object" = "date",
+                     "Preservation: complete" = "preservationcomplete",
+                     "Preservation: fragmented" = "preservationfragmented",
+                     "Site name: Hohle Fels" = "site_nameHohle Fels",
+                     "Site name: Vogelherd" = "site_nameVogelherd"))
+```
 
 # Package References
 ```{r, echo = F}
