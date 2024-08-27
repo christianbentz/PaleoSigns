@@ -66,17 +66,11 @@ table(sign.data$object_type)
 ```
 
 # Preprocessing
-Exclude certain levels of column coding_certainty, and certain numbers of tokens, to check the robustness of results.
-```{r}
-#sign.data <- sign.data[sign.data$coding_certainty != "Uncertain", ]
-#sign.data <- sign.data[sign.data$num.tokens > 10, ]
-```
-
 Add columns for object volume and dates.
 ```{r}
 # volume in cm^3 (mm multiplications divided by 1000)
 sign.data$volume <- (sign.data$length_mm*sign.data$width_mm*sign.data$depth)/1000
-sign.data$date <- as.numeric(substr(sign.data$date_bp_max, 1, 5)) 
+sign.data$date <- as.numeric(substr(sign.data$date_bp_max, 1, 5)) # note that min dates are complete
 ```
 
 # Collapse Factors
@@ -92,7 +86,7 @@ sign.data$material <- fct_collapse(sign.data$material,
 # object_type: collapse manually
 sign.data$object_type <- fct_collapse(sign.data$object_type,
              figurine_anthropomorph = c("figurine anthropomorph",
-                          "plaquette"), 
+                          "plaquette"),
              # note: the "plaquette" is the so-called Adorant with an anthropomorph figure on it.
              figurine_zoomorph = grep('figurine zoomorph.', unique(sign.data$object_type), value = TRUE),
              tool = c("awl", "bâton percé",
@@ -100,6 +94,17 @@ sign.data$object_type <- fct_collapse(sign.data$object_type,
              tube_flute = c("flute", "tube", "tube/flute"),
              personal_ornament = c("personal ornament"),
              other_level = "other")
+```
+
+Exclude certain levels of columns to check the robustness of results.
+```{r}
+#sign.data <- sign.data[sign.data$object_type != "other" &
+#                       sign.data$material != "other" , ]
+#sign.data <- sign.data[sign.data$coding_certainty != "Uncertain", ]
+#sign.data <- sign.data[sign.data$num.tokens > 10, ]
+
+# number of sequences/objects after preprocessing
+nrow(sign.data)
 ```
 
 # Simple Statistics Plots
@@ -417,16 +422,10 @@ combined.plot <- ggarrange(objectType.plot, material.plot, site.plot,
 combined.plot
 ```
 
-Safe complete figure to file.
-```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_Aurignacian.pdf", 
-       combined.plot, dpi = 300, width = 12, height = 7, device = cairo_pdf)
-```
-
 # Statistical Model
 
 # Linear Models
-We here fit linear modela with feature values (e.g. entropy rates) as response variable, and meta information (e.g. volume, type of object, material etc.) as predictor variables. Some of the predictors are numerical (e.g. volume) while others are categorical (e.g. material, object_type). We also consider interaction terms. Arguably, a linear multiple regression model is appropriate since each object and its respective sequence of signs can be seen as an independent data point. Of course, it is theoretically possible, though very unlikely, that the same paleolithic person has produced a subset of the objects. However, there is no way of knowing this with certainty. Hence, there is no clear evidence for "repeated measures" as in controlled experiments with humans (with subjects and items, cf. Baayen, 2014) -- which would require a mixed-effects structure. 
+We here fit linear models with feature values (e.g. entropy rates) as response variable, and meta information (e.g. volume, type of object, material etc.) as predictor variables. Some of the predictors are numerical (e.g. volume) while others are categorical (e.g. material, object_type). We also consider interaction terms. Arguably, a linear multiple regression model is appropriate since each object and its respective sequence of signs can be seen as an independent data point. Of course, it is theoretically possible that the same paleolithic person has produced a subset of the objects. However, there is no way of knowing this with certainty. Hence, there is no clear evidence for "repeated measures" as in controlled experiments with humans (with subjects and items, cf. Baayen, 2014) -- which would require a mixed-effects structure. 
 
 ```{r}
 # model with all predictors (no interaction)
@@ -448,9 +447,9 @@ Interpretation: Adding an interaction term between object type and volume as wel
 
 ## Model Summary
 ```{r}
-summ(linear.model)
+summary(linear.model)
 ```
-Interpretation: In the model summary above, the reference level for object_type is "tool". Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average *higher* than the once found on objects classified as tools (borderline significant). A similar effect occurs for zoomorph figurines which also carry more information than tools (significant). Inversely, entropy rates of sequences on tubes and flutes as well as personal ornaments are somewhat *lower* than on tools (significant). Moreover, there is a small positive (but non-siginficant) effect of the volume of an object on the entropy rate, namely, it increases for each cubic centimeter of volume. Younger sequences (c. 30 000 years old) have slightly higher entropy rate than older sequences (c. 40 000 years old), but this effect is non-significant. Lastly, fragmented objects have lower entropy rate than almost complete, and complete once (significant). 
+Interpretation: In the model summary above, the reference level for object_type is "tool". Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average *higher* than the ones found on objects classified as tools. A similar effect occurs for zoomorph figurines which also carry more information than tools on average. Inversely, entropy rates of sequences on tubes and flutes as well as personal ornaments are somewhat *lower* than on tools. There is no clear effect of the volume of an object on the entropy rate. There is no clear effect of the age of an object (c. 30 000 to 40 000 years old) either. Lastly, fragmented objects tend to have lower entropy rate than ``almost complete'' ones. The details of the results (e.g. p-values) change for different versions of preprocessing (i.e. including and excluding certain data points), but the overall trends are similar. In particular, the entropy rate of sign sequences on zoomporph figurines is robustly higher than for the reference level of tools.   
 
 \newpage
 
@@ -476,19 +475,28 @@ Interpretation: There is a slight deviation from homogeneity of variance for the
 
 # Plot Linear Model Coefficients
 ```{r}
-plot_coefs(linear.model, plot.distributions = TRUE, 
+coefficient.plot <- plot_coefs(linear.model, plot.distributions = TRUE,
            coefs = c("Object type: figurine anthropomorph" = "object_typefigurine_anthropomorph",
                      "Object type: figurine zoomorph" = "object_typefigurine_zoomorph",
                      "Object type: tube or flute" = "object_typetube_flute",
                      "Object type: personal ornament" = "object_typepersonal_ornament",
+                     "Object type: other" = "object_typeother",
                      "Material: bone" = "materialbone",
                      "Material: ivory" = "materialivory",
+                     "Material: other" = "materialother",
                      "Volume" = "volume",
                      "Age of object" = "date",
                      "Preservation: complete" = "preservationcomplete",
                      "Preservation: fragmented" = "preservationfragmented",
                      "Site name: Hohle Fels" = "site_nameHohle Fels",
                      "Site name: Vogelherd" = "site_nameVogelherd"))
+coefficient.plot
+```
+
+Safe figure to file.
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/coefficientPlot_Aurignacian.pdf", 
+       coefficient.plot, dpi = 300, width = 5, height = 4, device = cairo_pdf)
 ```
 
 # Package References
@@ -503,6 +511,7 @@ print(citation("tidyverse"), style = "text")
 print(citation("performance"), style = "text")
 print(citation("see"), style = "text")
 print(citation("MASS"), style = "text")
+print(citation("jtools"), style = "text")
 ```
 
 # Literature References
