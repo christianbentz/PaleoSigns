@@ -120,7 +120,7 @@ site.barplot <- ggplot(sign.data, aes(x = site_name, fill = site_name)) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   xlab("Cave Site")
   #coord_flip()
-print(site.barplot)
+#site.barplot
 
 # barplot for object counts per material
 material.barplot <- ggplot(sign.data, aes(x = material, fill = material)) +
@@ -133,7 +133,7 @@ material.barplot <- ggplot(sign.data, aes(x = material, fill = material)) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   xlab("Material")
   #coord_flip()
-material.barplot
+#material.barplot
 
 # barplot for object counts per object_type
 type.barplot <- ggplot(sign.data, aes(x = object_type, fill = object_type)) +
@@ -146,7 +146,7 @@ type.barplot <- ggplot(sign.data, aes(x = object_type, fill = object_type)) +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   xlab("Object-Type (Carrier)")
   #coord_flip()
-type.barplot
+#type.barplot
 ```
 
 ## Figures Combined
@@ -206,7 +206,7 @@ caveSigns.barplot <- ggplot(caveSigns.df, aes(x = reorder(signs, Freq),
   coord_flip() +
   xlab("Sign Types") +
   ylab("Token Frequency")
-caveSigns.barplot
+#caveSigns.barplot
 ```
 
 ## Object Type
@@ -249,7 +249,7 @@ objectSigns.barplot <- ggplot(objectSigns.df, aes(x = reorder(signs, Freq),
   coord_flip() +
   xlab("Sign Types") +
   ylab("Token Frequency")
-objectSigns.barplot
+#objectSigns.barplot
 ```
 
 ## Material
@@ -292,7 +292,7 @@ materialSigns.barplot <- ggplot(materialSigns.df, aes(x = reorder(signs, Freq),
   coord_flip() +
   xlab("Sign Types") +
   ylab("Token Frequency")
-materialSigns.barplot
+#materialSigns.barplot
 ```
 
 ## Figures Combined
@@ -312,7 +312,7 @@ ggsave("~/Github/UpperPalCombinatorics/figures/signsCombinedPlot_Aurignacian.pdf
 
 ## Properties of Objects
 
-## Select Feature
+## Select Statistical Feature
 ```{r}
 # select the statistical feature for further analyses
 feature.name <- "hrate.chars"
@@ -332,7 +332,7 @@ objectType.plot <- ggplot(sign.data, aes(x = feature.values,
   xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
   ylab("Object-Type (Carrier)") +
   theme(legend.position = "none")
-objectType.plot
+#objectType.plot
 ```
 
 ### Material
@@ -348,7 +348,7 @@ material.plot <- ggplot(sign.data, aes(x = feature.values,
   xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
   ylab("Material") +
   theme(legend.position = "none")
-material.plot
+#material.plot
 ```
 
 ### Cave Site
@@ -364,7 +364,7 @@ site.plot <- ggplot(sign.data, aes(x = feature.values,
   xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
   ylab("Cave Site") +
   theme(legend.position = "none")
-site.plot
+#site.plot
 ```
 
 ### Preservation
@@ -380,21 +380,22 @@ preservation.plot <- ggplot(sign.data, aes(x = feature.values,
   xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
   ylab("Preservation") +
   theme(legend.position = "none")
-preservation.plot
+#preservation.plot
 ```
 
 ### Volume of Object
 ```{r, warning = F}
 # create plot
-volume.plot <- ggplot(sign.data, aes(x = feature.values, y = volume, 
+volume.plot <- ggplot(sign.data, aes(x = volume, y = feature.values, 
                                      size = volume, color = volume)) +
   geom_point(alpha = 0.5) +
   #geom_text_repel(aes(label = object_type), nudge_x = 0.2) +
   geom_smooth(method = "lm") +
+  geom_smooth(method = "loess", linetype = "dashed") +
   xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
   ylab("Volume (cm^3)") +
   theme(legend.position = "none")
-volume.plot
+#volume.plot
 ```
 
 ### Date
@@ -406,50 +407,77 @@ date.plot <- ggplot(sign.data, aes(x = date, y = feature.values,
   scale_x_continuous(trans = "reverse") +
   #geom_label_repel(aes(label = object_type)) +
   geom_smooth(method = "lm") +
+  #geom_smooth(method = "loess", linetype = "dashed") +
   ylab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
   xlab("Date (BP, max)") +
   theme(legend.position = "none")
-date.plot
+#date.plot
+```
+
+### Number of Sign Tokens
+```{r}
+# create plot
+token.plot <- ggplot(sign.data, aes(x = num.tokens, y = feature.values, 
+                                   size = volume, color = volume)) +
+  geom_point(alpha = 0.5) +
+  #geom_label_repel(aes(label = object_type)) +
+  geom_smooth(method = "lm") +
+  geom_smooth(method = "loess", linetype = "dashed") +
+  ylab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
+  xlab("Number of Sign Tokens") +
+  theme(legend.position = "none")
+#token.plot
+```
+
+### Number of Sign Types
+```{r}
+# create plot
+type.plot <- ggplot(sign.data, aes(x = num.types, y = feature.values, 
+                                   size = volume, color = volume)) +
+  geom_point(alpha = 0.5) +
+  #geom_label_repel(aes(label = object_type)) +
+  geom_smooth(method = "lm") +
+  geom_smooth(method = "loess", linetype = "dashed") +
+  ylab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
+  xlab("Number of Sign Types") +
+  theme(legend.position = "none")
+#type.plot
 ```
 
 ## Figures Combined
 Combine figures.
-```{r, fig.width = 12, fig.height = 7, warning = F, message = F}
-combined.plot <- ggarrange(objectType.plot, material.plot, site.plot,
-                           preservation.plot, volume.plot, date.plot, 
+```{r, fig.width = 14, fig.height = 7, warning = F, message = F}
+predictor.plot <- ggarrange(objectType.plot, material.plot, site.plot,
+                           preservation.plot, volume.plot, date.plot,
                            ncol = 3, nrow = 2,
                            labels = "AUTO")
-combined.plot
+predictor.plot
+```
+
+Safe figure to file.
+```{r}
+ggsave("~/Github/UpperPalCombinatorics/figures/predictorPlot_Aurignacian.pdf", 
+       predictor.plot, dpi = 300, width = 14, height = 7, device = cairo_pdf)
 ```
 
 # Statistical Model
 
 # Linear Models
-We here fit linear models with feature values (e.g. entropy rates) as response variable, and meta information (e.g. volume, type of object, material etc.) as predictor variables. Some of the predictors are numerical (e.g. volume) while others are categorical (e.g. material, object_type). We also consider interaction terms. Arguably, a linear multiple regression model is appropriate since each object and its respective sequence of signs can be seen as an independent data point. Of course, it is theoretically possible that the same paleolithic person has produced a subset of the objects. However, there is no way of knowing this with certainty. Hence, there is no clear evidence for "repeated measures" as in controlled experiments with humans (with subjects and items, cf. Baayen, 2014) -- which would require a mixed-effects structure. 
+We here fit linear models with feature values (e.g. entropy rates) as response variable, and meta information (e.g. volume, type of object, material etc.) as predictor variables. Alternatively, especially the number of different sign types could also be used as a response, as this is highly correlated with the entropy rate. However, model checking reveals that some of the assumptions of linear regression (e.g. normality of residuals) are not met in this case. Some of the predictors are numerical (e.g. volume) while others are categorical (e.g. material, object_type). Arguably, a linear multiple regression model is appropriate since each object and its respective sequence of signs can be seen as an independent data point. Of course, it is theoretically possible that the same paleolithic person has produced a subset of the objects. However, there is no way of knowing this with certainty. Hence, there is no clear evidence for "repeated measures" as in controlled experiments with humans (with subjects and items, cf. Baayen, 2014) -- which would require a mixed-effects structure. 
 
 ```{r}
-# model with all predictors (no interaction)
-linear.model <- lm(feature.values ~ object_type + material + volume + date + preservation + site_name, 
+# linear model with statistical feature values as response
+linear.model <- lm(feature.values ~ object_type + material +
+                   + volume + date + preservation + site_name, 
                data = sign.data)
 AIC(linear.model) 
-
-# model with interaction between object_type and volume
-linear.model.interaction <- lm(feature.values ~ object_type*volume + material + date + preservation + site_name, 
-               data = sign.data)
-AIC(linear.model.interaction)
-
-# model with interaction between object_type and volume
-linear.model.interaction2 <- lm(feature.values ~ object_type + material + date + preservation*volume + site_name, 
-               data = sign.data)
-AIC(linear.model.interaction2)
 ```
-Interpretation: Adding an interaction term between object type and volume as well as volume and preservation does not improve the model in terms of AIC (a standard criterion is that the AIC would have to decrease by 2 at least.)
 
 ## Model Summary
 ```{r}
 summary(linear.model)
 ```
-Interpretation: In the model summary above, the reference level for object_type is "tool". Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average *higher* than the ones found on objects classified as tools. A similar effect occurs for zoomorph figurines which also carry more information than tools on average. Inversely, entropy rates of sequences on tubes and flutes as well as personal ornaments are somewhat *lower* than on tools. There is no clear effect of the volume of an object on the entropy rate. There is no clear effect of the age of an object (c. 30 000 to 40 000 years old) either. Lastly, fragmented objects tend to have lower entropy rate than ``almost complete'' ones. The details of the results (e.g. p-values) change for different versions of preprocessing (i.e. including and excluding certain data points), but the overall trends are similar. In particular, the entropy rate of sign sequences on zoomporph figurines is robustly higher than for the reference level of tools.   
+Interpretation: In the model summary above, the reference level for object_type is "tools", i.e. the residue category. Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average *higher* than the ones found on objects classified as tools. A similar effect occurs for zoomorph figurines which also carry more information than tools on average. Inversely, entropy rates of sequences on tubes and flutes as well as personal ornaments are somewhat *lower* than on tools. There is no clear effect of the volume of an object on the entropy rate. There is no clear effect of the age of an object (c. 30 000 to 40 000 years old) either. Lastly, fragmented objects tend to have lower entropy rate than ``almost complete'' ones. The details of the results (e.g. p-values) change for different versions of preprocessing (i.e. including and excluding certain data points), but the overall trends are similar. In particular, the entropy rate of sign sequences on zoomporph figurines is robustly higher than for the reference level of tools.   
 
 \newpage
 
@@ -474,13 +502,17 @@ shapiro.test(rstandard(linear.model))
 Interpretation: There is a slight deviation from homogeneity of variance for the residuals (upper right panel), though this is due to just one or two data points deviating for the highest fitted values. There are no overly influential observations, and no collinearity between predictors (middle panels). There is a slight positive skew visible in the distribution of the residuals (lower panels). However, the Shapiro-Wilk test for normality gives a p-value > 0.05, meaning that the distribution does not significantly deviate from the expectation of a normal distribution (null hypothesis).
 
 # Plot Linear Model Coefficients
-```{r}
-coefficient.plot <- plot_coefs(linear.model, plot.distributions = TRUE,
+```{r, fig.height = 5, fig.width = 5}
+coefficient.plot <- plot_coefs(linear.model,
+                               plot.distributions = F,
+                               rescale.distributions = F,
            coefs = c("Object type: figurine anthropomorph" = "object_typefigurine_anthropomorph",
                      "Object type: figurine zoomorph" = "object_typefigurine_zoomorph",
                      "Object type: tube or flute" = "object_typetube_flute",
+                     "Object type: tool" = "object_typetool",
                      "Object type: personal ornament" = "object_typepersonal_ornament",
                      "Object type: other" = "object_typeother",
+                     "Material: antler" = "materialantler",
                      "Material: bone" = "materialbone",
                      "Material: ivory" = "materialivory",
                      "Material: other" = "materialother",
@@ -490,13 +522,61 @@ coefficient.plot <- plot_coefs(linear.model, plot.distributions = TRUE,
                      "Preservation: fragmented" = "preservationfragmented",
                      "Site name: Hohle Fels" = "site_nameHohle Fels",
                      "Site name: Vogelherd" = "site_nameVogelherd"))
-coefficient.plot
+#coefficient.plot
+```
+
+### Sequence plot
+```{r, fig.height = 15, fig.width = 15}
+# exclude "other" category (otherwise the sequence plot is overcrowded)
+sign.data.modified <- sign.data[sign.data$object_type != "other", ] 
+# take subsample as otherwise the sequence plot is overcrowded
+sign.data.subsample <- sample_n(sign.data.modified, 50)
+# get feature values for subsample
+feature.values.modified <- get(feature.name, sign.data.modified)
+feature.values.subsample <- get(feature.name, sign.data.subsample)
+
+# create plot
+sequence.plot <- ggplot(sign.data.subsample, aes(x = feature.values.subsample, 
+                                                y = reorder(paste(coding_clean, object_id, sep = "  "), 
+                                                            feature.values.subsample, mean), 
+                                   size = volume, color = object_type)) +
+  geom_point(alpha = 0.5) +
+  ylab("") +
+  xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
+  theme(legend.position = "none")
+sequence.plot
+```
+
+### Density plot
+```{r, fig.height = 5, fig.width = 5}
+density.plot <- ggplot(sign.data.modified, aes(x = feature.values.modified, 
+                                               y = fct_reorder(object_type, feature.values.modified), 
+                      fill = object_type, color = object_type)) +
+  geom_density_ridges(alpha = 0.5, scale = 1, quantile_lines = T, 
+                      quantiles = 2, color = "white") +
+  geom_point(shape = 124, alpha = 0.9, size = 3) +
+  ylab("Object type") +
+  xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
+  theme(legend.position = "none")
+density.plot
+```
+
+Combine figures.
+```{r, fig.width = 15, fig.height = 8, warning = F, message = F}
+model.plot <- ggarrange(sequence.plot,               # First column with sequence plot
+          ggarrange(density.plot, coefficient.plot, 
+                    ncol = 1, labels = c("B", "C")), # Second column with density and coefficient plot
+          ncol = 2, 
+          labels = "A",
+          widths = c(2,1)                            # Relative widths of panels
+          ) 
+model.plot
 ```
 
 Safe figure to file.
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/coefficientPlot_Aurignacian.pdf", 
-       coefficient.plot, dpi = 300, width = 5, height = 4, device = cairo_pdf)
+ggsave("~/Github/UpperPalCombinatorics/figures/modelPlot_Aurignacian.pdf", 
+       model.plot, dpi = 300, width = 15, height = 8, device = cairo_pdf)
 ```
 
 # Package References
