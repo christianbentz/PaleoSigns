@@ -101,7 +101,7 @@ Exclude certain levels of columns to check the robustness of results.
 #sign.data <- sign.data[sign.data$object_type != "other" &
 #                       sign.data$material != "other" , ]
 #sign.data <- sign.data[sign.data$coding_certainty != "Uncertain", ]
-#sign.data <- sign.data[sign.data$num.tokens > 10, ]
+# sign.data <- sign.data[sign.data$num.tokens < 100, ]
 
 # number of sequences/objects after preprocessing
 nrow(sign.data)
@@ -465,45 +465,240 @@ ggsave("~/Github/UpperPalCombinatorics/figures/predictorPlot_Aurignacian.pdf",
 # Linear Models
 We here fit linear models with feature values (e.g. entropy rates) as response variable, and meta information (e.g. volume, type of object, material etc.) as predictor variables. Alternatively, especially the number of different sign types could also be used as a response, as this is highly correlated with the entropy rate. However, model checking reveals that some of the assumptions of linear regression (e.g. normality of residuals) are not met in this case. Some of the predictors are numerical (e.g. volume) while others are categorical (e.g. material, object_type). Arguably, a linear multiple regression model is appropriate since each object and its respective sequence of signs can be seen as an independent data point. Of course, it is theoretically possible that the same paleolithic person has produced a subset of the objects. However, there is no way of knowing this with certainty. Hence, there is no clear evidence for "repeated measures" as in controlled experiments with humans (with subjects and items, cf. Baayen, 2014) -- which would require a mixed-effects structure. 
 
+We here fit models stepwise by adding predictors one at a time on top of a baseline model (intercept only). We follow the advice by Baayen (2014) to use AIC as a criterion for model selection. If AIC decreases when a predictor is added, we leave the predictor in the model. We also consider interactions between object type and date as well as volume. It is theoretically conceivable that for cultures of the early Aurignacien (c. 40 000 years ago) object types might have been associated with information density (entropy rates) in a different way than for later Aurignacien cultures (c. 30 000 years ago). Similarly, volumes of objects might have played different roles in earlier in later periods. 
+
+## Baseline Model
 ```{r}
-# linear model with statistical feature values as response
-linear.model <- lm(feature.values ~ object_type + material +
-                   + volume + date + preservation + site_name, 
-               data = sign.data)
-AIC(linear.model) 
+# model code
+baseline.model <- lm(feature.values ~ 1, sign.data)
+# model specification
+formula.baseline <- "intercept"
+# model summary
+baseline.summary <- summary(baseline.model)
+# get model information from summary
+df.baseline <- baseline.summary$df[1]
+res.df.baseline <- baseline.summary$df[2]
+f.statistic.baseline <- NA
+p.value.baseline <- NA
+aic.baseline <- AIC(baseline.model)
+```
+
+## Models with predictors added sequentially
+
+### Volume
+```{r}
+# model code
+model1 <- lm(feature.values ~ volume, sign.data) 
+model1.summary <- summary(model1)
+formula.model1 <- "intercept + volume"
+# get model information
+df.model1 <- model1.summary$df[1]
+res.df.model1 <- model1.summary$df[2]
+f.statistic.model1 <- model1.summary$fstatistic[[1]]
+p.value.model1 <- unname(pf(model1.summary$fstatistic[1L], 
+                            model1.summary$fstatistic[2L], 
+                            model1.summary$fstatistic[3L],
+                            lower.tail = FALSE))
+aic.model1 <- AIC(model1)
+```
+
+### Volume + Date (age)
+```{r}
+# model code
+model2 <- lm(feature.values ~ volume + date, sign.data) 
+model2.summary <- summary(model2)
+formula.model2 <- "intercept + volume + date"
+# get model information
+df.model2 <- model2.summary$df[1]
+res.df.model2 <- model2.summary$df[2]
+f.statistic.model2 <- model2.summary$fstatistic[[1]]
+p.value.model2 <- unname(pf(model2.summary$fstatistic[1L], 
+                            model2.summary$fstatistic[2L], 
+                            model2.summary$fstatistic[3L],
+                            lower.tail = FALSE))
+aic.model2 <- AIC(model2)
+```
+
+### Volume + Date (age) + Object type
+```{r}
+model3 <- lm(feature.values ~ volume + date + object_type, sign.data) 
+model3.summary <- summary(model3)
+formula.model3 <- "intercept + volume + date + object_type"
+# get model information
+df.model3 <- model3.summary$df[1]
+res.df.model3 <- model3.summary$df[2]
+f.statistic.model3 <- model3.summary$fstatistic[[1]]
+p.value.model3 <- unname(pf(model3.summary$fstatistic[1L], 
+                            model3.summary$fstatistic[2L], 
+                            model3.summary$fstatistic[3L],
+                            lower.tail = FALSE))
+aic.model3 <- AIC(model3)
+```
+
+### Volume + Date (age) + Object type + Cave Site
+```{r}
+model4 <- lm(feature.values ~ volume + date + object_type + site_name, sign.data) 
+formula.model4 <- "intercept + volume + date + object_type + site_name"
+model4.summary <- summary(model4)
+# get model information
+df.model4 <- model4.summary$df[1]
+res.df.model4 <- model4.summary$df[2]
+f.statistic.model4 <- model4.summary$fstatistic[[1]]
+p.value.model4 <- unname(pf(model4.summary$fstatistic[1L], 
+                            model4.summary$fstatistic[2L], 
+                            model4.summary$fstatistic[3L],
+                            lower.tail = FALSE))
+aic.model4 <- AIC(model4)
+```
+
+### Volume + Date (age) + Object type + Preservation
+```{r}
+model5 <- lm(feature.values ~ volume + date + object_type + preservation, sign.data) 
+formula.model5 <- "intercept + volume + date + object_type + preservation"
+model5.summary <- summary(model5)
+# get model information
+df.model5 <- model5.summary$df[1]
+res.df.model5 <- model5.summary$df[2]
+f.statistic.model5 <- model5.summary$fstatistic[[1]]
+p.value.model5 <- unname(pf(model5.summary$fstatistic[1L], 
+                            model5.summary$fstatistic[2L], 
+                            model5.summary$fstatistic[3L],
+                            lower.tail = FALSE))
+aic.model5 <- AIC(model5)
+```
+
+### Volume + Date (age) + Object type + Material
+```{r}
+model6 <- lm(feature.values ~ volume + date + object_type + material, sign.data) 
+formula.model6 <- "intercept + volume + date + object_type + material"
+model6.summary <- summary(model6)
+# get model information
+df.model6 <- model6.summary$df[1]
+res.df.model6 <- model6.summary$df[2]
+f.statistic.model6 <- model6.summary$fstatistic[[1]]
+p.value.model6 <- unname(pf(model6.summary$fstatistic[1L], 
+                            model6.summary$fstatistic[2L], 
+                            model6.summary$fstatistic[3L],
+                            lower.tail = FALSE))
+aic.model6 <- AIC(model6)
+```
+
+### Volume*Preservation + Date (age) + Object type
+```{r}
+model7 <- lm(feature.values ~ volume*preservation + date + object_type, sign.data) 
+formula.model7 <- "intercept + volume*preservation + date + object_type"
+model7.summary <- summary(model7)
+# get model information
+df.model7 <- model7.summary$df[1]
+res.df.model7 <- model7.summary$df[2]
+f.statistic.model7 <- model7.summary$fstatistic[[1]]
+p.value.model7 <- unname(pf(model7.summary$fstatistic[1L], 
+                            model7.summary$fstatistic[2L], 
+                            model7.summary$fstatistic[3L],
+                            lower.tail = FALSE))
+aic.model7 <- AIC(model7)
+```
+
+### Volume*Object type + Date (age)
+```{r}
+model8 <- lm(feature.values ~ volume*object_type + date, sign.data) 
+formula.model8 <- "intercept + volume*object_type + date"
+model8.summary <- summary(model8)
+# get model information
+df.model8 <- model8.summary$df[1]
+res.df.model8 <- model8.summary$df[2]
+f.statistic.model8 <- model8.summary$fstatistic[[1]]
+p.value.model8 <- unname(pf(model8.summary$fstatistic[1L], 
+                            model8.summary$fstatistic[2L], 
+                            model8.summary$fstatistic[3L],
+                            lower.tail = FALSE))
+aic.model8 <- AIC(model8)
+```
+
+### Volume + Date (age)*Object type
+```{r}
+model9 <- lm(feature.values ~ volume + date*object_type, sign.data) 
+formula.model9 <- "intercept + volume + date*object_type"
+model9.summary <- summary(model9)
+# get model information
+df.model9 <- model9.summary$df[1]
+res.df.model9 <- model9.summary$df[2]
+f.statistic.model9 <- model9.summary$fstatistic[[1]]
+p.value.model9 <- unname(pf(model9.summary$fstatistic[1L], 
+                            model9.summary$fstatistic[2L], 
+                            model9.summary$fstatistic[3L],
+                            lower.tail = FALSE))
+aic.model9 <- AIC(model9)
+```
+
+Combine results in a table
+```{r}
+# conatenate results per model
+model.formula <- c(formula.baseline, formula.model1, formula.model2, 
+                   formula.model3, formula.model4, formula.model5,
+                   formula.model6, formula.model7, formula.model8,
+                   formula.model9)
+df <- c(df.baseline, df.model1, df.model2, df.model3, df.model4, df.model5,
+        df.model6, df.model7, df.model8, df.model9)
+res.df <- c(res.df.baseline, res.df.model1, res.df.model2, res.df.model3, 
+            res.df.model4, res.df.model5, res.df.model6, res.df.model7, 
+            res.df.model8, res.df.model9)
+f.statistic <- c(f.statistic.baseline, f.statistic.model1, f.statistic.model2, 
+                 f.statistic.model3, f.statistic.model4, f.statistic.model5,
+                 f.statistic.model6, f.statistic.model7, f.statistic.model8,
+                 f.statistic.model9) 
+p.value <- c(p.value.baseline, p.value.model1, p.value.model2, p.value.model3,
+             p.value.model4, p.value.model5, p.value.model6, p.value.model7,
+             p.value.model8, p.value.model9)
+aic <- c(aic.baseline, aic.model1, aic.model2, aic.model3, aic.model4,
+         aic.model5, aic.model6, aic.model7, aic.model8, aic.model9)
+
+# create data frame
+model.results <- data.frame(model.formula, df, res.df, f.statistic, p.value, aic) 
+print(model.results)
+```
+
+Export data frame with results of linear models.
+```{r}
+write.csv(model.results, file = "~/Github/UpperPalCombinatorics/tables/lmResults.csv", row.names = F)
+```
+
+Manually select best model for further usage. Note that a decrease in AIC (compared to previous best model) is here considered as criterion for leaving the respective predictor variable in the model. 
+```{r}
+best.model <- model5
 ```
 
 ## Model Summary
 ```{r}
-summary(linear.model)
+summary(best.model)
 ```
-Interpretation: In the model summary above, the reference level for object_type is "tools", i.e. the residue category. Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average *higher* than the ones found on objects classified as tools. A similar effect occurs for zoomorph figurines which also carry more information than tools on average. Inversely, entropy rates of sequences on tubes and flutes as well as personal ornaments are somewhat *lower* than on tools. There is no clear effect of the volume of an object on the entropy rate. There is no clear effect of the age of an object (c. 30 000 to 40 000 years old) either. Lastly, fragmented objects tend to have lower entropy rate than ``almost complete'' ones. The details of the results (e.g. p-values) change for different versions of preprocessing (i.e. including and excluding certain data points), but the overall trends are similar. In particular, the entropy rate of sign sequences on zoomporph figurines is robustly higher than for the reference level of tools.   
+Interpretation: In the model summary above, the reference level for object_type is "tools", i.e. the residue category. Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average *higher* than the ones found on objects classified as tools. A similar effect occurs for zoomorph figurines which also carry more information than tools on average. Inversely, entropy rates of sequences on tubes and flutes as well as personal ornaments are somewhat *lower* than on tools. There is no significant effect of the volume of an object on the entropy rate (though the coefficient is positive, as one would expect). There is no significant effect of the age of an object (c. 30 000 to 40 000 years old) either (). Lastly, fragmented objects tend to have lower entropy rate than ``almost complete'' ones. The details of the results (e.g. p-values) change for different versions of preprocessing (i.e. including and excluding certain data points), but the overall trends are similar. In particular, the entropy rate of sign sequences on zoomorph figurines is robustly higher than for the reference level of tools.   
 
 \newpage
 
 ## Checking of Model Assumptions
 ```{r, fig.height = 10, fig.width = 10}
-check_model(linear.model)
+check_model(best.model)
 ```
 
 Write to file.
 ```{r}
 png(filename = file.path("~/Github/UpperPalCombinatorics/figures/", "modelCheckingPlot.png"), 
     width = 10, height = 10, units = "in", res = 300)
-check_model(linear.model)
+check_model(best.model)
 dev.off()
 ```
 
 ## Shapiro-Wilk Test for Normality of Residuals
 ```{r}
-shapiro.test(rstandard(linear.model))
+shapiro.test(rstandard(best.model))
 ```
 
-Interpretation: There is a slight deviation from homogeneity of variance for the residuals (upper right panel), though this is due to just one or two data points deviating for the highest fitted values. There are no overly influential observations, and no collinearity between predictors (middle panels). There is a slight positive skew visible in the distribution of the residuals (lower panels). However, the Shapiro-Wilk test for normality gives a p-value > 0.05, meaning that the distribution does not significantly deviate from the expectation of a normal distribution (null hypothesis).
+Interpretation: There is a slight deviation from homogeneity of variance for the residuals (upper right panel), though this is due to just one or two data points deviating for the highest fitted values. There are no overly influential observations, and no collinearity between predictors (middle panels). There is a slight skew visible in the distribution of the residuals (lower panels). The Shapiro-Wilk test for normality gives a p-value around 0.03, meaning that the distribution does slightly deviate from the expectation of a normal distribution (null hypothesis).
 
 # Plot Linear Model Coefficients
 ```{r, fig.height = 5, fig.width = 5}
-coefficient.plot <- plot_coefs(linear.model,
+coefficient.plot <- plot_coefs(best.model,
                                plot.distributions = F,
                                rescale.distributions = F,
            coefs = c("Object type: figurine anthropomorph" = "object_typefigurine_anthropomorph",
@@ -517,7 +712,7 @@ coefficient.plot <- plot_coefs(linear.model,
                      "Material: ivory" = "materialivory",
                      "Material: other" = "materialother",
                      "Volume" = "volume",
-                     "Age of object" = "date",
+                     "Date (age of object)" = "date",
                      "Preservation: complete" = "preservationcomplete",
                      "Preservation: fragmented" = "preservationfragmented",
                      "Site name: Hohle Fels" = "site_nameHohle Fels",
@@ -529,8 +724,9 @@ coefficient.plot <- plot_coefs(linear.model,
 ```{r, fig.height = 15, fig.width = 15}
 # exclude "other" category (otherwise the sequence plot is overcrowded)
 sign.data.modified <- sign.data[sign.data$object_type != "other", ] 
-# take subsample as otherwise the sequence plot is overcrowded
-sign.data.subsample <- sample_n(sign.data.modified, 50)
+# take random subsample as otherwise the sequence plot is overcrowded
+set.seed(09012020)
+sign.data.subsample <- sample_n(sign.data.modified, 100)
 # get feature values for subsample
 feature.values.modified <- get(feature.name, sign.data.modified)
 feature.values.subsample <- get(feature.name, sign.data.subsample)
@@ -562,7 +758,7 @@ density.plot
 ```
 
 Combine figures.
-```{r, fig.width = 15, fig.height = 8, warning = F, message = F}
+```{r, fig.width = 15, fig.height = 11, warning = F, message = F}
 model.plot <- ggarrange(sequence.plot,               # First column with sequence plot
           ggarrange(density.plot, coefficient.plot, 
                     ncol = 1, labels = c("B", "C")), # Second column with density and coefficient plot
@@ -576,7 +772,7 @@ model.plot
 Safe figure to file.
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/modelPlot_Aurignacian.pdf", 
-       model.plot, dpi = 300, width = 15, height = 8, device = cairo_pdf)
+       model.plot, dpi = 300, width = 15, height = 11, device = cairo_pdf)
 ```
 
 # Package References
