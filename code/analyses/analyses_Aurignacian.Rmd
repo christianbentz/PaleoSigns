@@ -723,12 +723,12 @@ coefficient.plot <- plot_coefs(best.model,
 ```
 
 ### Sequence plot
-```{r, fig.height = 15, fig.width = 15}
+```{r, fig.height = 10, fig.width = 12}
 # exclude "other" category (otherwise the sequence plot is overcrowded)
 sign.data.modified <- sign.data[sign.data$object_type != "other", ] 
 # take random subsample as otherwise the sequence plot is overcrowded
 set.seed(09012020)
-sign.data.subsample <- sample_n(sign.data.modified, 100)
+sign.data.subsample <- sample_n(sign.data.modified, 50)
 # get feature values for subsample
 feature.values.modified <- get(feature.name, sign.data.modified)
 feature.values.subsample <- get(feature.name, sign.data.subsample)
@@ -749,9 +749,9 @@ sequence.plot
 ```{r, fig.height = 5, fig.width = 5}
 density.plot <- ggplot(sign.data.modified, aes(x = feature.values.modified, 
                                                y = fct_reorder(object_type, feature.values.modified), 
-                      fill = object_type, color = object_type)) +
+                      fill = object_type)) +
   geom_density_ridges(alpha = 0.5, scale = 1, quantile_lines = T, 
-                      quantiles = 2, color = "white") +
+                      quantiles = 2) +
   geom_point(shape = 124, alpha = 0.9, size = 3) +
   ylab("Object type") +
   xlab(paste("Feature Values ", "(", feature.name, ")", sep = "")) +
@@ -760,7 +760,7 @@ density.plot
 ```
 
 Combine figures.
-```{r, fig.width = 15, fig.height = 11, warning = F, message = F}
+```{r, fig.width = 12, fig.height = 8, warning = F, message = F}
 model.plot <- ggarrange(sequence.plot,               # First column with sequence plot
           ggarrange(density.plot, coefficient.plot, 
                     ncol = 1, labels = c("B", "C")), # Second column with density and coefficient plot
@@ -774,7 +774,7 @@ model.plot
 Safe figure to file.
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/modelPlot_Aurignacian.pdf", 
-       model.plot, dpi = 300, width = 15, height = 11, device = cairo_pdf)
+       model.plot, dpi = 300, width = 12, height = 8, device = cairo_pdf)
 ```
 
 # Package References
