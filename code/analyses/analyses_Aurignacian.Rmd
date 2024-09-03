@@ -57,6 +57,8 @@ sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
 ```{r}
 # number of sequences/objects
 nrow(sign.data)
+# number of sign tokens
+sum(sign.data$num.tokens)
 # cave sites
 table(sign.data$site_name)
 # material

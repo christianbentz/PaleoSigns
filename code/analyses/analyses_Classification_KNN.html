@@ -469,14 +469,8 @@ n = 10
 # run a loop over different numbers of neighbors up to n
 for (k in 1:n){
   # knn estimation of labels
-  predictions.knn &lt;- knn(train = train[, c(&quot;huni.chars&quot;, 
-                                           &quot;hrate.chars&quot;, 
-                                            &quot;ttr.chars&quot;, 
-                                           &quot;rm.chars&quot;)],
-                         test = test[, c(&quot;huni.chars&quot;, 
-                                           &quot;hrate.chars&quot;, 
-                                            &quot;ttr.chars&quot;, 
-                                           &quot;rm.chars&quot;)], 
+  predictions.knn &lt;- knn(train = train[, c(&quot;huni.chars&quot;, &quot;hrate.chars&quot;, &quot;ttr.chars&quot;, &quot;rm.chars&quot;)],
+                         test = test[, c(&quot;huni.chars&quot;, &quot;hrate.chars&quot;, &quot;ttr.chars&quot;, &quot;rm.chars&quot;)], 
                          cl = train[, &quot;subcorpus&quot;], k = k) 
   
   # model evaluation
