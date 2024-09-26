@@ -178,7 +178,7 @@ caveSigns.df <- data.frame(signs = character(0),
 
 for (site_name in unique(sign.data$site_name)){
   # get all cleaned codings per cave
-  codings <- sign.data[sign.data$site_name == site_name, ]$coding_clean 
+  codings <- sign.data[sign.data$site_name == site_name, ]$coding_clean
   # collapse to one sequence
   codings.collapsed <- paste(codings, collapse = "")
   # remove underscores
@@ -221,7 +221,7 @@ objectSigns.df <- data.frame(signs = character(0),
 
 for (object_type in unique(sign.data$object_type)){
   # get all cleaned codings per object type
-  codings <- sign.data[sign.data$object_type == object_type, ]$coding_clean 
+  codings <- sign.data[sign.data$object_type == object_type, ]$coding_clean
   # collapse to one sequence
   codings.collapsed <- paste(codings, collapse = "")
   # remove underscores
@@ -264,7 +264,7 @@ materialSigns.df <- data.frame(signs = character(0),
 
 for (material in unique(sign.data$material)){
   # get all cleaned codings per cave
-  codings <- sign.data[sign.data$material == material, ]$coding_clean 
+  codings <- sign.data[sign.data$material == material, ]$coding_clean
   # collapse to one sequence
   codings.collapsed <- paste(codings, collapse = "")
   # remove underscores

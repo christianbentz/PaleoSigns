@@ -122,7 +122,6 @@ estimations.df.illustration <- estimations.df.selected[estimations.df.selected$i
 # Unigram entropy vs. Entropy rate
 huni.hrate.plot <- ggplot(estimations.df.illustration, aes(x = huni.chars, y =  hrate.chars, color = subcorpus)) + 
   geom_point() +
-  scale_colour_discrete(guide = "none") +
   labs(x = "Unigram entropy for tokens", y = "Entropy rate for tokens") + 
   geom_text_repel(aes(label = sequence),
                   size = 2,
@@ -132,15 +131,11 @@ huni.hrate.plot <- ggplot(estimations.df.illustration, aes(x = huni.chars, y =  
                   nudge_x = 1,
                   nudge_y = 0.1,
                   max.overlaps = Inf,
-                  show.legend = F) 
-  #facet_grid(~factor(subcorpus, levels = c('Aurignacien', 'Cuneiform (Uruk V)', 
-  #                                       'Cuneiform (Uruk IV)', 'Cuneiform (Uruk III)',
-  #                                       'TeDDi')))
+                  show.legend = F)
 
 # TTR vs. Repetition rate
 ttr.rm.plot <- ggplot(estimations.df.illustration, aes(x = ttr.chars, y =  rm.chars, color = subcorpus)) + 
   geom_point() +
-  scale_colour_discrete(guide = "none") +
   labs(x = "TTR for tokens", y = "Repetition rate for tokens") + 
   geom_text_repel(aes(label = sequence),
                   size = 2,
@@ -151,22 +146,19 @@ ttr.rm.plot <- ggplot(estimations.df.illustration, aes(x = ttr.chars, y =  rm.ch
                   nudge_y = 0.2,
                   max.overlaps = Inf,
                   show.legend = F)
-  #facet_grid(~factor(subcorpus, levels = c('Aurignacien', 'Cuneiform (Uruk V)', 
-  #                                       'Cuneiform (Uruk IV)', 'Cuneiform (Uruk III)',
-  #                                       'TeDDi')))
 ```
 
 Combine figures.
-```{r, fig.width = 6, fig.height = 3}
+```{r, fig.width = 7, fig.height = 3.5}
 combined.plot.illustration <- ggarrange(huni.hrate.plot, ttr.rm.plot, ncol = 2,
-                               labels = c("A", "B"))
+                               labels = c("A", "B"), common.legend = T, legend = "top")
 combined.plot.illustration
 ```
 
 Safe complete figure to file
 ```{r}
 ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_illustration.pdf", 
-       combined.plot.illustration, dpi = 300, width = 6, height = 3, device = cairo_pdf)
+       combined.plot.illustration, dpi = 300, width = 7, height = 3.5, device = cairo_pdf)
 ```
 
 # Full Feature Distribution Plots
