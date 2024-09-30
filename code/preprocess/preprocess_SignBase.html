@@ -387,7 +387,7 @@ introduce randomness where order was intended by the scribes.</p>
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
 <p>Give the session info (reduced).</p>
-<pre><code>## [1] &quot;R version 4.4.1 (2024-06-14)&quot;</code></pre>
+<pre><code>## [1] &quot;R version 4.4.0 (2024-04-24)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
 </div>
 <div id="load-data" class="section level1">
@@ -446,7 +446,7 @@ print(sign.typology[,1:4])</code></pre>
 ## 47  2         l       sign                     short line
 ## 48  1         |       sign                      long line</code></pre>
 <pre class="r"><code># sign codings and meta info per object
-sign.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-07-26.csv&quot;)
+sign.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-09-26.csv&quot;)
 # select objects of the Swabian Aurignacien
 sign.data &lt;- sign.data[sign.data$archaeological_unit == &quot;Aurignacien&quot; &amp;
                      sign.data$site_name == &quot;Vogelherd&quot; |
@@ -462,7 +462,7 @@ head(subset(sign.data, select = c(&quot;object_id&quot;, &quot;archaeological_un
 ## 162   vhc0168         Aurignacien       Vogelherd          &gt;&gt;&gt;&gt;&gt;&gt; ! &gt;&gt;&gt;&gt;&gt;
 ## 163   vhc0167         Aurignacien       Vogelherd vvvvvvvvvvvvvvvvvv _ v!
 ## 164   vhc0166         Aurignacien       Vogelherd           vvvvvvv _ [&amp;]
-## 165   vhc0165         Aurignacien       Vogelherd       !vvvv vvvvvv &gt;&gt;&gt;&gt;</code></pre>
+## 165   vhc0165         Aurignacien       Vogelherd   !vvvv v v v vv v &gt;&gt;&gt;&gt;</code></pre>
 </div>
 <div id="simple-stats-before-preprocessing" class="section level1">
 <h1>Simple Stats (before Preprocessing)</h1>

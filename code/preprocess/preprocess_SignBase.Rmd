@@ -38,7 +38,7 @@ sign.typology <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sign-202
 print(sign.typology[,1:4])
 
 # sign codings and meta info per object
-sign.data <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-07-26.csv")
+sign.data <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-09-26.csv")
 # select objects of the Swabian Aurignacien
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien" &
                      sign.data$site_name == "Vogelherd" |

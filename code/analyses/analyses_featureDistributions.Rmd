@@ -56,7 +56,7 @@ head(estimations.df)
 
 # Preprocessing
 ```{r}
-# select only sign strings of certain length
+# select only sign sequences of certain length
 #estimations.df <- estimations.df[estimations.df$num.tokens > 10 &
 #                                   estimations.df$num.tokens < 50,]
 
