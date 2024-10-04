@@ -364,8 +364,9 @@ sequences. Dumps of the TeDDi sample can be downloaded from <a href="https://dri
 Note that the sample of TeDDi lines was here produced by using the
 follwing Perl commands in the directory where the lines.csv file is
 stored:</p>
-<p>head -1 line.csv &gt; line_sample.csv perl -ne ‘print if (rand() &lt;
-.01)’ line.csv &gt;&gt; line_sample.csv</p>
+<p>head -1 line.csv &gt; line_sample.csv</p>
+<p>perl -ne ‘print if (rand() &lt; .01)’ line.csv &gt;&gt;
+line_sample.csv</p>
 <p>This randomly samples 10% of the overall around 20 million text
 lines. This downsampling is necessary, since otherwise loading the data
 into R for further processing is not feasible.</p>
@@ -413,7 +414,7 @@ Figure. Mapping of Chinese characters to strokes. This is part of Figure
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
 <p>Give the session info (reduced).</p>
-<pre><code>## [1] &quot;R version 4.4.1 (2024-06-14)&quot;</code></pre>
+<pre><code>## [1] &quot;R version 4.4.0 (2024-04-24)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
 </div>
 <div id="load-libraries" class="section level1">

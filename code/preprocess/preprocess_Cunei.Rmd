@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Description
-This file enables preprocessing of cuneiform tablet transliterations, these can be downloaded from CDLI (https://cdli.mpiwg-berlin.mpg.de/search). The extraction of proto-cuneiform sign codings is done with the sign lists provided by CDLI. In their syntax, repetitions of signs are indicated by a number followed by the sign type in parentheses, e.g. 6(N34) 1(N45) 3(N14) 5(N01), SZE~a (see Figure below). This is here expanded to yield individual sign tokens, e.g. N34 N34 ... N34 N45 N14 N14 N14, etc. We also include signs which are followed by '#' (broken but identifiable signs), but we exclude signs followed by '?' (questionable). We here only consider the periods "Uruk V", "Uruk IV", and "Uruk III", as these are typically seen as the proto-cuneiform periods, i.e. before genuine writing of spoken Sumerian developed. 
+This file enables preprocessing of cuneiform tablet transliterations as downloaded from CDLI (https://cdli.mpiwg-berlin.mpg.de/search). The extraction of proto-cuneiform sign codings is done with the sign lists provided by CDLI. In their syntax, repetitions of signs are indicated by a number followed by the sign type in parentheses, e.g. 6(N34) 1(N45) 3(N14) 5(N01), SZE~a (see Figure below). This is here expanded to yield individual sign tokens, e.g. N34 N34 ... N34 N45 N14 N14 N14, etc. We also include signs which are followed by '#' (broken but identifiable signs), but we exclude signs followed by '?' (questionable). We here only consider the periods "Uruk V", "Uruk IV", and "Uruk III", as these are typically seen as the proto-cuneiform periods, i.e. before genuine writing of spoken Sumerian developed. 
 
 ```{r foo, out.width="100%", fig.cap="Example of a Proto-Cuneiform tablet and transliteration from the CDLI database. Citation for this entry: “MS 3147/2 Artifact Entry.” 2004. Cuneiform Digital Library Initiative (CDLI). December 15, 2004. https://cdli.ucla.edu/P252157."}
 knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/tablet.png")
@@ -66,7 +66,7 @@ signlist <- scan(signlist.file, what = "char", quote = "", comment.char = "",
 head(signlist)
 ```
 
-# Process Transliteration
+# Process Transliterations
 Get vector of IDs for tablets.
 ```{r}
 # the ampersand followed by P identifies a single tablet transliteration
@@ -149,7 +149,7 @@ for (i in 1:length(textchunks)){
 cunei.data <- data.frame(tablet.id, signs.orig.vec, signs.expand.vec)
 ```
 
-Remove rows with empty sign codings
+Remove rows with empty sign codings.
 ```{r}
 cunei.data <- cunei.data[-which(cunei.data$signs.orig.vec == ""), ]
 ```

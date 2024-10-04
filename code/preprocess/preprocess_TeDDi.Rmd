@@ -15,6 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 This file enables preprocessing of the TeDDi sample natural language text material (Moran et al., 2022). This is used as a sample to compare against the sign codings for proto-cuneiform and paleolithic sign sequences. Dumps of the TeDDi sample can be downloaded from https://drive.switch.ch/index.php/s/MJv7xFkzqlzFn0y. Note that the sample of TeDDi lines was here produced by using the follwing Perl commands in the directory where the lines.csv file is stored:
 
 head -1 line.csv > line_sample.csv
+
 perl -ne 'print if (rand() < .01)' line.csv >> line_sample.csv
 
 This randomly samples 10% of the overall around 20 million text lines. This downsampling is necessary, since otherwise loading the data into R for further processing is not feasible.

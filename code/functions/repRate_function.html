@@ -366,20 +366,13 @@ display: none;
 <pre><code>## [1] &quot;R version 4.4.0 (2024-04-24)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
 </div>
-<div id="load-packages" class="section level1">
-<h1>Load Packages</h1>
-<p>If the libraries are not installed yet, you need to install them
-using, for example, the command: install.packages(“ggplot2”).</p>
-<p>Give the package versions.</p>
-<pre><code>## character(0)</code></pre>
-</div>
 <div id="function" class="section level1">
 <h1>Function</h1>
 <p>The function takes the parameter “data” as input. This has to be a
 vector of elements of a sequence. Also, it takes a “method” argument
 which has to be either “lsmo” (the normalizing R is then the “length of
 sequence minus one”), or “sproat” (the normalizing R is then the sum of
-frequencies sum of frequency counts <em>for each type minus 1</em>).</p>
+frequency counts <em>for each type minus 1</em>).</p>
 <pre class="r"><code>rrate &lt;- function(data, method = c(&quot;lsmo&quot;, &quot;sproat&quot;)){
   # create data frame with frequency counts  
   freq.df &lt;- as.data.frame(table(data))

@@ -364,18 +364,18 @@ typology can be downloaded from there. The files used for the current
 analyses are also given in the github repo under data/signBase/.</p>
 <div id="randomization" class="section level2">
 <h2>Randomization</h2>
-<p>The code also provides concatenation and randomization of sign
-strings which occur on different parts of a paleolithic object
-(indicated by underscore `_’). In the case of paleolithic sequences, we
-do not know the order of these respective strings (if any), hence, if we
-want to analyse them as one combined sequence, they need to be
-randomized. Note that this is not applicable to modern day written
-languages, as the order of strings of characters (e.g. words) is
-meaningful. Randomization of strings would artificially introduce
-randomness where order is intended. Arguably, the same holds for
-proto-cuneiform writing. There are particular orders with which
-proto-cuneiform signs were imprinted onto a tablet, i.e. a kind of
-“syntax”, cf. the following statement in Englund (1998), p. 79:</p>
+<p>The code below also enables randomization of sign strings which occur
+on different parts of a paleolithic object (indicated by underscore
+`_’). In the case of paleolithic sequences, we do not know the intended
+order of these strings of signs (if any). To understand the impact of
+string order we can randomize strings and compare the results to the
+original (arbitrary) order. Note that this is not applicable to modern
+day written languages, as the order of strings of characters
+(e.g. words) is normally meaningful. Randomization of words would
+artificially introduce randomness where order is intended. Arguably, the
+same holds for proto-cuneiform writing. There are particular orders with
+which proto-cuneiform signs were imprinted onto a tablet, i.e. a kind of
+syntax, cf. the following statement in Englund (1998), p. 79:</p>
 <p>“Number sign sequences within discrete notations are, as might be
 expected, very rigid and follow a definite numerical `syntax’. Within
 text entries, moreover, the position of numerical notations relative to
@@ -392,6 +392,8 @@ introduce randomness where order was intended by the scribes.</p>
 </div>
 <div id="load-data" class="section level1">
 <h1>Load Data</h1>
+<div id="list-of-sign-types" class="section level2">
+<h2>List of Sign Types</h2>
 <pre class="r"><code># load data from github repo
 # sign typology
 sign.typology &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/signBase/Sign-2024-07-17.csv&quot;)
@@ -445,6 +447,9 @@ print(sign.typology[,1:4])</code></pre>
 ## 46  3         /       sign   oblique line (right leaning)
 ## 47  2         l       sign                     short line
 ## 48  1         |       sign                      long line</code></pre>
+</div>
+<div id="coding-of-sign-sequences" class="section level2">
+<h2>Coding of Sign Sequences</h2>
 <pre class="r"><code># sign codings and meta info per object
 sign.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-09-26.csv&quot;)
 # select objects of the Swabian Aurignacien
@@ -463,6 +468,7 @@ head(subset(sign.data, select = c(&quot;object_id&quot;, &quot;archaeological_un
 ## 163   vhc0167         Aurignacien       Vogelherd vvvvvvvvvvvvvvvvvv _ v!
 ## 164   vhc0166         Aurignacien       Vogelherd           vvvvvvv _ [&amp;]
 ## 165   vhc0165         Aurignacien       Vogelherd   !vvvv v v v vv v &gt;&gt;&gt;&gt;</code></pre>
+</div>
 </div>
 <div id="simple-stats-before-preprocessing" class="section level1">
 <h1>Simple Stats (before Preprocessing)</h1>
@@ -517,8 +523,8 @@ table(sign.data$object_type)</code></pre>
 </div>
 <div id="preprocessing" class="section level1">
 <h1>Preprocessing</h1>
-<p>Preprocessing and storage of cleaned file for signs. Load data from
-github repo and remove missing rows.</p>
+<p>Preprocessing and storage of cleaned file. Load data from github repo
+and remove missing rows.</p>
 <pre class="r"><code># remove certain columns
 sign.data &lt;- subset(sign.data, select = -c(short_description, references))
 # remove rows for which there is no sign coding
@@ -526,8 +532,8 @@ sign.data &lt;- sign.data[!sign.data$sign_coding == &quot;&quot;, ]
 # remove rows with &quot;very uncertain&quot; sign codings
 sign.data &lt;- sign.data[!sign.data$coding_certainty == &quot;Very uncertain&quot;, ]</code></pre>
 <p>Remove UTF-8 characters which do not represent actual signs on the
-objects, i.e annotations. A table with these distinctions is also
-provided at www.signbase.org.</p>
+objects, i.e annotations. See also list of sign types (sign.typology)
+above.</p>
 <pre class="r"><code># remove some special characters 
 coding.clean &lt;- gsub(&#39;[!?{}]&#39;, &#39;&#39;, sign.data$sign_coding)
 # remove sign strings which are not discrete, i.e. overlapping sign types 

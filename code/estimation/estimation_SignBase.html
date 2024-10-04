@@ -408,10 +408,13 @@ codings as found in signBase.</p>
 counter = 0
 # initialize dataframe to append results to
 estimations.df &lt;- data.frame(object_id = character(0),
-                             num.tokens = numeric(0), num.types = numeric(0), 
-                             huni.chars = numeric (0), hrate.chars = numeric(0),
+                             num.tokens = numeric(0), 
+                             num.types = numeric(0), 
+                             huni.chars = numeric (0), 
+                             hrate.chars = numeric(0),
                              hrate.chars.random = numeric(0),
-                             ttr.chars = numeric(0), rm.chars = numeric(0)) 
+                             ttr.chars = numeric(0), 
+                             rm.chars = numeric(0)) 
 
 # start time
 start_time &lt;- Sys.time()
@@ -439,8 +442,8 @@ for (i in 1:nrow(sign.data)){
   chars.random &lt;- PreprocessText(chars.random)
   
   # unigram entropy estimation
-  # calculate unigram entropy for characters (note that this is the same
-  # for random ordering of chracter strings)
+  # calculate unigram entropy for characters (note that this remains the same
+  # for random ordering of character strings)
   chars.df &lt;- as.data.frame(table(chars))
   # print(chars.df)
   huni.chars &lt;- entropy(chars.df$Freq, method = &quot;ML&quot;, unit = &quot;log2&quot;)
@@ -482,13 +485,12 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 1.567091 secs</code></pre>
+<pre><code>## Time difference of 1.628952 secs</code></pre>
 <pre class="r"><code>#estimations.df</code></pre>
 <p>Merge estimations with original file.</p>
 <pre class="r"><code>sign.data.est &lt;- merge(sign.data, estimations.df, by = &quot;object_id&quot;)</code></pre>
 <p>Give head of estimation data frame (selected columns) for visual
-checking of the output data structure. Note that “coding_clean” gives
-the sequences with underscores and white spaces around them.</p>
+checking of the output data structure.</p>
 <pre class="r"><code>head(sign.data.est[c(&quot;object_id&quot;, &quot;coding_clean&quot;, &quot;num.tokens&quot;, &quot;num.types&quot;, &quot;huni.chars&quot;, 
                        &quot;hrate.chars&quot;, &quot;ttr.chars&quot;, &quot;rm.chars&quot;)])</code></pre>
 <pre><code>##   object_id       coding_clean num.tokens num.types huni.chars hrate.chars

@@ -50,12 +50,13 @@ source("~/Github/UpperPalCombinatorics/code/functions/repRate_function.R")
 Load the files with the cleaned sequences. A period needs to be chosen here. Hence, the code needs to be run for periods separately.
 ```{r}
 # choose period (UrukIII, UrukIV, UrukV)
-period <- "UrukIII"
+period <- "UrukV"
 
 # cuneiform data from CDLI
 cunei.data <- read.csv(paste("~/Github/UpperPalCombinatorics/data/CDLI/", 
                       paste(period, "/signs_clean.csv", sep = ""), 
                       sep =""))
+head(cunei.data)
 ```
 
 # Cuneiform Estimations
@@ -64,9 +65,11 @@ Estimations of quantitative features for the cuneiform data from CDLI.
 # set counter
 counter = 0
 # initialize dataframe to append results to
-estimations.df <- data.frame(tablet.id = character(0), num.tokens = numeric(0),
+estimations.df <- data.frame(tablet.id = character(0), 
+                             num.tokens = numeric(0),
                              num.types = numeric(0),
-                             huni.chars = numeric (0), hrate.chars = numeric(0), 
+                             huni.chars = numeric (0), 
+                             hrate.chars = numeric(0), 
                              ttr.chars = numeric(0), 
                              rm.chars = numeric(0)) 
 
@@ -102,9 +105,9 @@ for (i in 1:nrow(cunei.data)){
   huni.chars <- entropy(chars.df$Freq, method = "ML", unit = "log2")
   
   # entropy rate estimation
-  # the values chosen for max.length and every.word will crucially 
-  # impact processing time. In case of "max.length = NULL" the length is n units
-  # here use the try() function since entropy rate estimation can fail when particular
+  # the values chosen for max.length and every.word will crucially impact processing time 
+  # in case of "max.length = NULL" the length the total length of the sequence (n)
+  # use the try() function since entropy rate estimation can fail when particular
   # special characters are in the strings
   hrate.chars <- try(get.estimate(text = chars, every.word = 1, max.length = NULL))
   if (class(hrate.chars) == "numeric") {

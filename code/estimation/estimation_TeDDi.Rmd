@@ -102,8 +102,8 @@ for (i in 1:nrow(teddi.clean)){
   huni.chars <- entropy(chars.df$Freq, method = "ML", unit = "log2")
   
   # entropy rate estimation
-  # the values chosen for max.length and every.word will crucially 
-  # impact processing time. In case of "max.length = NULL" the length is n units
+  # the values chosen for max.length and every.word will crucially impact processing time
+  # in case of "max.length = NULL" the max length is the sequence length (n)
   # here use the try() function since entropy rate estimation can fail when particular
   # special characters are in the strings
   hrate.chars <- try(get.estimate(text = chars, every.word = 1, max.length = NULL))

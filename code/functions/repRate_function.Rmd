@@ -21,20 +21,8 @@ sessionInfo()$R.version$version.string
 sessionInfo()$R.version$platform 
 ```
 
-# Load Packages
-If the libraries are not installed yet, you need to install them using, for example, the command: install.packages("ggplot2").
-```{r, message = F}
-
-```
-
-Give the package versions.
-```{r, echo = F}
-# version of packages loaded
-installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
-```
-
 # Function
-The function takes the parameter "data" as input. This has to be a vector of elements of a sequence. Also, it takes a "method" argument which has to be either "lsmo" (the normalizing R is then the "length of sequence minus one"), or "sproat" (the normalizing R is then the sum of frequencies sum of frequency counts *for each type minus 1*).
+The function takes the parameter "data" as input. This has to be a vector of elements of a sequence. Also, it takes a "method" argument which has to be either "lsmo" (the normalizing R is then the "length of sequence minus one"), or "sproat" (the normalizing R is then the sum of frequency counts *for each type minus 1*).
 ```{r}
 rrate <- function(data, method = c("lsmo", "sproat")){
   # create data frame with frequency counts  

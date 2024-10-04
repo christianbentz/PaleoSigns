@@ -47,7 +47,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ```
 
 # Load Data
-Load csv file with quantitative feature values for sign sequences per object (paleolithic signs) and tablet (cuneiform). Comparative sample: A comparative sample of feature values for languages across the world is derived from the Text Data Diversity (TeDDi) sample (Moran et al 2022). 
+Load csv file with quantitative feature values for sign sequences per object (paleolithic signs) and tablet (cuneiform). A comparative sample of feature values for languages across the world is derived from the Text Data Diversity (TeDDi) sample (Moran et al 2022). 
 
 ```{r}
 estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features/features_combined.csv")
@@ -288,7 +288,7 @@ biplot <- ggbiplot(pca,
 print(biplot)
 ```
 
-Interpretation: The first two principal components together preserve 94.6% of the original variance in the four variables. PC1 mainly reflects the opposition between repetition rate and entropy (both unigram and rate). Unigram entropy and entropy rate are highly positively correlated (similar vector directions) and have a positive loading on PC1. Modern writing systems fall into the high entropy area, while proto-cuneiform systems tend to have high repetition rates, and low entropies similar to the Aurignacian sequences of signs. TTR is mostly orthogonal to the other three measures and loads mainly on PC2. Aurignacian and Uruk V signs tend to have low TTR, while modern writing systems display a wide range of TTRs (depending on the character inventories).
+Interpretation: The first two principal components together preserve c. 90% of the original variance in the four variables. PC1 mainly reflects the opposition between repetition rate and entropy (both unigram and rate). Unigram entropy and entropy rate are highly positively correlated (similar vector directions) and have a positive loading on PC1. Modern writing systems fall into the high entropy area, while proto-cuneiform systems tend to have high repetition rates, and low entropies similar to the Aurignacian sequences of signs. TTR is mostly orthogonal to the other three measures and loads mainly on PC2. Aurignacian and Uruk V signs tend to have low TTR, while modern writing systems display a wide range of TTRs (depending on the character inventories).
 
 The normal data ellipse for the Aurignacian sign sequences fully overlaps with the one for the earliest Proto-Cuneiform period (Uruk V), whereas the later two Proto-Cuneiform periods (Uruk IV and Uruk III) start to "move closer" and overlap with the TeDDi (modern writing) ellipse. 
 
