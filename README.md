@@ -1,4 +1,4 @@
-# UpperPalCombinatorics
+# PaleoSigns
 
 This repository contains data and code to work on the statistical properties of Upper Paleolithic geometric signs of the Swabian Aurignacian.
 
