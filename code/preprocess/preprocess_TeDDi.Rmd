@@ -25,7 +25,7 @@ The text lines are here further cleaned, since there is some unwanted noise in t
 
 We also use the regex "[!-~]" to remove ASCII characters (see table below) from number 33 (exclamation mark) to 126 (tilde) from *non-Latin* scripts. This is because there is -- mainly English -- contamination of texts in other languages and writing systems (e.g. Mandarin Chinese, Korean). Note that this also removes some of the punctuation in the non-Latin scripts.    
 ```{r, out.width="100%", fig.cap="Figure. ASCII table from WikiCommons."}
-knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/ASCII-Table.png")
+knitr::include_graphics("~/Github/PaleoSigns/figures_external/ASCII-Table.png")
 ```
 
 ## Chinese characters to strokes
@@ -33,7 +33,7 @@ We also transliterate Chinese characters into individual strokes using the mappi
 //github.com/zjwang21/StrokeNet. The original file name with the mappings is zh2letter.txt. This provides a mapping from Chinese characters to individual component strokes given as Latin characters (for ease of further processing). See also figure below.
 
 ```{r, out.width="100%", fig.cap="Figure. Mapping of Chinese characters to strokes. This is part of Figure 1 in Wang et al. (2022)."}
-knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/wang.jpg")
+knitr::include_graphics("~/Github/PaleoSigns/figures_external/wang.jpg")
 ```
 
 # Session Info
@@ -59,10 +59,10 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 
 # Load the TeDDi data
 ```{r}
-# load data from TeDDi dumps (takes a couple of minutes)
+# load data from TeDDi dumps
 line.data <- read.csv(
-  "~/Github/UpperPalCombinatorics/data/TeDDi/line_sample.csv")
-file.data <- read.csv("~/Github/UpperPalCombinatorics/data/TeDDi/file.csv")
+  "~/Github/PaleoSigns/data/TeDDi/line_sample.csv")
+file.data <- read.csv("~/Github/PaleoSigns/data/TeDDi/file.csv")
 # merge the files
 teddi.data <- merge(line.data, file.data, by.x = "file_id", by.y = "id")
 ```
@@ -93,8 +93,8 @@ teddi.sample[teddi.sample$writing_system != "Latn", ]$text <-
 Transliterate Chinese characters to strings of strokes represented by Latin characters.
 ```{r}
 # load stroke transliteration list
-stroke.file = "~/Github/UpperPalCombinatorics/data/TeDDi/zh2letter.txt"
-stroke.df <- read.table("~/Github/UpperPalCombinatorics/data/TeDDi/zh2letter.txt", sep = " ")
+stroke.file = "~/Github/PaleoSigns/data/TeDDi/zh2letter.txt"
+stroke.df <- read.table("~/Github/PaleoSigns/data/TeDDi/zh2letter.txt", sep = " ")
 # add column names
 colnames(stroke.df) <- c("chars","strokes")
 # give beginning of signlist
@@ -148,7 +148,7 @@ Write to file.
 teddi.clean <- teddi.clean[order(teddi.clean$language_name_glotto), ]
 # write to file
 write.csv(teddi.clean, 
-          file = "~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.csv", row.names = F)
+          file = "~/Github/PaleoSigns/data/TeDDi/final_sample.csv", row.names = F)
 ```
 
 # Package References

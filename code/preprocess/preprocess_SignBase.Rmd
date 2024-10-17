@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Description
-This file enables preprocessing of Upper-Paleolithic sign sequences as published at https://www.signbase.org. The csv file with updated objects and sign codings, as well as a csv file with the sign type typology can be downloaded from there. The files used for the current analyses are also given in the github repo under data/signBase/.
+This file enables preprocessing of Upper-Paleolithic sign sequences as published at https://www.signbase.org. The newest csv file with updated objects and sign codings, as well as a csv file with the sign type typology can be downloaded from there. The files used for the current analyses published in this article are given in the github repo under data/signBase/.
 
 ## Randomization
 The code below also enables randomization of sign strings which occur on different parts of a paleolithic object (indicated by underscore `_'). In the case of paleolithic sequences, we do not know the intended order of these strings of signs (if any). To understand the impact of string order we can randomize strings and compare the results to the original (arbitrary) order. Note that this is not applicable to modern day written languages, as the order of strings of characters (e.g. words) is normally meaningful. Randomization of words would artificially introduce randomness where order is intended. Arguably, the same holds for proto-cuneiform writing. There are particular orders with which proto-cuneiform signs were imprinted onto a tablet, i.e. a kind of syntax, cf. the following statement in Englund (1998), p. 79:
@@ -36,14 +36,14 @@ sessionInfo()$R.version$platform
 ```{r}
 # load data from github repo
 # sign typology
-sign.typology <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sign-2024-07-17.csv")
+sign.typology <- read.csv("~/Github/PaleoSigns/data/signBase/Sign-2024-07-17.csv")
 print(sign.typology[,1:4])
 ```
 
 ## Coding of Sign Sequences
 ```{r}
 # sign codings and meta info per object
-sign.data <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-09-26.csv")
+sign.data <- read.csv("~/Github/PaleoSigns/data/signBase/Sb2Artifact-2024-10-17.csv")
 # select objects of the Swabian Aurignacien
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien" &
                      sign.data$site_name == "Vogelherd" |
@@ -145,7 +145,7 @@ sign.data$coding_random <- coding.random
 
 Safe to file.
 ```{r}
-write.csv(sign.data, "~/Github/UpperPalCombinatorics/data/signBase/signBase_randomized.csv", row.names = F)
+write.csv(sign.data, "~/Github/PaleoSigns/data/signBase/signBase_randomized.csv", row.names = F)
 ```
 
 # Literature References

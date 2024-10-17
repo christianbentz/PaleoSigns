@@ -358,10 +358,11 @@ display: none;
 <div id="description" class="section level1">
 <h1>Description</h1>
 <p>This file enables preprocessing of Upper-Paleolithic sign sequences
-as published at <a href="https://www.signbase.org" class="uri">https://www.signbase.org</a>. The csv file with updated
-objects and sign codings, as well as a csv file with the sign type
-typology can be downloaded from there. The files used for the current
-analyses are also given in the github repo under data/signBase/.</p>
+as published at <a href="https://www.signbase.org" class="uri">https://www.signbase.org</a>. The newest csv file with
+updated objects and sign codings, as well as a csv file with the sign
+type typology can be downloaded from there. The files used for the
+current analyses published in this article are given in the github repo
+under data/signBase/.</p>
 <div id="randomization" class="section level2">
 <h2>Randomization</h2>
 <p>The code below also enables randomization of sign strings which occur
@@ -396,7 +397,7 @@ introduce randomness where order was intended by the scribes.</p>
 <h2>List of Sign Types</h2>
 <pre class="r"><code># load data from github repo
 # sign typology
-sign.typology &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/signBase/Sign-2024-07-17.csv&quot;)
+sign.typology &lt;- read.csv(&quot;~/Github/PaleoSigns/data/signBase/Sign-2024-07-17.csv&quot;)
 print(sign.typology[,1:4])</code></pre>
 <pre><code>##    id character       type                  signbase_name
 ## 1  48           annotation              linear separation
@@ -451,7 +452,7 @@ print(sign.typology[,1:4])</code></pre>
 <div id="coding-of-sign-sequences" class="section level2">
 <h2>Coding of Sign Sequences</h2>
 <pre class="r"><code># sign codings and meta info per object
-sign.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-09-26.csv&quot;)
+sign.data &lt;- read.csv(&quot;~/Github/PaleoSigns/data/signBase/Sb2Artifact-2024-10-17.csv&quot;)
 # select objects of the Swabian Aurignacien
 sign.data &lt;- sign.data[sign.data$archaeological_unit == &quot;Aurignacien&quot; &amp;
                      sign.data$site_name == &quot;Vogelherd&quot; |
@@ -629,7 +630,7 @@ for (i in 1:nrow(sign.data)){
 # add column with randomized order to data frame
 sign.data$coding_random &lt;- coding.random</code></pre>
 <p>Safe to file.</p>
-<pre class="r"><code>write.csv(sign.data, &quot;~/Github/UpperPalCombinatorics/data/signBase/signBase_randomized.csv&quot;, row.names = F)</code></pre>
+<pre class="r"><code>write.csv(sign.data, &quot;~/Github/PaleoSigns/data/signBase/signBase_randomized.csv&quot;, row.names = F)</code></pre>
 </div>
 <div id="literature-references" class="section level1">
 <h1>Literature References</h1>
