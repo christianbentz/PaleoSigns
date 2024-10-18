@@ -46,18 +46,18 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 # External functions
 ```{r sourceCode, echo = TRUE}
 # repetition rate function rrate()
-source("~/Github/UpperPalCombinatorics/code/functions/repRate_function.R")
+source("~/Github/PaleoSigns/code/functions/repRate_function.R")
 ```
 
 # Load data
 Read the preprocessed files with sequences per row. 
 ```{r}
 # give file paths to the files to be processed
-teddi <- read.csv("~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.csv")
-signbase <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/signBase_randomized.csv")
-cdli.urukV <- read.csv("~/Github/UpperPalCombinatorics/data/CDLI/UrukV/signs_clean.csv")
-cdli.urukIV <- read.csv("~/Github/UpperPalCombinatorics/data/CDLI/UrukIV/signs_clean.csv")
-cdli.urukIII <- read.csv("~/Github/UpperPalCombinatorics/data/CDLI/UrukIII/signs_clean.csv")
+teddi <- read.csv("~/Github/PaleoSigns/data/TeDDi/final_sample.csv")
+signbase <- read.csv("~/Github/PaleoSigns/data/signBase/signBase_randomized.csv")
+cdli.urukV <- read.csv("~/Github/PaleoSigns/data/CDLI/UrukV/signs_clean.csv")
+cdli.urukIV <- read.csv("~/Github/PaleoSigns/data/CDLI/UrukIV/signs_clean.csv")
+cdli.urukIII <- read.csv("~/Github/PaleoSigns/data/CDLI/UrukIII/signs_clean.csv")
 ```
 
 # Preprocessing
@@ -212,7 +212,7 @@ huni.chars.plot
 
 ## Safe figure to file
 ```{r, warning = FALSE}
-ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_huni_chars.pdf", huni.chars.plot, dpi = 300, 
+ggsave("~/Github/PaleoSigns/figures/stabilization_huni_chars.pdf", huni.chars.plot, dpi = 300, 
        width = 12, height = 12, 
        scale = 1, device = cairo_pdf)
 ```
@@ -231,7 +231,7 @@ hrate.chars.plot
 
 ## Safe figure to file
 ```{r, warning = FALSE}
-ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_hrate_chars.pdf", hrate.chars.plot, dpi = 300, 
+ggsave("~/Github/PaleoSigns/figures/stabilization_hrate_chars.pdf", hrate.chars.plot, dpi = 300, 
        width = 12, height = 12, 
        scale = 1, device = cairo_pdf, limitsize = F)
 ```
@@ -250,7 +250,7 @@ ttr.chars.plot
 
 ## Safe figure to file
 ```{r, warning = FALSE}
-ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_ttr_chars.pdf", ttr.chars.plot, dpi = 300, 
+ggsave("~/Github/PaleoSigns/figures/stabilization_ttr_chars.pdf", ttr.chars.plot, dpi = 300, 
        width = 12, height = 12, 
        scale = 1, device = cairo_pdf)
 ```
@@ -269,7 +269,7 @@ rm.chars.plot
 
 ## Safe figure to file
 ```{r, warning = FALSE}
-ggsave("~/Github/UpperPalCombinatorics/figures/stabilization_rm_chars.pdf", rm.chars.plot, dpi = 300,
+ggsave("~/Github/PaleoSigns/figures/stabilization_rm_chars.pdf", rm.chars.plot, dpi = 300,
        width = 12, height = 12, 
        scale = 1, device = cairo_pdf)
 ```

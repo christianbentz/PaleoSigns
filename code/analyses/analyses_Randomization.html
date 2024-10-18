@@ -389,7 +389,7 @@ library(gridExtra)</code></pre>
 <p>Load csv file with quantitative feature values for sign sequences per
 object.</p>
 <pre class="r"><code># load signbase estimations for strings on objects
-sign.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/results/features/signBase_features.csv&quot;)
+sign.data &lt;- read.csv(&quot;~/Github/PaleoSigns/results/features/signBase_features.csv&quot;)
 # select Aurignacian objects
 sign.data &lt;- sign.data[sign.data$archaeological_unit == &quot;Aurignacien&quot;, ] </code></pre>
 </div>
@@ -431,7 +431,7 @@ hrate.random.plot &lt;- ggMarginal(hrate.random.plot,
 </div>
 <div id="safe-complete-figure-to-file" class="section level2">
 <h2>Safe complete figure to file</h2>
-<pre class="r"><code>ggsave(&quot;~/Github/UpperPalCombinatorics/figures/combinedPlot_signBase_random.pdf&quot;, 
+<pre class="r"><code>ggsave(&quot;~/Github/PaleoSigns/figures/combinedPlot_signBase_random.pdf&quot;, 
        hrate.random.plot, dpi = 300, width = 6, height = 6, device = cairo_pdf)</code></pre>
 </div>
 </div>

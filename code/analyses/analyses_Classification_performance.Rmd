@@ -17,7 +17,7 @@ This file enables post-hoc analyses of the performance values (F1-scores, accura
 The performance metrics are derived by using the confusionMatrix() function of the caret package. See the code files in analyses_Classification_KNN.Rmd and analyses_Classification_MLP.Rmd for the actual implementation. In the case of a two class classification problem (e.g. Aurignacien vs. Uruk V), a confusion matrix might look as in the example below.
 
 ```{r foo, out.width="25%", fig.cap="Table. Confusion matrix as given in the confusionMatrix() documentation."}
-knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/confusionMatrix.png")
+knitr::include_graphics("~/Github/PaleoSigns/figures_external/confusionMatrix.png")
 ```
 
 The accuracy is then calculated as  
@@ -133,7 +133,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ## Load Data
 ```{r}
 # list files in the performance folders
-files.mlp.performance <- list.files(path = "~/Github/UpperPalCombinatorics/results/classifier/MLP/performance", full.names = T)
+files.mlp.performance <- list.files(path = "~/Github/PaleoSigns/results/classifier/MLP/performance", full.names = T)
 ```
 
 ## Preprocessing
@@ -238,7 +238,7 @@ pvalue.mlp.plot
 ## Load Data
 ```{r}
 # list files in the performance folders
-files.knn.performance <- list.files(path = "~/Github/UpperPalCombinatorics/results/classifier/KNN/performance", full.names = T)
+files.knn.performance <- list.files(path = "~/Github/PaleoSigns/results/classifier/KNN/performance", full.names = T)
 ```
 
 ## Preprocessing
@@ -341,7 +341,7 @@ combined.plot
 
 Safe to file.
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/performancePlot.pdf", 
+ggsave("~/Github/PaleoSigns/figures/performancePlot.pdf", 
        combined.plot, dpi = 300, width = 10, height = 5, device = cairo_pdf)
 ```
 

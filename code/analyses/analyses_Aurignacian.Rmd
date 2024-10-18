@@ -48,7 +48,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 # Load Data
 Load feature estimations with meta data for the Aurignacian mobile objects.
 ```{r}
-sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/signBase_features.csv")
+sign.data <- read.csv("~/Github/PaleoSigns/results/features/signBase_features.csv")
 # select Aurignacian data
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
 ```
@@ -162,7 +162,7 @@ combined.barplot
 
 Safe complete figure to file.
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/barPlots_Aurignacian.pdf", 
+ggsave("~/Github/PaleoSigns/figures/barPlots_Aurignacian.pdf", 
        combined.barplot, dpi = 300, width = 12, height = 4, device = cairo_pdf)
 ```
 
@@ -308,7 +308,7 @@ signsCombined.barplot
 
 Safe complete figure to file.
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/signsCombinedPlot_Aurignacian.pdf", 
+ggsave("~/Github/PaleoSigns/figures/signsCombinedPlot_Aurignacian.pdf", 
        signsCombined.barplot, dpi = 300, width = 10, height = 14, device = cairo_pdf)
 ```
 
@@ -458,7 +458,7 @@ predictor.plot
 
 Safe figure to file.
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/predictorPlot_Aurignacian.pdf", 
+ggsave("~/Github/PaleoSigns/figures/predictorPlot_Aurignacian.pdf", 
        predictor.plot, dpi = 300, width = 14, height = 7, device = cairo_pdf)
 ```
 
@@ -662,7 +662,7 @@ print(model.results)
 
 Export data frame with results of linear models.
 ```{r}
-write.csv(model.results, file = "~/Github/UpperPalCombinatorics/tables/lmResults.csv", row.names = F)
+write.csv(model.results, file = "~/Github/PaleoSigns/tables/lmResults.csv", row.names = F)
 ```
 
 Manually select best model for further usage. Note that a decrease in AIC (compared to previous best model) is here considered as criterion for leaving the respective predictor variable in the model. 
@@ -685,7 +685,7 @@ check_model(best.model)
 
 Write to file.
 ```{r}
-png(filename = file.path("~/Github/UpperPalCombinatorics/figures/", "modelCheckingPlot.png"), 
+png(filename = file.path("~/Github/PaleoSigns/figures/", "modelCheckingPlot.png"), 
     width = 10, height = 10, units = "in", res = 300)
 check_model(best.model)
 dev.off()
@@ -773,7 +773,7 @@ model.plot
 
 Safe figure to file.
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/modelPlot_Aurignacian.pdf", 
+ggsave("~/Github/PaleoSigns/figures/modelPlot_Aurignacian.pdf", 
        model.plot, dpi = 300, width = 12, height = 8, device = cairo_pdf)
 ```
 

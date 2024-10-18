@@ -43,13 +43,13 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 # External functions
 ```{r sourceCode, echo = TRUE}
 # repetition rate function rrate()
-source("~/Github/UpperPalCombinatorics/code/functions/repRate_function.R")
+source("~/Github/PaleoSigns/code/functions/repRate_function.R")
 ```
 
 # Load files
 Load the file with cleaned TeDDi sample lines.
 ```{r}
-teddi.clean <- read.csv("~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.csv")
+teddi.clean <- read.csv("~/Github/PaleoSigns/data/TeDDi/final_sample.csv")
 ```
 
 # Feature Estimations
@@ -142,7 +142,7 @@ head(estimations.df)
 
 Safe outputs to file.
 ```{r}
-write.csv(estimations.df, "~/Github/UpperPalCombinatorics/results/features/teddi_features.csv", 
+write.csv(estimations.df, "~/Github/PaleoSigns/results/features/teddi_features.csv", 
           row.names = F)
 ```
 

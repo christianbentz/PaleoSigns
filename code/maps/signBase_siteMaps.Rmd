@@ -45,7 +45,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 # Load data
 Run this code to load the file with data on Aurignacian objects. 
 ```{r}
-objects <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/Sb2Artifact-2024-07-26.csv")
+objects <- read.csv("~/Github/PaleoSigns/data/signBase/Sb2Artifact-2024-10-17.csv")
 nrow(objects)
 # Select Aurignacian objects from Swabian Jura Caves
 objects <- objects[objects$archaeological_unit == "Aurignacien", ]
@@ -329,7 +329,7 @@ combined.plot <- ggarrange(swabianJura.map, object.map.lonetal, object.map.vogel
 
 Safe complete figure to file
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/maps/maps_combined.pdf", 
+ggsave("~/Github/PaleoSigns/maps/maps_combined.pdf", 
        combined.plot, dpi = 500, width = 15, height = 10, device = cairo_pdf)
 ```
 

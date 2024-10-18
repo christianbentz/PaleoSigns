@@ -1679,17 +1679,17 @@ library(Hrate)</code></pre>
 <div id="external-functions" class="section level1">
 <h1>External functions</h1>
 <pre class="r"><code># repetition rate function rrate()
-source(&quot;~/Github/UpperPalCombinatorics/code/functions/repRate_function.R&quot;)</code></pre>
+source(&quot;~/Github/PaleoSigns/code/functions/repRate_function.R&quot;)</code></pre>
 </div>
 <div id="load-data" class="section level1">
 <h1>Load data</h1>
 <p>Read the preprocessed files with sequences per row.</p>
 <pre class="r"><code># give file paths to the files to be processed
-teddi &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.csv&quot;)
-signbase &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/signBase/signBase_randomized.csv&quot;)
-cdli.urukV &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/CDLI/UrukV/signs_clean.csv&quot;)
-cdli.urukIV &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/CDLI/UrukIV/signs_clean.csv&quot;)
-cdli.urukIII &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/CDLI/UrukIII/signs_clean.csv&quot;)</code></pre>
+teddi &lt;- read.csv(&quot;~/Github/PaleoSigns/data/TeDDi/final_sample.csv&quot;)
+signbase &lt;- read.csv(&quot;~/Github/PaleoSigns/data/signBase/signBase_randomized.csv&quot;)
+cdli.urukV &lt;- read.csv(&quot;~/Github/PaleoSigns/data/CDLI/UrukV/signs_clean.csv&quot;)
+cdli.urukIV &lt;- read.csv(&quot;~/Github/PaleoSigns/data/CDLI/UrukIV/signs_clean.csv&quot;)
+cdli.urukIII &lt;- read.csv(&quot;~/Github/PaleoSigns/data/CDLI/UrukIII/signs_clean.csv&quot;)</code></pre>
 </div>
 <div id="preprocessing" class="section level1">
 <h1>Preprocessing</h1>
@@ -1823,7 +1823,7 @@ for (i in 1:nrow(data.combined))
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 2.862002 mins</code></pre>
+<pre><code>## Time difference of 2.850203 mins</code></pre>
 <pre class="r"><code>head(stabilization.df)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
@@ -1848,7 +1848,7 @@ huni.chars.plot</code></pre>
 </div>
 <div id="safe-figure-to-file" class="section level2">
 <h2>Safe figure to file</h2>
-<pre class="r"><code>ggsave(&quot;~/Github/UpperPalCombinatorics/figures/stabilization_huni_chars.pdf&quot;, huni.chars.plot, dpi = 300, 
+<pre class="r"><code>ggsave(&quot;~/Github/PaleoSigns/figures/stabilization_huni_chars.pdf&quot;, huni.chars.plot, dpi = 300, 
        width = 12, height = 12, 
        scale = 1, device = cairo_pdf)</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula = &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
@@ -1868,7 +1868,7 @@ hrate.chars.plot</code></pre>
 </div>
 <div id="safe-figure-to-file-1" class="section level2">
 <h2>Safe figure to file</h2>
-<pre class="r"><code>ggsave(&quot;~/Github/UpperPalCombinatorics/figures/stabilization_hrate_chars.pdf&quot;, hrate.chars.plot, dpi = 300, 
+<pre class="r"><code>ggsave(&quot;~/Github/PaleoSigns/figures/stabilization_hrate_chars.pdf&quot;, hrate.chars.plot, dpi = 300, 
        width = 12, height = 12, 
        scale = 1, device = cairo_pdf, limitsize = F)</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula = &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
@@ -1888,7 +1888,7 @@ ttr.chars.plot</code></pre>
 </div>
 <div id="safe-figure-to-file-2" class="section level2">
 <h2>Safe figure to file</h2>
-<pre class="r"><code>ggsave(&quot;~/Github/UpperPalCombinatorics/figures/stabilization_ttr_chars.pdf&quot;, ttr.chars.plot, dpi = 300, 
+<pre class="r"><code>ggsave(&quot;~/Github/PaleoSigns/figures/stabilization_ttr_chars.pdf&quot;, ttr.chars.plot, dpi = 300, 
        width = 12, height = 12, 
        scale = 1, device = cairo_pdf)</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula = &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>
@@ -1908,7 +1908,7 @@ rm.chars.plot</code></pre>
 </div>
 <div id="safe-figure-to-file-3" class="section level2">
 <h2>Safe figure to file</h2>
-<pre class="r"><code>ggsave(&quot;~/Github/UpperPalCombinatorics/figures/stabilization_rm_chars.pdf&quot;, rm.chars.plot, dpi = 300,
+<pre class="r"><code>ggsave(&quot;~/Github/PaleoSigns/figures/stabilization_rm_chars.pdf&quot;, rm.chars.plot, dpi = 300,
        width = 12, height = 12, 
        scale = 1, device = cairo_pdf)</code></pre>
 <pre><code>## `geom_smooth()` using method = &#39;gam&#39; and formula = &#39;y ~ s(x, bs = &quot;cs&quot;)&#39;</code></pre>

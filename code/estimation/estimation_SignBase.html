@@ -392,13 +392,13 @@ library(Hrate)</code></pre>
 <div id="external-functions" class="section level1">
 <h1>External functions</h1>
 <pre class="r"><code># repetition rate function rrate()
-source(&quot;~/Github/UpperPalCombinatorics/code/functions/repRate_function.R&quot;)</code></pre>
+source(&quot;~/Github/PaleoSigns/code/functions/repRate_function.R&quot;)</code></pre>
 </div>
 <div id="load-files" class="section level1">
 <h1>Load files</h1>
 <p>Load the files with the cleaned and randomized sequences.</p>
 <pre class="r"><code># signBase data
-sign.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/signBase/signBase_randomized.csv&quot;)</code></pre>
+sign.data &lt;- read.csv(&quot;~/Github/PaleoSigns/data/signBase/signBase_randomized.csv&quot;)</code></pre>
 </div>
 <div id="signbase-swabian-aurignacian-estimations" class="section level1">
 <h1>SignBase (Swabian Aurignacian) Estimations</h1>
@@ -485,7 +485,7 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 1.628952 secs</code></pre>
+<pre><code>## Time difference of 1.572902 secs</code></pre>
 <pre class="r"><code>#estimations.df</code></pre>
 <p>Merge estimations with original file.</p>
 <pre class="r"><code>sign.data.est &lt;- merge(sign.data, estimations.df, by = &quot;object_id&quot;)</code></pre>
@@ -508,7 +508,7 @@ checking of the output data structure.</p>
 ## 5 0.07142857 1.0000000
 ## 6 0.33333333 1.0000000</code></pre>
 <p>Safe outputs to file.</p>
-<pre class="r"><code>write.csv(sign.data.est, &quot;~/Github/UpperPalCombinatorics/results/features/signBase_features.csv&quot;, row.names = F)</code></pre>
+<pre class="r"><code>write.csv(sign.data.est, &quot;~/Github/PaleoSigns/results/features/signBase_features.csv&quot;, row.names = F)</code></pre>
 </div>
 <div id="package-references" class="section level1">
 <h1>Package References</h1>

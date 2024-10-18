@@ -392,7 +392,7 @@ sequences.</p>
 <div id="signbase" class="section level2">
 <h2>SIGNBASE</h2>
 <pre class="r"><code># load signbase estimations for sign sequences on objects
-sign.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/results/features/signBase_features.csv&quot;)
+sign.data &lt;- read.csv(&quot;~/Github/PaleoSigns/results/features/signBase_features.csv&quot;)
 # select Aurignacian objects
 sign.data &lt;- sign.data[sign.data$archaeological_unit == &quot;Aurignacien&quot;, ] 
 
@@ -408,7 +408,7 @@ colnames(sign.data.selected) &lt;- c(&#39;id&#39;, &#39;subcorpus&#39;, &#39;seq
 <h2>CDLI</h2>
 <pre class="r"><code># read feature values for proto-cuneiform from CDLI
 # Uruk V
-cuneiV.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/results/features/cuneiform_UrukV_features.csv&quot;)
+cuneiV.data &lt;- read.csv(&quot;~/Github/PaleoSigns/results/features/cuneiform_UrukV_features.csv&quot;)
 
 # add column with subcorpus information
 cuneiV.data$subcorpus &lt;- rep(&quot;Cuneiform (Uruk V)&quot;, nrow(cuneiV.data))
@@ -422,7 +422,7 @@ names(cuneiV.data.selected)[names(cuneiV.data.selected) == &quot;signs.expand.ve
 names(cuneiV.data.selected)[names(cuneiV.data.selected) == &quot;tablet.id&quot;] &lt;- &quot;id&quot;
 
 # Uruk IV
-cuneiIV.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/results/features/cuneiform_UrukIV_features.csv&quot;)
+cuneiIV.data &lt;- read.csv(&quot;~/Github/PaleoSigns/results/features/cuneiform_UrukIV_features.csv&quot;)
 
 # add column with subcorpus information
 cuneiIV.data$subcorpus &lt;- rep(&quot;Cuneiform (Uruk IV)&quot;, nrow(cuneiIV.data))
@@ -436,7 +436,7 @@ names(cuneiIV.data.selected)[names(cuneiIV.data.selected) == &quot;signs.expand.
 names(cuneiIV.data.selected)[names(cuneiIV.data.selected) == &quot;tablet.id&quot;] &lt;- &quot;id&quot;
 
 # Uruk III
-cuneiIII.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/results/features/cuneiform_UrukIII_features.csv&quot;)
+cuneiIII.data &lt;- read.csv(&quot;~/Github/PaleoSigns/results/features/cuneiform_UrukIII_features.csv&quot;)
 
 # add column with subcorpus information
 cuneiIII.data$subcorpus &lt;- rep(&quot;Cuneiform (Uruk III)&quot;, nrow(cuneiIII.data))
@@ -452,7 +452,7 @@ names(cuneiIII.data.selected)[names(cuneiIII.data.selected) == &quot;tablet.id&q
 <div id="teddi" class="section level2">
 <h2>TeDDI</h2>
 <pre class="r"><code># read feature values for character sequences of the TeDDi sample
-teddi.data &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/results/features/teddi_features.csv&quot;)
+teddi.data &lt;- read.csv(&quot;~/Github/PaleoSigns/results/features/teddi_features.csv&quot;)
 # add column with subcorpus information
 teddi.data$subcorpus &lt;- rep(&quot;TeDDi&quot;, nrow(teddi.data))
 # select columns
@@ -502,7 +502,7 @@ head(estimations.df)</code></pre>
 <pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Cuneiform (Uruk III)&quot;, ]) </code></pre>
 <pre><code>## [1] 855</code></pre>
 <p>Write to file</p>
-<pre class="r"><code>write.csv(estimations.df, &quot;~/Github/UpperPalCombinatorics/results/features/features_combined.csv&quot;, row.names = F)</code></pre>
+<pre class="r"><code>write.csv(estimations.df, &quot;~/Github/PaleoSigns/results/features/features_combined.csv&quot;, row.names = F)</code></pre>
 </div>
 <div id="package-references" class="section level1">
 <h1>Package References</h1>

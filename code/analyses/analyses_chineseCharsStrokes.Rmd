@@ -41,7 +41,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 Load csv file with quantitative feature values for a comparative sample of feature values for languages across the world. This is derived from the Text Data Diversity (TeDDi) sample (Moran et al 2022). 
 
 ```{r}
-estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features/teddi_features.csv")
+estimations.df <- read.csv("~/Github/PaleoSigns/results/features/teddi_features.csv")
 head(estimations.df)
 ```
 
@@ -131,7 +131,7 @@ combined.plot
 
 Safe complete figure to file
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chineseStrokes.pdf", 
+ggsave("~/Github/PaleoSigns/figures/combinedPlot_chineseStrokes.pdf", 
        combined.plot, dpi = 300, width = 14, height = 6, device = cairo_pdf)
 ```
 
@@ -144,7 +144,5 @@ print(citation("ggridges"), style = "text")
 ```
 
 # Literature References 
-
-Jolliffe, I. T., & Cadima, J. (2016). Principal component analysis: a review and recent developments. Philosophical transactions of the royal society A: Mathematical, Physical and Engineering Sciences, 374(2065), 20150202.
 
 Moran, S., Bentz, C., Gutierrez-Vasques, X., Pelloni, O., & Samardzic, T. (2022, June). TeDDi sample: text data diversity sample for language comparison and multilingual NLP. In Proceedings of the Thirteenth Language Resources and Evaluation Conference (pp. 1150-1158).

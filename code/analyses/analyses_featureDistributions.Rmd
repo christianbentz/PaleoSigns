@@ -50,7 +50,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 Load csv file with quantitative feature values for sign sequences per object (paleolithic signs) and tablet (cuneiform). A comparative sample of feature values for languages across the world is derived from the Text Data Diversity (TeDDi) sample (Moran et al 2022). 
 
 ```{r}
-estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features/features_combined.csv")
+estimations.df <- read.csv("~/Github/PaleoSigns/results/features/features_combined.csv")
 head(estimations.df)
 ```
 
@@ -104,7 +104,7 @@ length.plot <- ggplot(estimations.df.selected,
 
 Safe complete figure to file
 ```{r}
-#ggsave("~/Github/UpperPalCombinatorics/figures/lengthPlot_chars.pdf", 
+#ggsave("~/Github/PaleoSigns/figures/lengthPlot_chars.pdf", 
 #       length.plot, dpi = 300, width = 5, height = 5, device = cairo_pdf)
 ```
 
@@ -157,7 +157,7 @@ combined.plot.illustration
 
 Safe complete figure to file
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_illustration.pdf", 
+ggsave("~/Github/PaleoSigns/figures/combinedPlot_illustration.pdf", 
        combined.plot.illustration, dpi = 300, width = 7, height = 3.5, device = cairo_pdf)
 ```
 
@@ -218,7 +218,7 @@ combined.plot1 <- ggarrange(huni.hrate.chars.plot, ttr.rm.chars.plot, ncol = 1,
 
 Safe complete figure to file
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_chars.pdf", 
+ggsave("~/Github/PaleoSigns/figures/combinedPlot_chars.pdf", 
        combined.plot1, dpi = 300, width = 12, height = 6, device = cairo_pdf)
 ```
 
@@ -234,7 +234,7 @@ cor.plot
 
 Safe complete figure to file.
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/correlation_plot.pdf", 
+ggsave("~/Github/PaleoSigns/figures/correlation_plot.pdf", 
        cor.plot, dpi = 300, width = 12, height = 12, device = cairo_pdf)
 ```
 
@@ -294,7 +294,7 @@ The normal data ellipse for the Aurignacian sign sequences fully overlaps with t
 
 Safe complete figure to file
 ```{r}
-#ggsave("~/Github/UpperPalCombinatorics/figures/pca_biplot.pdf", 
+#ggsave("~/Github/PaleoSigns/figures/pca_biplot.pdf", 
 #       biplot, dpi = 300, device = cairo_pdf)
 ```
 
@@ -314,7 +314,7 @@ final.plot
 
 Safe complete figure to file
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/finalPlot_chars.pdf", 
+ggsave("~/Github/PaleoSigns/figures/finalPlot_chars.pdf", 
        final.plot, dpi = 300, width = 12, height = 12, device = cairo_pdf)
 ```
 

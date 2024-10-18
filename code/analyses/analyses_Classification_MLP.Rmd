@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Classification of the feature vectors per character sequence (loaded from ~/results/features_combined.csv) using Multi-Layer-Perceptrons (MLP), also known as feed-forward neural networks. The input layer consists of four nodes which take the estimated feature values per sequence, i.e. TTR, unigram entropy, entropy rate, and repetition rate. The hyperparameters are largely adopted from an earlier study (Bentz 2023). 100 random architectures in terms of hidden size (number of nodes), and depth (number of layers) are tested. See also visualization of one example architecture below.  
 
 ```{r foo, out.width="100%", fig.cap="Example of one of the more complex architectures. This includes four hidden layers of four and five hidden units."}
-knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/mlpExample.png")
+knitr::include_graphics("~/Github/PaleoSigns/figures_external/mlpExample.png")
 ```
 
 # Session Info
@@ -47,7 +47,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 Load data table with estimated feature values per sequence. 
 ```{r}
 # load feature value estimations 
-estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features/features_combined.csv")
+estimations.df <- read.csv("~/Github/PaleoSigns/results/features/features_combined.csv")
 head(estimations.df)
 ```
 
@@ -56,7 +56,7 @@ Choose subcorpora for binary classification.
 # choose subcorpora to compare: "Aurignacien", "TeDDi", "Cuneiform (Uruk V)",
 # "Cuneiform (Uruk IV)", "Cuneiform (Uruk III)".
 subcorpus1 <- "Aurignacien"
-subcorpus2 <- "Cuneiform (Uruk V)"
+subcorpus2 <- "TeDDi"
 selected <- c(subcorpus1, subcorpus2)
 estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]
 
@@ -187,7 +187,7 @@ for (hidden in hidden.list) {
   
   # safe predictions for post hoc analyses
   write.csv(mlp.predictions.df, file = 
-              paste(c("~/Github/UpperPalCombinatorics/results/classifier/MLP/predictions/predictions_MLP_",
+              paste(c("~/Github/PaleoSigns/results/classifier/MLP/predictions/predictions_MLP_",
                                               subcorpus1, "_",
                                               subcorpus2, "_",
                                               paste("hidden", paste(unlist(hidden), collapse = ""), sep = ""),
@@ -245,7 +245,7 @@ proc.time <- end_time - start_time
 Write performance metrics to file.
 ```{r}
 # classification results summaries 
-write.csv(results.df, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/MLP/performance/performance_MLP_",
+write.csv(results.df, file = paste(c("~/Github/PaleoSigns/results/classifier/MLP/performance/performance_MLP_",
                                               subcorpus1, "_",
                                               subcorpus2,
                                               ".csv"

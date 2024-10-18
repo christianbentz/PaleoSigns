@@ -17,7 +17,7 @@ K-Nearest Neighbor classification of the feature vectors per character sequence 
 In the context of the current analyses, there are four relevant dimensions (instead of two as in the example below), namely, the TTR, unigram entropy, entropy rate, and repetition rate for the respective sequences. 
 
 ```{r foo, out.width="100%", fig.cap="Workings of the KNN algorithm, taken from https://ourcodingclub.github.io/tutorials/machine-learning/."}
-knitr::include_graphics("~/Github/UpperPalCombinatorics/figures_external/knn.jpg")
+knitr::include_graphics("~/Github/PaleoSigns/figures_external/knn.jpg")
 ```
 
 # Session Info
@@ -48,7 +48,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 Load data table with estimated feature values per sequence. 
 ```{r}
 # load feature value estimations 
-estimations.df <- read.csv("~/Github/UpperPalCombinatorics/results/features/features_combined.csv")
+estimations.df <- read.csv("~/Github/PaleoSigns/results/features/features_combined.csv")
 head(estimations.df)
 ```
 
@@ -57,7 +57,7 @@ Select subcorpora for binary classification.
 # choose subcorpora to compare: "Aurignacien", "TeDDi", "Cuneiform (Uruk V)",
 # "Cuneiform (Uruk IV)", "Cuneiform (Uruk III)".
 subcorpus1 <- "Aurignacien"
-subcorpus2 <- "Cuneiform (Uruk V)"
+subcorpus2 <- "TeDDi"
 selected <- c(subcorpus1, subcorpus2)
 estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]
 nrow(estimations.subset)
@@ -159,7 +159,7 @@ for (k in 1:n){
   knn.predictions.df <- cbind(test, predictions.knn)
   # write df with predictions for post-hoc analyses
   write.csv(knn.predictions.df, file =
-              paste(c("~/Github/UpperPalCombinatorics/results/classifier/KNN/predictions/predictions_KNN_",
+              paste(c("~/Github/PaleoSigns/results/classifier/KNN/predictions/predictions_KNN_",
                                               subcorpus1, "_",
                                               subcorpus2, "_",
                                               paste("k", k, sep = ""),
@@ -172,7 +172,7 @@ print(knn.results)
 Write results to file. 
 ```{r}
 # write results
-write.csv(knn.results, file = paste(c("~/Github/UpperPalCombinatorics/results/classifier/KNN/performance/performance_KNN_",
+write.csv(knn.results, file = paste(c("~/Github/PaleoSigns/results/classifier/KNN/performance/performance_KNN_",
                                               subcorpus1, "_",
                                               subcorpus2,
                                               ".csv"

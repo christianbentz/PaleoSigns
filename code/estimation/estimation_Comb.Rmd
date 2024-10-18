@@ -41,7 +41,7 @@ Load csv files with quantitative feature values for sign sequences.
 ## SIGNBASE
 ```{r}
 # load signbase estimations for sign sequences on objects
-sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/signBase_features.csv")
+sign.data <- read.csv("~/Github/PaleoSigns/results/features/signBase_features.csv")
 # select Aurignacian objects
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ] 
 
@@ -58,7 +58,7 @@ colnames(sign.data.selected) <- c('id', 'subcorpus', 'sequence', 'num.tokens', '
 ```{r}
 # read feature values for proto-cuneiform from CDLI
 # Uruk V
-cuneiV.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/cuneiform_UrukV_features.csv")
+cuneiV.data <- read.csv("~/Github/PaleoSigns/results/features/cuneiform_UrukV_features.csv")
 
 # add column with subcorpus information
 cuneiV.data$subcorpus <- rep("Cuneiform (Uruk V)", nrow(cuneiV.data))
@@ -72,7 +72,7 @@ names(cuneiV.data.selected)[names(cuneiV.data.selected) == "signs.expand.vec"] <
 names(cuneiV.data.selected)[names(cuneiV.data.selected) == "tablet.id"] <- "id"
 
 # Uruk IV
-cuneiIV.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/cuneiform_UrukIV_features.csv")
+cuneiIV.data <- read.csv("~/Github/PaleoSigns/results/features/cuneiform_UrukIV_features.csv")
 
 # add column with subcorpus information
 cuneiIV.data$subcorpus <- rep("Cuneiform (Uruk IV)", nrow(cuneiIV.data))
@@ -86,7 +86,7 @@ names(cuneiIV.data.selected)[names(cuneiIV.data.selected) == "signs.expand.vec"]
 names(cuneiIV.data.selected)[names(cuneiIV.data.selected) == "tablet.id"] <- "id"
 
 # Uruk III
-cuneiIII.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/cuneiform_UrukIII_features.csv")
+cuneiIII.data <- read.csv("~/Github/PaleoSigns/results/features/cuneiform_UrukIII_features.csv")
 
 # add column with subcorpus information
 cuneiIII.data$subcorpus <- rep("Cuneiform (Uruk III)", nrow(cuneiIII.data))
@@ -103,7 +103,7 @@ names(cuneiIII.data.selected)[names(cuneiIII.data.selected) == "tablet.id"] <- "
 ## TeDDI
 ```{r}
 # read feature values for character sequences of the TeDDi sample
-teddi.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/teddi_features.csv")
+teddi.data <- read.csv("~/Github/PaleoSigns/results/features/teddi_features.csv")
 # add column with subcorpus information
 teddi.data$subcorpus <- rep("TeDDi", nrow(teddi.data))
 # select columns
@@ -135,7 +135,7 @@ nrow(estimations.df[estimations.df$subcorpus=="Cuneiform (Uruk III)", ])
 
 Write to file
 ```{r}
-write.csv(estimations.df, "~/Github/UpperPalCombinatorics/results/features/features_combined.csv", row.names = F)
+write.csv(estimations.df, "~/Github/PaleoSigns/results/features/features_combined.csv", row.names = F)
 ```
 
 # Package References

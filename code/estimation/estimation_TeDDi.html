@@ -391,12 +391,12 @@ library(Hrate)</code></pre>
 <div id="external-functions" class="section level1">
 <h1>External functions</h1>
 <pre class="r"><code># repetition rate function rrate()
-source(&quot;~/Github/UpperPalCombinatorics/code/functions/repRate_function.R&quot;)</code></pre>
+source(&quot;~/Github/PaleoSigns/code/functions/repRate_function.R&quot;)</code></pre>
 </div>
 <div id="load-files" class="section level1">
 <h1>Load files</h1>
 <p>Load the file with cleaned TeDDi sample lines.</p>
-<pre class="r"><code>teddi.clean &lt;- read.csv(&quot;~/Github/UpperPalCombinatorics/data/TeDDi/final_sample.csv&quot;)</code></pre>
+<pre class="r"><code>teddi.clean &lt;- read.csv(&quot;~/Github/PaleoSigns/data/TeDDi/final_sample.csv&quot;)</code></pre>
 </div>
 <div id="feature-estimations" class="section level1">
 <h1>Feature Estimations</h1>
@@ -479,7 +479,7 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 6.512594 secs</code></pre>
+<pre><code>## Time difference of 6.47083 secs</code></pre>
 <p>Give head of estimation data frame (selected columns) for visual
 checking of the output data structure.</p>
 <pre class="r"><code>head(estimations.df)</code></pre>
@@ -526,7 +526,7 @@ checking of the output data structure.</p>
 ## 5         43        19   4.045240    2.692185 0.4418605 0.023809524
 ## 6         54        16   3.753867    2.481230 0.2962963 0.000000000</code></pre>
 <p>Safe outputs to file.</p>
-<pre class="r"><code>write.csv(estimations.df, &quot;~/Github/UpperPalCombinatorics/results/features/teddi_features.csv&quot;, 
+<pre class="r"><code>write.csv(estimations.df, &quot;~/Github/PaleoSigns/results/features/teddi_features.csv&quot;, 
           row.names = F)</code></pre>
 </div>
 <div id="package-references" class="section level1">

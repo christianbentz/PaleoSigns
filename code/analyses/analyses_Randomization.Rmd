@@ -42,7 +42,7 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 Load csv file with quantitative feature values for sign sequences per object. 
 ```{r}
 # load signbase estimations for strings on objects
-sign.data <- read.csv("~/Github/UpperPalCombinatorics/results/features/signBase_features.csv")
+sign.data <- read.csv("~/Github/PaleoSigns/results/features/signBase_features.csv")
 # select Aurignacian objects
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ] 
 ```
@@ -80,7 +80,7 @@ hrate.random.plot
 
 ## Safe complete figure to file
 ```{r}
-ggsave("~/Github/UpperPalCombinatorics/figures/combinedPlot_signBase_random.pdf", 
+ggsave("~/Github/PaleoSigns/figures/combinedPlot_signBase_random.pdf", 
        hrate.random.plot, dpi = 300, width = 6, height = 6, device = cairo_pdf)
 ```
 

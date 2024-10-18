@@ -43,14 +43,14 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 # External functions
 ```{r sourceCode, echo = TRUE}
 # repetition rate function rrate()
-source("~/Github/UpperPalCombinatorics/code/functions/repRate_function.R")
+source("~/Github/PaleoSigns/code/functions/repRate_function.R")
 ```
 
 # Load files
 Load the files with the cleaned and randomized sequences.
 ```{r}
 # signBase data
-sign.data <- read.csv("~/Github/UpperPalCombinatorics/data/signBase/signBase_randomized.csv")
+sign.data <- read.csv("~/Github/PaleoSigns/data/signBase/signBase_randomized.csv")
 ```
 
 # SignBase (Swabian Aurignacian) Estimations
@@ -153,7 +153,7 @@ head(sign.data.est[c("object_id", "coding_clean", "num.tokens", "num.types", "hu
 
 Safe outputs to file.
 ```{r}
-write.csv(sign.data.est, "~/Github/UpperPalCombinatorics/results/features/signBase_features.csv", row.names = F)
+write.csv(sign.data.est, "~/Github/PaleoSigns/results/features/signBase_features.csv", row.names = F)
 ```
 
 # Package References
