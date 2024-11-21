@@ -72,7 +72,7 @@ Add columns for object volume and dates.
 ```{r}
 # volume in cm^3 (mm multiplications divided by 1000)
 sign.data$volume <- (sign.data$length_mm*sign.data$width_mm*sign.data$depth)/1000
-sign.data$date <- as.numeric(substr(sign.data$date_bp_max, 1, 5)) # note that min dates are complete
+sign.data$date <- as.numeric(substr(sign.data$date_bp_max, 1, 5)) 
 ```
 
 # Collapse Factors
@@ -90,7 +90,7 @@ sign.data$object_type <- fct_collapse(sign.data$object_type,
              figurine_anthropomorph = c("figurine anthropomorph",
                           "plaquette"),
              # note: the "plaquette" is the so-called Adorant with an anthropomorph figure on it.
-             figurine_zoomorph = grep('figurine zoomorph.', unique(sign.data$object_type), value = TRUE),
+             figurine_zoomorph = c("figurine zoomorph"),
              tool = c("awl", "bâton percé",
                       "rod/bâton", "spatula/lissoir"),
              tube_flute = c("flute", "tube", "tube/flute"),

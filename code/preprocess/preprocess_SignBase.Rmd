@@ -43,7 +43,7 @@ print(sign.typology[,1:4])
 ## Coding of Sign Sequences
 ```{r}
 # sign codings and meta info per object
-sign.data <- read.csv("~/Github/PaleoSigns/data/signBase/Sb2Artifact-2024-10-17.csv")
+sign.data <- read.csv("~/Github/PaleoSigns/data/signBase/Sb2Artifact-2024-11-21.csv")
 # select objects of the Swabian Aurignacien
 sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien" &
                      sign.data$site_name == "Vogelherd" |

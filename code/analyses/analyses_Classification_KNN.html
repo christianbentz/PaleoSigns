@@ -418,15 +418,15 @@ head(estimations.df)</code></pre>
 <pre class="r"><code># choose subcorpora to compare: &quot;Aurignacien&quot;, &quot;TeDDi&quot;, &quot;Cuneiform (Uruk V)&quot;,
 # &quot;Cuneiform (Uruk IV)&quot;, &quot;Cuneiform (Uruk III)&quot;.
 subcorpus1 &lt;- &quot;Aurignacien&quot;
-subcorpus2 &lt;- &quot;TeDDi&quot;
+subcorpus2 &lt;- &quot;Cuneiform (Uruk III)&quot;
 selected &lt;- c(subcorpus1, subcorpus2)
 estimations.subset &lt;- estimations.df[estimations.df$subcorpus %in% selected, ]
 nrow(estimations.subset)</code></pre>
-<pre><code>## [1] 1251</code></pre>
+<pre><code>## [1] 1066</code></pre>
 <pre class="r"><code># downsample to have the same number of sequences across different combinations of corpora
 # comment this out to use all the sequences (unbalanced across combinations of corpora)
-set.seed(02152018)
-estimations.subset &lt;- sample_n(estimations.subset, 300)
+# set.seed(02152018)
+# estimations.subset &lt;- sample_n(estimations.subset, 300)
 
 # exclude sequences under a certain length
 #estimations.subset &lt;- estimations.subset[estimations.subset$num.tokens &gt; 10, ]</code></pre>
@@ -519,17 +519,17 @@ for (k in 1:n){
                                       row.names = F)
 }
 print(knn.results)</code></pre>
-<pre><code>##     k baseline accuracy accuracy.pvalue precision recall f1 test.n
-## 1   1      0.9        1    2.671295e-05         1      1  1    101
-## 2   2      0.9        1    2.671295e-05         1      1  1    101
-## 3   3      0.9        1    2.671295e-05         1      1  1    101
-## 4   4      0.9        1    2.671295e-05         1      1  1    101
-## 5   5      0.9        1    2.671295e-05         1      1  1    101
-## 6   6      0.9        1    2.671295e-05         1      1  1    101
-## 7   7      0.9        1    2.671295e-05         1      1  1    101
-## 8   8      0.9        1    2.671295e-05         1      1  1    101
-## 9   9      0.9        1    2.671295e-05         1      1  1    101
-## 10 10      0.9        1    2.671295e-05         1      1  1    101</code></pre>
+<pre><code>##     k baseline accuracy accuracy.pvalue precision recall   f1 test.n
+## 1   1     0.79     0.93    1.232907e-12      0.81   0.87 0.84    339
+## 2   2     0.79     0.93    1.435439e-11      0.83   0.81 0.82    339
+## 3   3     0.79     0.93    1.435439e-11      0.82   0.83 0.82    339
+## 4   4     0.79     0.92    1.412783e-10      0.79   0.83 0.81    339
+## 5   5     0.79     0.92    1.412783e-10      0.79   0.84 0.81    339
+## 6   6     0.79     0.92    4.595375e-11      0.81   0.83 0.82    339
+## 7   7     0.79     0.92    4.595375e-11      0.80   0.84 0.82    339
+## 8   8     0.79     0.93    1.232907e-12      0.82   0.86 0.84    339
+## 9   9     0.79     0.93    4.299527e-12      0.82   0.84 0.83    339
+## 10 10     0.79     0.93    1.435439e-11      0.81   0.84 0.83    339</code></pre>
 <p>Write results to file.</p>
 <pre class="r"><code># write results
 write.csv(knn.results, file = paste(c(&quot;~/Github/PaleoSigns/results/classifier/KNN/performance/performance_KNN_&quot;,
