@@ -3,8 +3,8 @@ title: "Randomization Analyses"
 author: ""
 date: ""
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -49,8 +49,10 @@ sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
 
 # Correlation
 ```{r}
-cor.value <- round(cor(sign.data$hrate.chars, sign.data$hrate.chars.random, method = "pearson"), digits = 2)
-cor.pvalue <- round(cor.test(sign.data$hrate.chars, sign.data$hrate.chars.random, method = "pearson")$p.value, digits = 2)
+cor.value <- round(cor(sign.data$hrate.chars, sign.data$hrate.chars.random, 
+                       method = "pearson"), digits = 2)
+cor.pvalue <- round(cor.test(sign.data$hrate.chars, sign.data$hrate.chars.random, 
+                             method = "pearson")$p.value, digits = 2)
 sample.size <- nrow(sign.data)
 print(cor.value)
 print(cor.pvalue)

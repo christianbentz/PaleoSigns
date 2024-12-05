@@ -3,8 +3,8 @@ title: "Estimations of Quantitative Features for TeDDi Sample"
 author: ""
 date: ""
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -137,7 +137,7 @@ end_time - start_time
 
 Give head of estimation data frame (selected columns) for visual checking of the output data structure.
 ```{r}
-head(estimations.df)
+# head(estimations.df)
 ```
 
 Safe outputs to file.

@@ -1,8 +1,10 @@
 ---
 title: "Repetition rate function"
-author: ""
-date: ""
-output: html_document
+author: ''
+date: ''
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -70,8 +72,7 @@ sequence3 <- c("a", "b")
 sequence4 <- c("a", "b", "a")
 sequence5 <- c("a", "a", "a", "a")
 sequence6 <- c("a", "a", "b", "a")
-sequence7 <- c("不","不","是", "真", "的", "沒", "有")
-sequence8 <- c(".","*","*",":", ",", ",", ";", ".")
+sequence7 <- c(".","*","*",":", ",", ",", ";", ".")
 
 print(rrate(sequence1, method = "lsmo"))
 print(rrate(sequence2, method = "lsmo"))
@@ -80,7 +81,6 @@ print(rrate(sequence4, method = "lsmo"))
 print(rrate(sequence5, method = "lsmo"))
 print(rrate(sequence6, method = "lsmo"))
 print(rrate(sequence7, method = "lsmo"))
-print(rrate(sequence8, method = "lsmo"))
 
 print(rrate(sequence1, method = "sproat"))
 print(rrate(sequence2, method = "sproat"))
@@ -89,7 +89,6 @@ print(rrate(sequence4, method = "sproat"))
 print(rrate(sequence5, method = "sproat"))
 print(rrate(sequence6, method = "sproat"))
 print(rrate(sequence7, method = "sproat"))
-print(rrate(sequence8, method = "sproat"))
 ```
 
 # Literature References

@@ -3,8 +3,8 @@ title: 'Analyses: Classification Performance'
 author: ''
 date: ""
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -133,7 +133,8 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 ## Load Data
 ```{r}
 # list files in the performance folders
-files.mlp.performance <- list.files(path = "~/Github/PaleoSigns/results/classifier/MLP/performance", full.names = T)
+files.mlp.performance <- 
+  list.files(path = "~/Github/PaleoSigns/results/classifier/MLP/performance", full.names = T)
 ```
 
 ## Preprocessing

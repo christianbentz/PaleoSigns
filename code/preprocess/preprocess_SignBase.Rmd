@@ -3,8 +3,8 @@ title: "Preprocessing for SignBase Sequences"
 author: ''
 date: ""
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -37,7 +37,7 @@ sessionInfo()$R.version$platform
 # load data from github repo
 # sign typology
 sign.typology <- read.csv("~/Github/PaleoSigns/data/signBase/Sign-2024-07-17.csv")
-print(sign.typology[,1:4])
+#print(sign.typology[,1:4])
 ```
 
 ## Coding of Sign Sequences

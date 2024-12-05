@@ -3,8 +3,8 @@ title: "Proto-Cuneiform Preprocessing"
 author: ''
 date: ""
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -119,7 +119,8 @@ for (i in 1:length(textchunks)){
   # remove the hashtag
   signs <- gsub("#", "", signs)
   # unravel the multiplication syntax to get multiple sign tokens
-  try(silent = TRUE, { # if the processing fails for a certain row, there will be no output for this row,
+  try(silent = TRUE, { # if the processing fails for a certain row, 
+  # there will be no output for this row,
   # but the try() function allows the loop to keep running
   for (j in 1:length(signs)){
     sign.syntax <- signs[j]
@@ -161,7 +162,7 @@ cunei.data <- cunei.data[lengths(strsplit(cunei.data$signs.expand.vec, " ")) > 1
 
 Give head of final data frame for illustration purposes.
 ```{r}
-head(cunei.data)
+# head(cunei.data)
 ```
 
 Safe to file.

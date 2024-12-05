@@ -3,8 +3,8 @@ title: "Preprocessing TeDDi Sample"
 author: ""
 date: ""
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -98,7 +98,7 @@ stroke.df <- read.table("~/Github/PaleoSigns/data/TeDDi/zh2letter.txt", sep = " 
 # add column names
 colnames(stroke.df) <- c("chars","strokes")
 # give beginning of signlist
-head(stroke.df)
+# head(stroke.df)
 ```
 
 ## Replace Chinese characters by strokes
@@ -107,14 +107,14 @@ head(stroke.df)
 hans.data <- teddi.sample[teddi.sample$writing_system == "Hans", ]  
 # split into individual characters (list by text line)
 hans.list <- strsplit(hans.data$text, split = "")
-head(hans.list)
+# head(hans.list)
 # replace characters with stroke transliterations for each string in list
 for (i in 1:length(hans.list)){
   # remove remaining white spaces
   hans.list[[i]] <- hans.list[[i]][hans.list[[i]] != " "]
   hans.list[[i]] <- paste(with(stroke.df, strokes[match(hans.list[[i]], chars)]), collapse = " ")
 }
-head(hans.list)
+# head(hans.list)
 # unlist and replace original text column in cmn dataframe
 hans.data$text <- unlist(hans.list)
 # add comment on stroke transliteration in column "comments"

@@ -1,8 +1,9 @@
 ---
 title: "Stabilization Analyses"
 author: ''
-date: ""
+date: ''
 output:
+  pdf_document: default
   html_document:
     df_print: paged
 ---

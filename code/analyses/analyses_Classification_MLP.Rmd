@@ -3,8 +3,8 @@ title: 'Analyses: Classification with MLP'
 author: ""
 date: ""
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -56,7 +56,7 @@ Choose subcorpora for binary classification.
 # choose subcorpora to compare: "Aurignacien", "TeDDi", "Cuneiform (Uruk V)",
 # "Cuneiform (Uruk IV)", "Cuneiform (Uruk III)".
 subcorpus1 <- "Aurignacien"
-subcorpus2 <- "Cuneiform (Uruk III)"
+subcorpus2 <- "Cuneiform (Uruk V)"
 selected <- c(subcorpus1, subcorpus2)
 estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]
 
@@ -78,7 +78,8 @@ estimations.subset <- na.omit(estimations.subset)
 ```{r}
 # first four columns are meta information, the others are the feature values
 # be aware that this needs to be changed in case of other table format
-estimations.scaled <- cbind(estimations.subset[, c("id", "subcorpus", "sequence", "num.tokens", "num.types")], 
+estimations.scaled <- cbind(estimations.subset[, c("id", "subcorpus", "sequence", 
+                                                   "num.tokens", "num.types")], 
                             scale(estimations.subset[, c("huni.chars", "hrate.chars", 
                                                          "ttr.chars", "rm.chars")]))
 ```
@@ -175,8 +176,10 @@ for (hidden in hidden.list) {
   # Prediction
   # Get prediction using the predict() function
   mlp.predictions <- predict(classifier.mlp, test, 
-                           rep = which.min(classifier.mlp$result.matrix[1,]), # Predict response values 
-                           # based on the "best" repetition (epoche), i.e. the one with the lowest error.
+                           rep = which.min(classifier.mlp$result.matrix[1,]), 
+                           # Predict response values 
+                           # based on the "best" repetition (epoche), 
+                           # i.e. the one with the lowest error.
                            all.units = FALSE)
   # assign a label according to the rule that the label is the label of subcorpus1 
   # if the prediction probability is >0.5, else assign label of subcorpus2. 
@@ -190,10 +193,12 @@ for (hidden in hidden.list) {
               paste(c("~/Github/PaleoSigns/results/classifier/MLP/predictions/predictions_MLP_",
                                               subcorpus1, "_",
                                               subcorpus2, "_",
-                                              paste("hidden", paste(unlist(hidden), collapse = ""), sep = ""),
-                                              ".csv"
-                                              ), collapse = ""),
-                                      row.names = F)
+                                              paste("hidden", 
+                                                    paste(unlist(hidden), 
+                                                          collapse = ""), 
+                                                    sep = ""), ".csv"), 
+                    collapse = ""),
+            row.names = F)
   
   # Model Evaluation
   # creating a dataframe from known (true) test labels
@@ -245,12 +250,10 @@ proc.time <- end_time - start_time
 Write performance metrics to file.
 ```{r}
 # classification results summaries 
-write.csv(results.df, file = paste(c("~/Github/PaleoSigns/results/classifier/MLP/performance/performance_MLP_",
-                                              subcorpus1, "_",
-                                              subcorpus2,
-                                              ".csv"
-                                              ), collapse = ""),
-                                      row.names = F)
+write.csv(results.df, 
+          file = paste(c("~/Github/PaleoSigns/results/classifier/MLP/performance/performance_MLP_",
+                         subcorpus1, "_", subcorpus2, ".csv"), collapse = ""),
+          row.names = F)
 ```
 
 # Visualize the NN

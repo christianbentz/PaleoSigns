@@ -1,8 +1,10 @@
 ---
 title: 'Analyses: Swabian Aurignacian'
-author: ""
-date: ""
-output: html_document
+author: ''
+date: ''
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}

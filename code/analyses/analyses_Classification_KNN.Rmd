@@ -3,8 +3,8 @@ title: 'Analyses: Classification with KNN'
 author: ""
 date: ""
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -81,7 +81,8 @@ Center and scale the data.
 ```{r}
 # first four columns are meta information, the others are the feature values
 # be aware that this needs to be changed in case of other table format
-estimations.scaled <- cbind(estimations.subset[, c("id", "subcorpus", "sequence", "num.tokens", "num.types")], 
+estimations.scaled <- cbind(estimations.subset[, c("id", "subcorpus", "sequence", 
+                                                   "num.tokens", "num.types")], 
                             scale(estimations.subset[, c("huni.chars", "hrate.chars", 
                                                          "ttr.chars", "rm.chars")]))
 ```
@@ -117,8 +118,10 @@ n = 10
 # run a loop over different numbers of neighbors up to n
 for (k in 1:n){
   # knn estimation of labels
-  predictions.knn <- knn(train = train[, c("huni.chars", "hrate.chars", "ttr.chars", "rm.chars")],
-                         test = test[, c("huni.chars", "hrate.chars", "ttr.chars", "rm.chars")], 
+  predictions.knn <- knn(train = train[, c("huni.chars", "hrate.chars", 
+                                           "ttr.chars", "rm.chars")],
+                         test = test[, c("huni.chars", "hrate.chars", 
+                                         "ttr.chars", "rm.chars")], 
                          cl = train[, "subcorpus"], k = k) 
   
   # model evaluation
@@ -172,12 +175,10 @@ print(knn.results)
 Write results to file. 
 ```{r}
 # write results
-write.csv(knn.results, file = paste(c("~/Github/PaleoSigns/results/classifier/KNN/performance/performance_KNN_",
-                                              subcorpus1, "_",
-                                              subcorpus2,
-                                              ".csv"
-                                              ), collapse = ""),
-                                      row.names = F)
+write.csv(knn.results, 
+          file = paste(c("~/Github/PaleoSigns/results/classifier/KNN/performance/performance_KNN_",
+                         subcorpus1, "_", subcorpus2, ".csv"), collapse = ""),
+          row.names = F)
 ```
 
 # Package References

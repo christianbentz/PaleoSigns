@@ -3,8 +3,8 @@ title: "Analyses: Feature Value Distributions"
 author: ""
 date: ""
 output:
-  html_document: default
   pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -120,7 +120,8 @@ estimations.df.illustration <- estimations.df.selected[estimations.df.selected$i
 # Illustration Plots
 ```{r, fig.width = 5, fig.height = 5, warning = FALSE}
 # Unigram entropy vs. Entropy rate
-huni.hrate.plot <- ggplot(estimations.df.illustration, aes(x = huni.chars, y =  hrate.chars, color = subcorpus)) + 
+huni.hrate.plot <- ggplot(estimations.df.illustration, aes(x = huni.chars, 
+                                                           y =  hrate.chars, color = subcorpus)) + 
   geom_point() +
   labs(x = "Unigram entropy for tokens", y = "Entropy rate for tokens") + 
   geom_text_repel(aes(label = sequence),
@@ -134,7 +135,8 @@ huni.hrate.plot <- ggplot(estimations.df.illustration, aes(x = huni.chars, y =  
                   show.legend = F)
 
 # TTR vs. Repetition rate
-ttr.rm.plot <- ggplot(estimations.df.illustration, aes(x = ttr.chars, y =  rm.chars, color = subcorpus)) + 
+ttr.rm.plot <- ggplot(estimations.df.illustration, aes(x = ttr.chars, 
+                                                       y =  rm.chars, color = subcorpus)) + 
   geom_point() +
   labs(x = "TTR for tokens", y = "Repetition rate for tokens") + 
   geom_text_repel(aes(label = sequence),
@@ -225,8 +227,10 @@ ggsave("~/Github/PaleoSigns/figures/combinedPlot_chars.pdf",
 # Correlation Plot
 Correlation plots for the statistical feature values.
 ```{r, fig.width = 12, fig.height = 12}
-cor.plot <- ggpairs(estimations.df.selected, columns = c("num.tokens", "num.types", "huni.chars", "hrate.chars",
-                               "ttr.chars","rm.chars"), 
+cor.plot <- ggpairs(estimations.df.selected, 
+                    columns = c("num.tokens", "num.types", 
+                                "huni.chars", "hrate.chars",
+                                "ttr.chars","rm.chars"), 
         aes(color = subcorpus,
             alpha = 0.5))
 cor.plot
