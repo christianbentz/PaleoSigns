@@ -1,10 +1,10 @@
 ---
 title: "Analyses: Feature Value Distributions"
-author: ""
-date: ""
+author: "Chris Bentz"
+date: "06.03.2025"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -61,7 +61,7 @@ head(estimations.df)
 #                                   estimations.df$num.tokens < 50,]
 
 # select only certain subcorpora for plotting
-estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignacien"|
+estimations.df.selected <- estimations.df[estimations.df$subcorpus == "Aurignacian"|
                                           estimations.df$subcorpus == "Cuneiform (Uruk V)"|
                                           estimations.df$subcorpus == "Cuneiform (Uruk IV)"| 
                                           estimations.df$subcorpus == "Cuneiform (Uruk III)"|  
@@ -183,7 +183,7 @@ huni.hrate.chars.plot <- ggplot(estimations.df.selected, aes(x = huni.chars, y =
   #                 max.overlaps = Inf,
   #                 show.legend = FALSE) +
   #guides(size = guide_legend(title = "No. of chars")) +
-  facet_grid(~factor(subcorpus, levels = c('Aurignacien', 'Cuneiform (Uruk V)', 
+  facet_grid(~factor(subcorpus, levels = c('Aurignacian', 'Cuneiform (Uruk V)', 
                                          'Cuneiform (Uruk IV)', 'Cuneiform (Uruk III)',
                                          'TeDDi')))
 huni.hrate.chars.plot
@@ -206,7 +206,7 @@ ttr.rm.chars.plot <- ggplot(estimations.df.selected, aes(x = ttr.chars, y = rm.c
   #                  #nudge_x = 0.2,
   #                  max.overlaps = Inf,
   #                  show.legend = FALSE) +
-  facet_grid(~factor(subcorpus, levels = c('Aurignacien', 'Cuneiform (Uruk V)', 
+  facet_grid(~factor(subcorpus, levels = c('Aurignacian', 'Cuneiform (Uruk V)', 
                                          'Cuneiform (Uruk IV)', 'Cuneiform (Uruk III)',
                                          'TeDDi')))
 ttr.rm.chars.plot

@@ -1,7 +1,7 @@
 ---
 title: "Stabilization Analyses"
-author: ''
-date: ''
+author: 'Chris Bentz'
+date: '06.03.2025'
 output:
   pdf_document: default
   html_document:
@@ -72,7 +72,7 @@ colnames(teddi.selected) <- c("id", "sequence", "subcorpus")
 teddi.selected$corpus <- rep("TeDDi", nrow(teddi.selected))
 
 # SignBase
-signbase <- signbase[signbase$archaeological_unit == "Aurignacien", ]
+# signbase <- signbase[signbase$archaeological_unit == "Aurignacian", ]
 signbase.selected <- signbase[c("object_id", "archaeological_unit", "site_name", "coding_clean")]
 colnames(signbase.selected) <- c("id", "corpus", "subcorpus", "sequence")
 

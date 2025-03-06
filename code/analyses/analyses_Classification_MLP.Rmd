@@ -1,10 +1,10 @@
 ---
 title: 'Analyses: Classification with MLP'
-author: ""
-date: ""
+author: "Chris Bentz"
+date: "06.03.2025"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -53,10 +53,10 @@ head(estimations.df)
 
 Choose subcorpora for binary classification.
 ```{r}
-# choose subcorpora to compare: "Aurignacien", "TeDDi", "Cuneiform (Uruk V)",
+# choose subcorpora to compare: "Aurignacian", "TeDDi", "Cuneiform (Uruk V)",
 # "Cuneiform (Uruk IV)", "Cuneiform (Uruk III)".
-subcorpus1 <- "Aurignacien"
-subcorpus2 <- "Cuneiform (Uruk V)"
+subcorpus1 <- "Aurignacian"
+subcorpus2 <- "TeDDi"
 selected <- c(subcorpus1, subcorpus2)
 estimations.subset <- estimations.df[estimations.df$subcorpus %in% selected, ]
 
@@ -92,10 +92,13 @@ set.seed(09012020)
 datasample <- sample(2, nrow(estimations.scaled), replace = TRUE, prob = c(0.67, 0.33))
 # Generate training set (select rows randomly by using datasample vector)
 train <- estimations.scaled[datasample == 1, 1:ncol(estimations.scaled)]
+train.n <- nrow(train)
+print(train.n)
 # Generate test set 
 test <- estimations.scaled[datasample == 2, 1:ncol(estimations.scaled)]
 # number of data points in test set
 test.n <- nrow(test)
+print(test.n)
 ```
 
 # Implement MLP classifier

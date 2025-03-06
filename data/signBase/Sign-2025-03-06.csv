@@ -1,0 +1,54 @@
+character,type,signbase_name,unicode_name,unicode_number,html_code,css_code,unicode_block,unicode_subblock,encoding_utf8,reference
+←,sign,leftwards arrow,Leftwards Arrow,U+2190,&#8592;,\2190,Arrows,Simple arrows,11100010 10000110 10010000,https://symbl.cc/en/2190/
+ˌ,sign,line below,Modifier Letter Low Vertical,U+02CC,&#716;,,Spacing Modifier Letters,Miscellaneous phonetic modifiers,11001011 10001100,https://symbl.cc/en/02CC/
+ˈ,sign,line above,Modifier Letter Vertical Line,U+02C8,&#712;,,Spacing Modifier Letters,Miscellaneous phonetic modifiers,11001011 10001000,https://symbl.cc/en/02C8/
+S,sign,S-shape,Latin Capital Letter S,U+0053,&#83;,\0053,Basic Latin,Uppercase Latin alphabet,01010011,https://symbl.cc/en/0053/
+D,sign,D-shape,Latin Capital Letter D,U+0044,&#68;,\0044,Basic Latin,Uppercase Latin alphabet,"""01000100""",https://symbl.cc/en/0044/
+ ,annotation,linear separation,Space,U+0020,&#32;,\0020,Basic Latin,ASCII punctuation and symbols,“00100000”,https://symbl.cc/en/0020/
+_,annotation,non-linear separation,Low Line,U+005F,&#95;,\005F,Basic Latin,ASCII punctuation and symbols,“01011111”,https://symbl.cc/en/005F/
+},annotation,non-calibrated right,Right Curly Bracket,U+007D,&#125;,\007D,Basic Latin,ASCII punctuation and symbols,“01111101”,https://symbl.cc/en/007D/
+{,annotation,non-calibrated left,Left Curly Bracket,U+007B,&#123;,\007B,Basic Latin,ASCII punctuation and symbols,“01111011”,https://symbl.cc/en/007B/
+),annotation,overlap right,Right Parenthesis,U+0029,&#41;,\0029,Basic Latin,ASCII punctuation and symbols,“00101001”,https://symbl.cc/en/0029/
+(,annotation,overlap left,Left Parenthesis,U+0028,&#40;,\0028,Basic Latin,ASCII punctuation and symbols,“00101000”,https://symbl.cc/en/0028/
+],annotation,non-linear right,Right Square Bracket,U+005D,&#93;,\005D,Basic Latin,ASCII punctuation and symbols,“01011101”,https://symbl.cc/en/005D/
+[,annotation,non-linear left,Left Square Bracket,U+005B,&#91;,\005B,Basic Latin,ASCII punctuation and symbols,“01011011”,https://symbl.cc/en/005B/
+!,annotation,broken sequence,Exclamation Mark,U+0021,&#33;,\0021,Basic Latin,ASCII punctuation and symbols,“00100001”,https://symbl.cc/en/0021/
+&,annotation,other,Ampersand,U+0026,&#38;,\0026,Basic Latin,ASCII punctuation and symbols,“00100110”,https://symbl.cc/en/0026/
+?,annotation,undetermined,Question Mark,U+003F,&#63;,\003F,Basic Latin,ASCII punctuation,“00111111”,https://symbl.cc/en/003F/
+Π,sign,Pi-shape,Greek Capital Letter Pi,U+03A0,&#928;,\03A0,Greek and Coptic,Letters,“11001110 10100000”,https://symbl.cc/en/03A0/
+Y,sign,Y-shape,Latin Capital Letter Y,U+0059,&#89;,\0059,Basic Latin,Uppercase Latin alphabet,“01011001”,https://symbl.cc/en/0059/
+⚹,sign,star,Sextile,U+26B9,&#9913;,\26B9,Miscellaneous Symbols,Astrological aspects,“11100010 10011010 10111001”,https://symbl.cc/en/26B9/
+p,sign,pin right,Latin Small Letter P,U+0070,&#112;,\0070,Basic Latin,Lowercase Latin alphabet,“01110000”,https://symbl.cc/en/0070/
+q,sign,pin left,Latin Small Letter Q,U+0071,&#113;,\0071,Basic Latin,Lowercase Latin alphabet,“01110001”,https://symbl.cc/en/0071/
+C,sign,concentric line,Latin Capital Letter C,U+0043,&#67;,\0043,Basic Latin,Uppercase Latin alphabet,“01000011”,https://symbl.cc/en/0043/
+ö,sign,paw,Latin Small Letter O with Diaeresis,U+00F6,&#246;,\00F6,Latin-1 Supplement,Lowercase letters,“11000011 10110110”,https://symbl.cc/en/00F6/
+Z,sign,zoomorph,Latin Capital Letter Z,U+005A,&#90;,\005A,Basic Latin,Uppercase Latin alphabet,“01011010”,https://symbl.cc/en/005A/
+A,sign,anthropomorph,Latin Capital Letter A,U+0041,&#65;,\0041,Basic Latin,Uppercase Latin alphabet,“01000001”,https://symbl.cc/en/0041/
+▽,sign,vulva,White Down-Pointing Triangle,U+25BD,&#9661;,\25BD,Geometric Shapes,Geometric shapes,“11100010 10010110 10111101”,https://symbl.cc/en/25BD/
+$,sign,circum spiral,Dollar Sign,U+0024,&#36;,\0024,Basic Latin,ASCII punctuation and symbols,“00100100”,https://symbl.cc/en/0024/
+V,sign,V-shape,Latin Capital Letter V,U+0056,&#86;,\0056,Basic Latin,Uppercase Latin alphabet,“01010110”,https://symbl.cc/en/0056/
+~,sign,maccaroni,Tilde,U+007E,&#126;,\007E,Basic Latin,ASCII punctuation and symbols,“01111110”,https://symbl.cc/en/007E/
+#,sign,hashtag,Number Sign,U+0023,&#35;,\0023,Basic Latin,ASCII punctuation and symbols,“00100011”,https://symbl.cc/en/0023/
+▯,sign,rectangle,White Vertical Rectangle,U+25AF,&#9647;,\25AF,Geometric Shapes,Geometric shapes,“11100010 10010110 10101111”,https://symbl.cc/en/25AF/
+⦚,sign,zigzag row,Vertical Zigzag Line,U+299A,&#10650;,\299A,Miscellaneous Mathematical Symbols-B,Fences,“11100010 10100110 10011010”,https://symbl.cc/en/299A/
+W,sign,zigzag,Latin Capital Letter W,U+0057,&#87;,\0057,Basic Latin,Uppercase Latin alphabet,“01010111”,https://symbl.cc/en/0057/
+≠,sign,hatching,Not Equal To,U+2260,&#8800;,\2260,Mathematical Operators,Relations,“11100010 10001001 10100000”,https://symbl.cc/en/2260/
+⊞,sign,grid,Squared Plus,U+229E,&#8862;,\229E,Mathematical Operators,Operators,“11100010 10001010 10011110”,https://symbl.cc/en/229E/
+♢,sign,rhombus,White Diamond Suit,U+2662,&#9826;,\2662,Miscellaneous Symbols,Playing card symbols,“11100010 10011001 10100010”,https://symbl.cc/en/2662/
+H,sign,H-shape,Latin Capital Letter H,U+0048,&#72;,\0048,Basic Latin,Uppercase Latin alphabet,“01001000”,https://symbl.cc/en/0048/
+X,sign,cross,Latin Capital Letter X,U+0058,&#88;,\0058,Basic Latin,Uppercase Latin alphabet,“01011000”,https://symbl.cc/en/0058/
+o,sign,cupule,Latin Small Letter O,U+006F,&#111;,\006F,Basic Latin,Lowercase Latin alphabet,“01101111”,https://symbl.cc/en/006F/
+°,sign,dot,Degree Sign,U+00B0,&#176;,\00B0,Latin-1 Supplement,Latin-1 punctuation and symbols,“11000010 10110000”,https://symbl.cc/en/00B0/
+O,sign,circum notch,Latin Capital Letter O,U+004F,&#79;,\004F,Basic Latin,Uppercase Latin alphabet,“01001111”,https://symbl.cc/en/004F/
+^,sign,radial notch,Circumflex Accent,U+005E,&#94;,\005E,Basic Latin,ASCII punctuation and symbols,“01011110”,https://symbl.cc/en/005E/
+<,sign,oblique notch (left pointing),Less-Than Sign,U+003C,&#60;,\003C,Basic Latin,ASCII mathematical operators,“00111100”,https://symbl.cc/en/003C/
+>,sign,oblique notch (right pointing),Greater-Than Sign,U+003E,&#62;,\003E,Basic Latin,ASCII mathematical operators,“00111110”,https://symbl.cc/en/003E/
+v,sign,notch,Latin Small Letter V,U+0076,&#118;,\0076,Basic Latin,Lowercase Latin alphabet,“01110110”,https://symbl.cc/en/0076/
+〰,sign,circum line,Wavy Dash,U+3030,&#12336;,\3030,CJK Symbols and Punctuation,Other CJK punctuation,“11100011 10000000 10110000”,https://symbl.cc/en/3030/
+¦,sign,dash line,Broken Bar,U+00A6,&#166;,\00A6,Latin-1 Supplement,Latin-1 punctuation and symbols,“11000010 10100110”,https://symbl.cc/en/00A6/
+¤,sign,radial line,Currency Sign,U+00A4,&#164;,\00A4,Latin-1 Supplement,Latin-1 punctuation and symbols,“11000010 10100100”,https://symbl.cc/en/00A4/
+–,sign,horizontal line,En Dash,U+2013,&#8211;,\2013,General Punctuation,Dashes,“11100010 10000000 10010011”,https://symbl.cc/en/2013/
+\,sign,oblique line (left leaning),Reverse Solidus,U+005C,&#92;,\005C,Basic Latin,ASCII punctuation and symbols,“01011100”,https://symbl.cc/en/002F/
+/,sign,oblique line (right leaning),Solidus,U+002F,&#47;,\002F,Basic Latin,ASCII punctuation and symbols,“00101111”,https://symbl.cc/en/002F/
+l,sign,short line,Latin Small Letter L,U+006C,&#108;,\006C,Basic Latin,Lowercase Latin alphabet,“01101100”,https://symbl.cc/en/006C/
+|,sign,long line,Vertical Line,U+007C,&#124;,\007C,Basic Latin,ASCII punctuation and symbols,“01111100”,https://symbl.cc/en/007C/

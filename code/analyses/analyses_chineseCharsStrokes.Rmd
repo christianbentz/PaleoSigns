@@ -1,7 +1,7 @@
 ---
 title: "Chinese Characters vs. Strokes"
-author: ""
-date: ""
+author: "Chris Bentz"
+date: "06.03.2025"
 output: html_document
 ---
 

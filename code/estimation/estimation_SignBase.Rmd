@@ -1,7 +1,7 @@
 ---
 title: "Estimations of Quantitative Features for SignBase Objects"
-author: ""
-date: ""
+author: "Chris Bentz"
+date: "06.03.2025"
 output:
   pdf_document: default
   html_document: default

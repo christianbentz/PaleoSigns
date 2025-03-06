@@ -1,10 +1,10 @@
 ---
 title: 'Analyses: Classification Performance'
-author: ''
-date: ""
+author: 'Chris Bentz'
+date: "06.03.2025"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = TRUE)
 This file enables post-hoc analyses of the performance values (F1-scores, accuracies, p-values) of the KNN and MLP classifications. It provides density distributions for these performance metrics.
 
 # Preliminaries: Performance Metrics
-The performance metrics are derived by using the confusionMatrix() function of the caret package. See the code files in analyses_Classification_KNN.Rmd and analyses_Classification_MLP.Rmd for the actual implementation. In the case of a two class classification problem (e.g. Aurignacien vs. Uruk V), a confusion matrix might look as in the example below.
+The performance metrics are derived by using the confusionMatrix() function of the caret package. See the code files in analyses_Classification_KNN.Rmd and analyses_Classification_MLP.Rmd for the actual implementation. In the case of a two class classification problem (e.g. Aurignacian vs. Uruk V), a confusion matrix might look as in the example below.
 
 ```{r foo, out.width="25%", fig.cap="Table. Confusion matrix as given in the confusionMatrix() documentation."}
 knitr::include_graphics("~/Github/PaleoSigns/figures_external/confusionMatrix.png")
@@ -26,13 +26,13 @@ The accuracy is then calculated as
 accuracy = \frac{A + D}{A + D + B + C}.
 \end{equation}
 
-The function also provides the so-called "no information rate" baseline, which corresponds to the accuracy achieved by simply always choosing the most frequent class label in the test set. For example, for the classification of Aurignacien vs. Uruk V Proto-Cuneiform, there are 101 sequences in the test set overall, of which 69 are Aurignacien sequences, and 32 are Uruk V Proto-Cuneiform sequences (examples of predictions of the last model run with the observed values are given in the folder results/classifier/MLP/predictions). Thus, the baseline in this case is 
+The function also provides the so-called "no information rate" baseline, which corresponds to the accuracy achieved by simply always choosing the most frequent class label in the test set. For example, for the classification of Aurignacian vs. Uruk V Proto-Cuneiform, there are 101 sequences in the test set overall, of which 69 are Aurignacian sequences, and 32 are Uruk V Proto-Cuneiform sequences (examples of predictions of the last model run with the observed values are given in the folder results/classifier/MLP/predictions). Thus, the baseline in this case is 
 
 \begin{equation}
 accuracy.baseline = \frac{69}{101} =  0.6831683.
 \end{equation}
 
-Note that this baseline is marked with a red vertical line in the accuracy plots given below. Moreover, the confusionMatrix() function provides a p-value for a one-sided binomial test (via binom.test) for whether the actual accuracy value of the model is significantly higher than the baseline (cf. Kuhn, 2008, p. 15). Assuming a binomial distribution for random draws of two outcomes (e.g. 0 and 1 typically, or class labels UrukV and Aurignacien in our case) we have the null hypothesis and alternative hypothesis given as
+Note that this baseline is marked with a red vertical line in the accuracy plots given below. Moreover, the confusionMatrix() function provides a p-value for a one-sided binomial test (via binom.test) for whether the actual accuracy value of the model is significantly higher than the baseline (cf. Kuhn, 2008, p. 15). Assuming a binomial distribution for random draws of two outcomes (e.g. 0 and 1 typically, or class labels UrukV and Aurignacian in our case) we have the null hypothesis and alternative hypothesis given as
 
 \begin{equation}
 H_0: p = p_0
@@ -64,7 +64,7 @@ B^* = \frac{B - E_{p0}(B)}{\sqrt{\sigma^2_{p0}(B)}}.
 
 Under $H_0$ the standardized $B^*$ is assumed to follow a normal binomial distribution $\mathcal{N}(0,1)$. We can then identify a z-score given an $\alpha$-level of our choice, which the actual $B^*$ we calculate from the data would have to surpass to reject $H_0$. With the common $\alpha = 0.05$, we have $z_{\alpha} = 1.645$.
 
-As a worked example, assume that in one of the runs of the MLP architecture classifying Aurignacien and Uruk V sequences the success rate is 75. In this case, we have:
+As a worked example, assume that in one of the runs of the MLP architecture classifying Aurignacian and Uruk V sequences the success rate is 75. In this case, we have:
 
 \begin{equation}
 B^* = \frac{B - E_{p0}(B)}{\sqrt{\sigma^2_{p0}(B)}} = \frac{75 - 69}{\sqrt{21.86139}} \sim 1.28

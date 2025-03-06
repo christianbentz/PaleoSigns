@@ -1,10 +1,10 @@
 ---
 title: "Randomization Analyses"
-author: ""
-date: ""
+author: "Chris Bentz"
+date: "06.03.2025"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -43,8 +43,6 @@ Load csv file with quantitative feature values for sign sequences per object.
 ```{r}
 # load signbase estimations for strings on objects
 sign.data <- read.csv("~/Github/PaleoSigns/results/features/signBase_features.csv")
-# select Aurignacian objects
-sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ] 
 ```
 
 # Correlation

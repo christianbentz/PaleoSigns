@@ -1,7 +1,7 @@
 ---
 title: "Estimations of Quantitative Features for Cuneiform Tablets"
-author: ""
-date: ""
+author: "Chris Bentz"
+date: "06.03.2025"
 output:
   pdf_document: default
   html_document: default
@@ -50,7 +50,7 @@ source("~/Github/PaleoSigns/code/functions/repRate_function.R")
 Load the files with the cleaned sequences. A period needs to be chosen here. Hence, the code needs to be run for periods separately.
 ```{r}
 # choose period (UrukIII, UrukIV, UrukV)
-period <- "UrukIII"
+period <- "UrukV"
 
 # cuneiform data from CDLI
 cunei.data <- read.csv(paste("~/Github/PaleoSigns/data/CDLI/", 

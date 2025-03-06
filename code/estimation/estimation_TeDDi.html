@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content />
+<meta name="author" content="Chris Bentz" />
 
 
 <title>Estimations of Quantitative Features for TeDDi Sample</title>
@@ -351,7 +351,8 @@ display: none;
 
 <h1 class="title toc-ignore">Estimations of Quantitative Features for
 TeDDi Sample</h1>
-<h4 class="author"></h4>
+<h4 class="author">Chris Bentz</h4>
+<h4 class="date">06.03.2025</h4>
 
 </div>
 
@@ -362,12 +363,15 @@ TeDDi Sample</h1>
 unigram entropy, entropy rate, repetition rate) per character sequence
 in TeDDi sample lines. These features where tested on a wider sample of
 linguistic and non-linguistic sign sequences in Bentz (2023). The
-repetition measure was tested also in Sproat (2014).</p>
+repetition measure was tested also in Sproat (2014). Note: the Hrate
+package needs to be installed directly from github using the devtools
+package. This can be done by uncommenting the lines under “Load
+libraries”.</p>
 </div>
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
 <p>Give the session info (reduced).</p>
-<pre><code>## [1] &quot;R version 4.4.0 (2024-04-24)&quot;</code></pre>
+<pre><code>## [1] &quot;R version 4.3.3 (2024-02-29)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
 </div>
 <div id="load-libraries" class="section level1">
@@ -479,52 +483,10 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 6.47083 secs</code></pre>
+<pre><code>## Time difference of 5.029725 secs</code></pre>
 <p>Give head of estimation data frame (selected columns) for visual
 checking of the output data structure.</p>
-<pre class="r"><code>head(estimations.df)</code></pre>
-<pre><code>##       id
-## 1   7983
-## 2  20443
-## 3 309901
-## 4 137860
-## 5 410735
-## 6 393591
-##                                                                                                                                                                                          text
-## 1 Na nd mounmotrhu mrokfot inji wanyhato duka memoya nhai wom hefenr tohyuk frohrn o bbinysoft tohyuk frohrn o yiro Maringour tohyuk frohrn nd skrorkfot yak nyusakuhato yiro mrokfom htikfot
-## 2                                                                                            Setxi itaritxiakori aua mitxi ĩkorapokoriti  Apia kiomanetakari ĩtaniriuata  Meenetipanika ipina
-## 3                                                                                                                                                          Baina ezdeus batekin ezkondu zinen
-## 4                                                                                                                                                                          Ez dago gainazalik
-## 5                                                                                                                                                 Moundsvilleko matrikuladun kotxea darabilzu
-## 6                                                                                                                                      Ez duzu sinistuko baina berak asko maite zuen zure ama
-##          filename language_name_glotto iso639_3    mode genre_broad
-## 1   amp_nfi_1.txt             Alamblak      amp written non-fiction
-## 2   apu_nfi_1.txt              Apurinã      apu written non-fiction
-## 3 eus_nfi_316.txt               Basque      eus written non-fiction
-## 4 eus_nfi_149.txt               Basque      eus written non-fiction
-## 5 eus_nfi_431.txt               Basque      eus written non-fiction
-## 6 eus_nfi_413.txt               Basque      eus written non-fiction
-##   writing_system
-## 1           Latn
-## 2           Latn
-## 3           Latn
-## 4           Latn
-## 5           Latn
-## 6           Latn
-##                                                                                                                                                                                            comments
-## 1 The first two digits of the identifier refer to the book, the next three digits to the chapter, and the last three digits to the verse. See Mayer &amp; Cysouw (2014) for a list of book identifiers.
-## 2 The first two digits of the identifier refer to the book, the next three digits to the chapter, and the last three digits to the verse. See Mayer &amp; Cysouw (2014) for a list of book identifiers.
-## 3                                                                                                                                                                                              &lt;NA&gt;
-## 4                                                                                                                                                                                              &lt;NA&gt;
-## 5                                                                                                                                                                                              &lt;NA&gt;
-## 6                                                                                                                                                                                              &lt;NA&gt;
-##   num.tokens num.types huni.chars hrate.chars ttr.chars    rm.chars
-## 1        187        22   3.954932    2.400201 0.1176471 0.005376344
-## 2         96        17   3.617791    2.436322 0.1770833 0.031578947
-## 3         34        14   3.573229    2.365557 0.4117647 0.000000000
-## 4         18        11   3.281036    2.222807 0.6111111 0.000000000
-## 5         43        19   4.045240    2.692185 0.4418605 0.023809524
-## 6         54        16   3.753867    2.481230 0.2962963 0.000000000</code></pre>
+<pre class="r"><code># head(estimations.df)</code></pre>
 <p>Safe outputs to file.</p>
 <pre class="r"><code>write.csv(estimations.df, &quot;~/Github/PaleoSigns/results/features/teddi_features.csv&quot;, 
           row.names = F)</code></pre>
@@ -532,9 +494,7 @@ checking of the output data structure.</p>
 <div id="package-references" class="section level1">
 <h1>Package References</h1>
 <pre><code>## Bentz C, Alikaniotis D (2017). _Hrate: Implements LZ estimator for
-## texts_. R package version 0.2, commit
-## b67b4bb5f5430ce42d2844da30ddf5642540aa30,
-## &lt;https://github.com/dimalik/Hrate&gt;.</code></pre>
+## texts_. R package version 0.2.</code></pre>
 <pre><code>## Wickham H (2023). _stringr: Simple, Consistent Wrappers for Common
 ## String Operations_. R package version 1.5.1,
 ## &lt;https://CRAN.R-project.org/package=stringr&gt;.</code></pre>

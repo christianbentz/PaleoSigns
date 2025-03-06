@@ -1,7 +1,7 @@
 ---
 title: "Estimations Combined"
-author: ""
-date: ""
+author: "Chris Bentz"
+date: "06.03.2025"
 output:
   pdf_document: default
   html_document: default
@@ -42,8 +42,6 @@ Load csv files with quantitative feature values for sign sequences.
 ```{r}
 # load signbase estimations for sign sequences on objects
 sign.data <- read.csv("~/Github/PaleoSigns/results/features/signBase_features.csv")
-# select Aurignacian objects
-sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ] 
 
 # select columns for direct comparison with TeDDi sample
 sign.data.selected <- select(sign.data, c('object_id','archaeological_unit', 'coding_clean', 
@@ -126,7 +124,7 @@ head(estimations.df)
 ```{r}
 nrow(estimations.df) # number of sequences with feature estimations
 unique(estimations.df$subcorpus) # names of subcorpora
-nrow(estimations.df[estimations.df$subcorpus=="Aurignacien", ]) # number of Aurignacien sequences
+nrow(estimations.df[estimations.df$subcorpus=="Aurignacian", ]) # number of Aurignacien sequences
 nrow(estimations.df[estimations.df$subcorpus=="TeDDi", ]) # number of TeDDi (modern writing) sequences
 nrow(estimations.df[estimations.df$subcorpus=="Cuneiform (Uruk V)", ]) # number of Uruk V proto-cuneiform sequences
 nrow(estimations.df[estimations.df$subcorpus=="Cuneiform (Uruk IV)", ]) 

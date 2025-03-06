@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content />
+<meta name="author" content="Chris Bentz" />
 
 
 <title>Estimations of Quantitative Features for SignBase Objects</title>
@@ -351,7 +351,8 @@ display: none;
 
 <h1 class="title toc-ignore">Estimations of Quantitative Features for
 SignBase Objects</h1>
-<h4 class="author"></h4>
+<h4 class="author">Chris Bentz</h4>
+<h4 class="date">06.03.2025</h4>
 
 </div>
 
@@ -368,7 +369,7 @@ in Bentz (2023). The repetition measure was tested also in Sproat
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
 <p>Give the session info (reduced).</p>
-<pre><code>## [1] &quot;R version 4.4.0 (2024-04-24)&quot;</code></pre>
+<pre><code>## [1] &quot;R version 4.3.3 (2024-02-29)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
 </div>
 <div id="load-libraries" class="section level1">
@@ -485,7 +486,7 @@ counter &lt;- counter + 1
 }
 end_time &lt;- Sys.time()
 end_time - start_time</code></pre>
-<pre><code>## Time difference of 1.708612 secs</code></pre>
+<pre><code>## Time difference of 1.247578 secs</code></pre>
 <pre class="r"><code>#estimations.df</code></pre>
 <p>Merge estimations with original file.</p>
 <pre class="r"><code>sign.data.est &lt;- merge(sign.data, estimations.df, by = &quot;object_id&quot;)</code></pre>
@@ -513,9 +514,7 @@ checking of the output data structure.</p>
 <div id="package-references" class="section level1">
 <h1>Package References</h1>
 <pre><code>## Bentz C, Alikaniotis D (2017). _Hrate: Implements LZ estimator for
-## texts_. R package version 0.2, commit
-## b67b4bb5f5430ce42d2844da30ddf5642540aa30,
-## &lt;https://github.com/dimalik/Hrate&gt;.</code></pre>
+## texts_. R package version 0.2.</code></pre>
 <pre><code>## Wickham H (2023). _stringr: Simple, Consistent Wrappers for Common
 ## String Operations_. R package version 1.5.1,
 ## &lt;https://CRAN.R-project.org/package=stringr&gt;.</code></pre>

@@ -1,7 +1,7 @@
 ---
 title: "SignBase: Maps for Swabian Jura Sites"
-author: ""
-date: ""
+author: "Chris Bentz"
+date: "06.03.2025"
 output:
   html_document: default
   pdf_document: default
@@ -45,10 +45,10 @@ installed.packages()[names(sessionInfo()$otherPkgs), "Version"]
 # Load data
 Run this code to load the file with data on Aurignacian objects. 
 ```{r}
-objects <- read.csv("~/Github/PaleoSigns/data/signBase/Sb2Artifact-2024-10-17.csv")
+objects <- read.csv("~/Github/PaleoSigns/data/signBase/Sb2Artifact-2025-03-06.csv")
 nrow(objects)
 # Select Aurignacian objects from Swabian Jura Caves
-objects <- objects[objects$archaeological_unit == "Aurignacien", ]
+objects <- objects[objects$archaeological_unit == "Aurignacian", ]
 objects <- objects[objects$site_name == "Vogelherd" |
                      objects$site_name == "Hohle Fels" |
                      objects$site_name == "Geissenklösterle" |
@@ -66,39 +66,11 @@ colnames(sites) <- c("site_name", "number_of_objects")
 print(sites)
 ```
 
-# Collapse Factors
-Collapse some factors of meta information which are uncommon and/or related. 
-```{r}
-# material
-table(objects$material)
-# object_type
-table(objects$object_type)
-
-# material: collapse manually
-objects$material <- fct_collapse(objects$material,
-             ivory = "ivory",
-             antler = "antler",
-             bone = "bone",
-             other_level = "other")
-
-# object_type: collapse manually
-objects$object_type <- fct_collapse(objects$object_type,
-             figurine_anthropomorph = c("figurine anthropomorph",
-                          "plaquette"), 
-             # note: the "plaquette" is the so-called Adorant with an anthropomorph figure on it.
-             figurine_zoomorph = c("figurine zoomorph"),
-             tool = c("awl", "bâton percé",
-                      "rod/bâton", "spatula/lissoir"),
-             tube_flute = c("flute", "tube", "possible flute", "tube/flute"),
-             personal_ornament = c("personal ornament"),
-             other_level = "other")
-```
-
 ## Maps
 Set API key. API keys need to be received for stadiamaps and the google API by signing up online.
 ```{r}
-register_stadiamaps(key = "c56e7665-ab34-4608-8730-428e35d2766e", write = FALSE)
-register_google(key = "AIzaSyDVDHFLK0KnDoxuRfEauKSzvU1Udxu92RY")
+register_stadiamaps(key = "", write = FALSE)
+register_google(key = "", write = FALSE)
 ```
 
 ## Map of Germany
@@ -154,39 +126,7 @@ swabianJura.map <- object.density.map +
   inset(ggplotGrob(germany.map), xmin = 9.72, xmax = 9.98, ymin = 48.5, ymax = 48.69)
 swabianJura.map
 ```
-
-Subset object data frame according to cave site.
-```{r}
-objects.gkl <- objects[objects$site_name == "Geissenklösterle", ]
-objects.hfc <- objects[objects$site_name == "Hohle Fels", ]
-objects.vhc <- objects[objects$site_name == "Vogelherd", ]
-objects.hss <- objects[objects$site_name == "Hohlenstein-Stadel", ]
-```
-
 ## Maps of Achtal and Lonetal
-
-### Downsample the object data
-This is necessary since all the objects would overcrowed the plots.
-```{r}
-set.seed(15022018)
-# Geissenklösterle
-# Remove objects of type "other", this reduces the number of objects to display strings for
-objects.gkl.sample <- objects.gkl[objects.gkl$object_type != "other", ]
-# sample subset of objects randomly (otherwise the plot is overcrowded)
-objects.gkl.sample <- sample_n(objects.gkl.sample, 20)
-
-# Hohle Fels
-# Remove objects of type "other", this reduces the number of objects to display strings for
-objects.hfc.sample <- objects.hfc[objects.hfc$object_type != "other", ]
-# sample subset of objects randomly (otherwise the plot is overcrowded)
-objects.hfc.sample <- sample_n(objects.hfc.sample, 20)
-
-# Vogelherd 
-# Remove objects of type "other", this reduces the number of objects to display strings for
-objects.vhc.sample <- objects.vhc[objects.vhc$object_type != "other", ]
-# sample subset objects randomly (otherwise the plot is overcrowded)
-objects.vhc.sample <- sample_n(objects.vhc.sample, 20)
-```
 
 ### Maps with objects for Achtal and Lonetal
 
@@ -198,20 +138,20 @@ map.lonetal <- get_map(location = c(lon = 10.185, lat = 48.5546),
 ggmap(map.lonetal)
 
 # Lonetal plot
-object.map.lonetal <- ggmap(map.lonetal) +
-  # Hohlenstein-Stadel
-  geom_text_repel(data = objects.hss, 
-                  aes(x = longitude, y = latitude, 
-                      label = paste(object_id, substring(sign_coding, 1, 30), sep = "  ")),
-                  color = "white",
-                  direction = 'y',
-                  fontface = "bold",
-                  nudge_x = 0.004,
-                  hjust = 0,
-                  alpha = 0.8,
-                  segment.size = 0.4,
-                  size = 3,
-                  max.overlaps = Inf) +
+map.lonetal <- ggmap(map.lonetal) +
+  # # Hohlenstein-Stadel
+  # geom_text_repel(data = objects.hss, 
+  #                 aes(x = longitude, y = latitude, 
+  #                     label = paste(object_id, substring(sign_coding, 1, 30), sep = "  ")),
+  #                 color = "white",
+  #                 direction = 'y',
+  #                 fontface = "bold",
+  #                 nudge_x = 0.004,
+  #                 hjust = 0,
+  #                 alpha = 0.8,
+  #                 segment.size = 0.4,
+  #                 size = 3,
+  #                 max.overlaps = Inf) +
   geom_segment(aes(x = 10.194, y = 48.559, xend = 10.17255, yend = 48.54975), color = "white",
                linetype = 3) +
   theme(legend.position = "none") +
@@ -221,7 +161,7 @@ object.map.lonetal <- ggmap(map.lonetal) +
   annotate("text", x = 10.188, y = 48.56, label = "Vogelherd", colour = "white") +
   annotate("segment", x = 10.17255, xend = 10.17255, y = 48.54975, yend = 48.547, colour = "white") +
   annotate("text", x = 10.178, y = 48.547, label = "Hohlenstein-Stadel", colour = "white")
-object.map.lonetal
+map.lonetal
 ```
 
 Map of the Achtal
@@ -232,7 +172,7 @@ map.achtal <- get_map(location = c(lon = 9.76473, lat = 48.39075),
 ggmap(map.achtal)
 
 # Achtal Plot
-object.map.achtal <- ggmap(map.achtal) +
+map.achtal <- ggmap(map.achtal) +
   ggtitle("Ach Valley") +
   annotate("segment", x = 9.772222, y = 48.398333, xend = 9.754103, yend = 48.379117, color = "white",
                linetype = 3) +
@@ -241,96 +181,20 @@ object.map.achtal <- ggmap(map.achtal) +
   annotate("text", x = 9.772222, y = 48.404, label = "Geissenklösterle", colour = "white") +
   annotate("segment", x = 9.754103, xend = 9.754103, y = 48.379117, yend = 48.376, colour = "white") +
   annotate("text", x = 9.754103, y = 48.375, label = "Hohle Fels", colour = "white")
-object.map.achtal
-```
-
-Map with objects for Vogelherd cave.
-```{r, warning = F}
-# Vogelherd, get map
-map.vogelherd <- get_map(location = c(lon = 10.195, lat = 48.5586), 
-                         zoom = 19, maptype = "satellite", source = "google")
-ggmap(map.vogelherd)
-
-# Vogelherd plot
-object.map.vogelherd <- ggmap(map.vogelherd) +
-  geom_text_repel(data = objects.vhc.sample, 
-                  aes(x = 10.1943, y = 48.5586, 
-                      label = paste(object_id, substring(sign_coding, 1, 30), sep = "  ")),
-                  color = "white",
-                  fontface = "bold",
-                  alpha = 0.8,
-                  direction = 'y',
-                  nudge_x = 0.0003,
-                  hjust = 0,
-                  #segment.size = 0.4,
-                  size = 3,
-                  max.overlaps = Inf) +
-  ggtitle(paste("Vogelherd Cave, total n = ", nrow(objects.vhc), sep ="")) +
-  theme(legend.position = "bottom")
-object.map.vogelherd
-```
-
-Map with objects for Geissenklösterle cave.
-```{r, warning = F}
-# Geissenklösterle, get map
-map.gkl <- get_map(location = c(lon = 9.7725, lat = 48.3982), 
-                         zoom = 18, maptype = "satellite", source = "google")
-ggmap(map.gkl)
-
-# Geissenklösterle plot
-object.map.gkl <- ggmap(map.gkl) +
-  geom_text_repel(data = objects.gkl.sample, 
-                  aes(x = 9.7715, y = 48.3982, 
-                      label = paste(object_id, substring(sign_coding, 1, 30), sep = "  ")),
-                  direction = 'y',
-                  color = "white",
-                  fontface = "bold",
-                  nudge_x = 0.0004,
-                  hjust = 0,
-                  #segment.size = 0.4,
-                  size = 3,
-                  max.overlaps = Inf) +
-  ggtitle(paste("Geissenklösterle Cave, total n = ", nrow(objects.gkl), sep ="")) +
-  theme(legend.position = "none")
-object.map.gkl
-```
-Map with objects for Hohle Fels cave.
-```{r, warning = F}
-# Hohle Fels, get map
-map.hfc <- get_map(location = c(lon = 9.7547, lat = 48.379117), 
-                         zoom = 19, maptype = "satellite", source = "google")
-ggmap(map.hfc)
-
-# Hohle Fels plot
-object.map.hfc <- ggmap(map.hfc) +
-  geom_text_repel(data = objects.hfc.sample, 
-                  aes(x = 9.754103, y = 48.379117, color = object_type, 
-                      label = paste(object_id, substring(sign_coding, 1, 30), sep = "  ")),
-                  direction = 'y',
-                  color = "white",
-                  fontface = "bold",
-                  nudge_x = 0.0004,
-                  hjust = 0,
-                  #segment.size = 0.4,
-                  size = 3,
-                  max.overlaps = Inf) +
-  ggtitle(paste("Hohle Fels Cave, total n = ", nrow(objects.hfc), sep ="")) +
-  theme(legend.position = "none")
-object.map.hfc
+map.achtal
 ```
 
 Combine plots.
 ```{r, fig.width = 15, fig.height = 5, warning = F}
-combined.plot <- ggarrange(swabianJura.map, object.map.lonetal, object.map.vogelherd,
-                           object.map.achtal, object.map.hfc, object.map.gkl,
-                           ncol = 3, nrow = 2,
+combined.plot <- ggarrange(swabianJura.map, map.lonetal, map.achtal,
+                           ncol = 3, nrow = 1,
                            labels = "AUTO")
 ```
 
 Safe complete figure to file
 ```{r}
 ggsave("~/Github/PaleoSigns/maps/maps_combined.pdf", 
-       combined.plot, dpi = 500, width = 15, height = 10, device = cairo_pdf)
+       combined.plot, dpi = 500, width = 15, height = 5, device = cairo_pdf)
 ```
 
 # Package References

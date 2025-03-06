@@ -1,10 +1,10 @@
 ---
 title: 'Analyses: Swabian Aurignacian'
-author: ''
-date: ''
+author: 'Chris Bentz'
+date: '06.03.2025'
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -52,7 +52,7 @@ Load feature estimations with meta data for the Aurignacian mobile objects.
 ```{r}
 sign.data <- read.csv("~/Github/PaleoSigns/results/features/signBase_features.csv")
 # select Aurignacian data
-sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien", ]
+#sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacian", ]
 ```
 
 # Simple Stats
@@ -90,11 +90,11 @@ sign.data$material <- fct_collapse(sign.data$material,
 # object_type: collapse manually
 sign.data$object_type <- fct_collapse(sign.data$object_type,
              figurine_anthropomorph = c("figurine anthropomorph",
-                          "plaquette"),
-             # note: the "plaquette" is the so-called Adorant with an anthropomorph figure on it.
+                          "plaque"),
+             # note: the "plaque" is the so-called Adorant with an anthropomorph figure on it.
              figurine_zoomorph = c("figurine zoomorph"),
-             tool = c("awl", "bâton percé",
-                      "rod/bâton", "spatula/lissoir"),
+             tool = c("awl", "perforated baton",
+                      "rod/baton", "spatula/lissoir"),
              tube_flute = c("flute", "tube", "tube/flute"),
              personal_ornament = c("personal ornament"),
              other_level = "other")
@@ -104,7 +104,7 @@ Exclude certain levels of columns to check the robustness of results.
 ```{r}
 #sign.data <- sign.data[sign.data$object_type != "other" &
 #                       sign.data$material != "other" , ]
-#sign.data <- sign.data[sign.data$coding_certainty != "Uncertain", ]
+#sign.data <- sign.data[sign.data$coding_certainty != "uncertain", ]
 # sign.data <- sign.data[sign.data$num.tokens < 100, ]
 
 # number of sequences/objects after preprocessing

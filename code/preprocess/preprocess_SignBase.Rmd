@@ -1,7 +1,7 @@
 ---
 title: "Preprocessing for SignBase Sequences"
-author: ''
-date: ""
+author: 'Chris Bentz'
+date: "06.03.2025"
 output:
   pdf_document: default
   html_document: default
@@ -36,16 +36,16 @@ sessionInfo()$R.version$platform
 ```{r}
 # load data from github repo
 # sign typology
-sign.typology <- read.csv("~/Github/PaleoSigns/data/signBase/Sign-2024-07-17.csv")
+sign.typology <- read.csv("~/Github/PaleoSigns/data/signBase/Sign-2025-03-06.csv")
 #print(sign.typology[,1:4])
 ```
 
 ## Coding of Sign Sequences
 ```{r}
 # sign codings and meta info per object
-sign.data <- read.csv("~/Github/PaleoSigns/data/signBase/Sb2Artifact-2024-11-21.csv")
+sign.data <- read.csv("~/Github/PaleoSigns/data/signBase/Sb2Artifact-2025-03-06.csv")
 # select objects of the Swabian Aurignacien
-sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacien" &
+sign.data <- sign.data[sign.data$archaeological_unit == "Aurignacian" &
                      sign.data$site_name == "Vogelherd" |
                      sign.data$site_name == "Hohle Fels" |
                      sign.data$site_name == "Geissenklösterle" |
@@ -75,7 +75,7 @@ sign.data <- subset(sign.data, select = -c(short_description, references))
 # remove rows for which there is no sign coding
 sign.data <- sign.data[!sign.data$sign_coding == "", ]
 # remove rows with "very uncertain" sign codings
-sign.data <- sign.data[!sign.data$coding_certainty == "Very uncertain", ]
+sign.data <- sign.data[!sign.data$coding_certainty == "very uncertain", ]
 ```
 
 Remove UTF-8 characters which do not represent actual signs on the objects, i.e annotations. See also list of sign types (sign.typology) above.

@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content />
+<meta name="author" content="Chris Bentz" />
 
 
 <title>Preprocessing for SignBase Sequences</title>
@@ -350,7 +350,8 @@ display: none;
 
 
 <h1 class="title toc-ignore">Preprocessing for SignBase Sequences</h1>
-<h4 class="author"></h4>
+<h4 class="author">Chris Bentz</h4>
+<h4 class="date">06.03.2025</h4>
 
 </div>
 
@@ -388,7 +389,7 @@ introduce randomness where order was intended by the scribes.</p>
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
 <p>Give the session info (reduced).</p>
-<pre><code>## [1] &quot;R version 4.4.0 (2024-04-24)&quot;</code></pre>
+<pre><code>## [1] &quot;R version 4.3.3 (2024-02-29)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
 </div>
 <div id="load-data" class="section level1">
@@ -397,64 +398,15 @@ introduce randomness where order was intended by the scribes.</p>
 <h2>List of Sign Types</h2>
 <pre class="r"><code># load data from github repo
 # sign typology
-sign.typology &lt;- read.csv(&quot;~/Github/PaleoSigns/data/signBase/Sign-2024-07-17.csv&quot;)
-print(sign.typology[,1:4])</code></pre>
-<pre><code>##    id character       type                  signbase_name
-## 1  48           annotation              linear separation
-## 2  47         _ annotation          non-linear separation
-## 3  46         } annotation           non-calibrated right
-## 4  45         { annotation            non-calibrated left
-## 5  44         ) annotation                  overlap right
-## 6  43         ( annotation                   overlap left
-## 7  42         ] annotation               non-linear right
-## 8  41         [ annotation                non-linear left
-## 9  40         ! annotation                broken sequence
-## 10 39         &amp; annotation                          other
-## 11 38         ? annotation                   undetermined
-## 12 37         Π       sign                       Pi-shape
-## 13 36         Y       sign                        Y-shape
-## 14 35         ⚹       sign                           star
-## 15 34         p       sign                      pin right
-## 16 33         q       sign                       pin left
-## 17 32         C       sign                concentric line
-## 18 31         ö       sign                            paw
-## 19 30         Z       sign                       zoomorph
-## 20 29         A       sign                  anthropomorph
-## 21 28         ▽       sign                          vulva
-## 22 27         $       sign                  circum spiral
-## 23 26         V       sign                        V-shape
-## 24 25         ~       sign                      maccaroni
-## 25 24         #       sign                        hashtag
-## 26 23         ▯       sign                      rectangle
-## 27 22         ⦚       sign                     zigzag row
-## 28 21         W       sign                         zigzag
-## 29 20         ≠       sign                       hatching
-## 30 19         ⊞       sign                           grid
-## 31 18         ♢       sign                        rhombus
-## 32 17         H       sign                        H-shape
-## 33 16         X       sign                          cross
-## 34 15         o       sign                         cupule
-## 35 14         °       sign                            dot
-## 36 13         O       sign                   circum notch
-## 37 12         ^       sign                   radial notch
-## 38 11         &lt;       sign  oblique notch (left pointing)
-## 39 10         &gt;       sign oblique notch (right pointing)
-## 40  9         v       sign                          notch
-## 41  8        〰       sign                    circum line
-## 42  7         ¦       sign                      dash line
-## 43  6         ¤       sign                    radial line
-## 44  5         –       sign                horizontal line
-## 45  4        \\       sign    oblique line (left leaning)
-## 46  3         /       sign   oblique line (right leaning)
-## 47  2         l       sign                     short line
-## 48  1         |       sign                      long line</code></pre>
+sign.typology &lt;- read.csv(&quot;~/Github/PaleoSigns/data/signBase/Sign-2025-03-06.csv&quot;)
+#print(sign.typology[,1:4])</code></pre>
 </div>
 <div id="coding-of-sign-sequences" class="section level2">
 <h2>Coding of Sign Sequences</h2>
 <pre class="r"><code># sign codings and meta info per object
-sign.data &lt;- read.csv(&quot;~/Github/PaleoSigns/data/signBase/Sb2Artifact-2024-11-21.csv&quot;)
+sign.data &lt;- read.csv(&quot;~/Github/PaleoSigns/data/signBase/Sb2Artifact-2025-03-06.csv&quot;)
 # select objects of the Swabian Aurignacien
-sign.data &lt;- sign.data[sign.data$archaeological_unit == &quot;Aurignacien&quot; &amp;
+sign.data &lt;- sign.data[sign.data$archaeological_unit == &quot;Aurignacian&quot; &amp;
                      sign.data$site_name == &quot;Vogelherd&quot; |
                      sign.data$site_name == &quot;Hohle Fels&quot; |
                      sign.data$site_name == &quot;Geissenklösterle&quot; |
@@ -462,13 +414,13 @@ sign.data &lt;- sign.data[sign.data$archaeological_unit == &quot;Aurignacien&quo
                      sign.data$site_name == &quot;Bockstein-Törle&quot;, ]
 # display the head of some columns of the data
 head(subset(sign.data, select = c(&quot;object_id&quot;, &quot;archaeological_unit&quot;, &quot;site_name&quot;, &quot;sign_coding&quot;)))</code></pre>
-<pre><code>##     object_id archaeological_unit       site_name             sign_coding
-## 91    bst0003         Aurignacien Bockstein-Törle                        
-## 92    bst0002         Aurignacien Bockstein-Törle                        
-## 162   vhc0168         Aurignacien       Vogelherd          &gt;&gt;&gt;&gt;&gt;&gt; ! &gt;&gt;&gt;&gt;&gt;
-## 163   vhc0167         Aurignacien       Vogelherd vvvvvvvvvvvvvvvvvv _ v!
-## 164   vhc0166         Aurignacien       Vogelherd           vvvvvvv _ [&amp;]
-## 165   vhc0165         Aurignacien       Vogelherd   !vvvv v v v vv v &gt;&gt;&gt;&gt;</code></pre>
+<pre><code>##   object_id archaeological_unit       site_name             sign_coding
+## 1   bst0003         Aurignacian Bockstein-Törle                        
+## 2   bst0002         Aurignacian Bockstein-Törle                        
+## 3   vhc0168         Aurignacian       Vogelherd          &gt;&gt;&gt;&gt;&gt;&gt; ! &gt;&gt;&gt;&gt;&gt;
+## 4   vhc0167         Aurignacian       Vogelherd vvvvvvvvvvvvvvvvvv _ v!
+## 5   vhc0166         Aurignacian       Vogelherd           vvvvvvv _ [&amp;]
+## 6   vhc0165         Aurignacian       Vogelherd   !vvvv v v v vv v &gt;&gt;&gt;&gt;</code></pre>
 </div>
 </div>
 <div id="simple-stats-before-preprocessing" class="section level1">
@@ -486,22 +438,20 @@ table(sign.data$site_name)</code></pre>
 <pre class="r"><code># material
 table(sign.data$material)</code></pre>
 <pre><code>## 
-## animal tooth       antler         bone       fossil        ivory        ochre 
-##            1            7           76            1          172            1 
-##    sandstone        slate 
-##            1            1</code></pre>
+##    antler      bone    fossil     ivory     ochre sandstone     slate     tooth 
+##         7        76         1       172         1         1         1         1</code></pre>
 <pre class="r"><code># object_type
 table(sign.data$object_type)</code></pre>
 <pre><code>## 
-##          antler object                    awl            bâton percé 
-##                      3                      6                      4 
-##               figurine figurine anthropomorph      figurine zoomorph 
-##                      8                      6                     25 
-##                  flute      personal ornament              plaquette 
-##                     10                     18                      1 
+##          antler object                    awl               figurine 
+##                      3                      6                      8 
+## figurine anthropomorph      figurine zoomorph                  flute 
+##                      6                     25                     10 
+##       perforated baton      personal ornament                 plaque 
+##                      4                     18                      1 
 ##                  point      possible figurine         possible flute 
 ##                      1                     24                     15 
-##              rod/bâton        spatula/lissoir                   tube 
+##              rod/baton        spatula/lissoir                   tube 
 ##                     20                     12                      1 
 ##             tube/flute           undetermined 
 ##                     24                     82</code></pre>
@@ -515,7 +465,7 @@ sign.data &lt;- subset(sign.data, select = -c(short_description, references))
 # remove rows for which there is no sign coding
 sign.data &lt;- sign.data[!sign.data$sign_coding == &quot;&quot;, ]
 # remove rows with &quot;very uncertain&quot; sign codings
-sign.data &lt;- sign.data[!sign.data$coding_certainty == &quot;Very uncertain&quot;, ]</code></pre>
+sign.data &lt;- sign.data[!sign.data$coding_certainty == &quot;very uncertain&quot;, ]</code></pre>
 <p>Remove UTF-8 characters which do not represent actual signs on the
 objects, i.e annotations. See also list of sign types (sign.typology)
 above.</p>
@@ -545,34 +495,32 @@ sign.data &lt;- sign.data[nchar(sign.data$coding_clean) &gt; 1, ]</code></pre>
 <h1>Simple Stats (after Preprocessing)</h1>
 <pre class="r"><code># number of sequences/objects
 nrow(sign.data)</code></pre>
-<pre><code>## [1] 211</code></pre>
+<pre><code>## [1] 213</code></pre>
 <pre class="r"><code># cave sites
 table(sign.data$site_name)</code></pre>
 <pre><code>## 
 ##    Bockstein-Törle   Geissenklösterle         Hohle Fels Hohlenstein-Stadel 
-##                  1                 28                 33                  2 
+##                  1                 29                 33                  2 
 ##          Vogelherd 
-##                147</code></pre>
+##                148</code></pre>
 <pre class="r"><code># material
 table(sign.data$material)</code></pre>
 <pre><code>## 
-## animal tooth       antler         bone       fossil        ivory    sandstone 
-##            1            6           67            1          134            1 
-##        slate 
-##            1</code></pre>
+##    antler      bone    fossil     ivory sandstone     slate     tooth 
+##         6        68         1       135         1         1         1</code></pre>
 <pre class="r"><code># object_type
 table(sign.data$object_type)</code></pre>
 <pre><code>## 
-##          antler object                    awl            bâton percé 
-##                      3                      4                      3 
-##               figurine figurine anthropomorph      figurine zoomorph 
-##                      6                      6                     21 
-##                  flute      personal ornament              plaquette 
-##                      8                     16                      1 
-##      possible figurine         possible flute              rod/bâton 
+##          antler object                    awl               figurine 
+##                      3                      4                      6 
+## figurine anthropomorph      figurine zoomorph                  flute 
+##                      6                     21                      8 
+##       perforated baton      personal ornament                 plaque 
+##                      4                     16                      1 
+##      possible figurine         possible flute              rod/baton 
 ##                     20                     15                     15 
 ##        spatula/lissoir                   tube             tube/flute 
-##                     10                      1                     20 
+##                     10                      1                     21 
 ##           undetermined 
 ##                     62</code></pre>
 </div>

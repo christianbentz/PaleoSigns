@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content />
+<meta name="author" content="Chris Bentz" />
 
 
 <title>Estimations Combined</title>
@@ -350,7 +350,8 @@ display: none;
 
 
 <h1 class="title toc-ignore">Estimations Combined</h1>
-<h4 class="author"></h4>
+<h4 class="author">Chris Bentz</h4>
+<h4 class="date">06.03.2025</h4>
 
 </div>
 
@@ -366,7 +367,7 @@ one csv file. For example, the different names for sign sequences
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
 <p>Give the session info (reduced).</p>
-<pre><code>## [1] &quot;R version 4.4.0 (2024-04-24)&quot;</code></pre>
+<pre><code>## [1] &quot;R version 4.3.3 (2024-02-29)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
 <div id="load-libraries" class="section level2">
 <h2>Load libraries</h2>
@@ -393,8 +394,6 @@ sequences.</p>
 <h2>SIGNBASE</h2>
 <pre class="r"><code># load signbase estimations for sign sequences on objects
 sign.data &lt;- read.csv(&quot;~/Github/PaleoSigns/results/features/signBase_features.csv&quot;)
-# select Aurignacian objects
-sign.data &lt;- sign.data[sign.data$archaeological_unit == &quot;Aurignacien&quot;, ] 
 
 # select columns for direct comparison with TeDDi sample
 sign.data.selected &lt;- select(sign.data, c(&#39;object_id&#39;,&#39;archaeological_unit&#39;, &#39;coding_clean&#39;, 
@@ -470,12 +469,12 @@ names(teddi.selected)[names(teddi.selected) == &quot;text&quot;] &lt;- &quot;seq
                         teddi.selected)
 head(estimations.df)</code></pre>
 <pre><code>##        id   subcorpus           sequence num.tokens num.types huni.chars
-## 1 bst0001 Aurignacien vvvvvvvvvvvvvvvvvv         18         1  0.0000000
-## 2 gkl0001 Aurignacien       ||| //////_V         12         5  1.8962406
-## 3 gkl0002 Aurignacien              vvvvv          5         1  0.0000000
-## 4 gkl0003 Aurignacien          vvvv vvvv          9         2  0.5032583
-## 5 gkl0004 Aurignacien     vvvvvvvvvvvvvv         14         1  0.0000000
-## 6 gkl0005 Aurignacien                |||          3         1  0.0000000
+## 1 bst0001 Aurignacian vvvvvvvvvvvvvvvvvv         18         1  0.0000000
+## 2 gkl0001 Aurignacian       ||| //////_V         12         5  1.8962406
+## 3 gkl0002 Aurignacian              vvvvv          5         1  0.0000000
+## 4 gkl0003 Aurignacian          vvvv vvvv          9         2  0.5032583
+## 5 gkl0004 Aurignacian     vvvvvvvvvvvvvv         14         1  0.0000000
+## 6 gkl0005 Aurignacian                |||          3         1  0.0000000
 ##   hrate.chars  ttr.chars  rm.chars
 ## 1   0.6171397 0.05555556 1.0000000
 ## 2   1.5295563 0.41666667 0.6363636
@@ -487,12 +486,12 @@ head(estimations.df)</code></pre>
 <div id="simple-stats" class="section level1">
 <h1>Simple Stats</h1>
 <pre class="r"><code>nrow(estimations.df) # number of sequences with feature estimations</code></pre>
-<pre><code>## [1] 3076</code></pre>
+<pre><code>## [1] 3078</code></pre>
 <pre class="r"><code>unique(estimations.df$subcorpus) # names of subcorpora</code></pre>
-<pre><code>## [1] &quot;Aurignacien&quot;          &quot;Cuneiform (Uruk V)&quot;   &quot;Cuneiform (Uruk IV)&quot; 
+<pre><code>## [1] &quot;Aurignacian&quot;          &quot;Cuneiform (Uruk V)&quot;   &quot;Cuneiform (Uruk IV)&quot; 
 ## [4] &quot;Cuneiform (Uruk III)&quot; &quot;TeDDi&quot;</code></pre>
-<pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Aurignacien&quot;, ]) # number of Aurignacien sequences</code></pre>
-<pre><code>## [1] 211</code></pre>
+<pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Aurignacian&quot;, ]) # number of Aurignacien sequences</code></pre>
+<pre><code>## [1] 213</code></pre>
 <pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;TeDDi&quot;, ]) # number of TeDDi (modern writing) sequences</code></pre>
 <pre><code>## [1] 1040</code></pre>
 <pre class="r"><code>nrow(estimations.df[estimations.df$subcorpus==&quot;Cuneiform (Uruk V)&quot;, ]) # number of Uruk V proto-cuneiform sequences</code></pre>
