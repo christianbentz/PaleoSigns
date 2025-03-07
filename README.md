@@ -4,8 +4,8 @@ This repository contains data and code to work on the statistical properties of 
 
 ## Data
 
-- signBase: Codings for geometric signs on Upper Paleolithic objects are given as csv file in data/signBase/.
-- TeDDi: Comparative sample of diverse languages and other symbol systems are given in data/TeDDi/.
+- signBase: Codings for geometric signs on mobile artefacts of the Swabian Aurignacian are given as csv file in data/signBase/.
+- TeDDi: Comparative sample of diverse languages are given in data/TeDDi/.
 - Proto-Cuneiform: Samples of transliterated sign strings of proto-cuneiform periods is given in data/CDLI/.
 
 ## Code
@@ -20,13 +20,13 @@ Preprocessing:
 Estimation:
 - estimation_TeDDi.Rmd: Estimates quantitative features (entropy, entropy rate, TTR, repetition rate) for each sequence of characters in the TeDDi lines sample. The results are output to results/features/teddi_features.csv.
 - estimation_SignBase.Rmd: Estimates quantitative features (entropy, entropy rate, TTR, repetition rate) for each sequence of characters in the SignBase data. The results are output to results/features/signBase_features.csv.
-- estimation_Cunei.Rmd: Estimates quantitative features (entropy, entropy rate, TTR, repetition rate) for each sequence of characters in the Proto-Cuneifrorm data from CDLI. The results are output to results/features/cuneiform_<period>_features.csv.
+- estimation_Cunei.Rmd: Estimates quantitative features (entropy, entropy rate, TTR, repetition rate) for each sequence of characters in the proto-cuneiform data from CDLI. The results are output to results/features/cuneiform_<period>_features.csv.
 - estimations_Comb.Rmd: This code combines the different data frame formats of the individual feature estimations (TeDDi, SignBase, CDLI) into one data frame with common column names for later processing. The combined file is output to results/features/features_combined.csv.
 
 ## Main Analyses
-- analyses_featureDistributions.Rmd: Analyses of feature value distributions per type of subcorpus, i.e. modern writing (TeDDi), proto-cuneiform (CDLI), and paleolithic signs (SignBase). This includes density plots for the four features (TTR, entropy rate, unigram entropy, and repetition rate), correlation plots between these features, and a PCA analysis with visualization.
-- analyses_Classification_KNN.Rmd: K-Nearest-Neighbors classification of sequences into groups (Aurignacien, Uruk V-Uruk III, and TeDDi) by using the feature values per sequence. The code outputs classification results (accuracy, F1-score, etc.) as well as actual predicted and observed labels for post hoc analyses. Output files are written to results/classifier/KNN.
-- analyses_Classification_MLP.Rmd: Multi-Layer-Perceptron classification of sequences into groups (Aurignacien, Uruk V- Uruk III, and TeDDi) by using the feature values per sequence. The code outputs classification results (accuracy, F1-score, etc.) as well as actual predicted and observed labels for post hoc analyses. Output files are written to results/classifier/MLP.
+- analyses_featureDistributions.Rmd: Analyses of feature value distributions per subcorpus, i.e. modern writing (TeDDi), proto-cuneiform (CDLI), and paleolithic signs (SignBase). This includes density plots for the four features (TTR, entropy rate, unigram entropy, and repetition rate), correlation plots between these features, and a PCA analysis with visualization.
+- analyses_Classification_KNN.Rmd: K-Nearest-Neighbors classification of sequences into groups (Aurignacian, Uruk V-Uruk III, and TeDDi) by using the feature values per sequence. The code outputs classification results (accuracy, F1-score, etc.) as well as actual predicted and observed labels for post hoc analyses. Output files are written to results/classifier/KNN.
+- analyses_Classification_MLP.Rmd: Multi-Layer-Perceptron (feedforward neural net) classification of sequences into groups (Aurignacian, Uruk V- Uruk III, and TeDDi) by using the feature values per sequence. The code outputs classification results (accuracy, F1-score, etc.) as well as actual predicted and observed labels for post hoc analyses. Output files are written to results/classifier/MLP.
 - analyses_Classification_performance: Density distribution plots and p-values for the performance of KNN and MLP classification algorithms.
 
 ## Secondary Analyses
