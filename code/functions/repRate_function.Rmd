@@ -1,10 +1,10 @@
 ---
 title: "Repetition rate function"
-author: ''
-date: ''
+author: 'Chris Bentz'
+date: '06.03.2025'
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}

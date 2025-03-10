@@ -9,7 +9,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content />
+<meta name="author" content="Chris Bentz" />
 
 
 <title>Repetition rate function</title>
@@ -350,7 +350,8 @@ display: none;
 
 
 <h1 class="title toc-ignore">Repetition rate function</h1>
-<h4 class="author"></h4>
+<h4 class="author">Chris Bentz</h4>
+<h4 class="date">06.03.2025</h4>
 
 </div>
 
@@ -363,7 +364,7 @@ display: none;
 <div id="session-info" class="section level1">
 <h1>Session Info</h1>
 <p>Give the session info (reduced).</p>
-<pre><code>## [1] &quot;R version 4.4.0 (2024-04-24)&quot;</code></pre>
+<pre><code>## [1] &quot;R version 4.3.3 (2024-02-29)&quot;</code></pre>
 <pre><code>## [1] &quot;x86_64-pc-linux-gnu&quot;</code></pre>
 </div>
 <div id="function" class="section level1">
@@ -418,8 +419,7 @@ sequence3 &lt;- c(&quot;a&quot;, &quot;b&quot;)
 sequence4 &lt;- c(&quot;a&quot;, &quot;b&quot;, &quot;a&quot;)
 sequence5 &lt;- c(&quot;a&quot;, &quot;a&quot;, &quot;a&quot;, &quot;a&quot;)
 sequence6 &lt;- c(&quot;a&quot;, &quot;a&quot;, &quot;b&quot;, &quot;a&quot;)
-sequence7 &lt;- c(&quot;不&quot;,&quot;不&quot;,&quot;是&quot;, &quot;真&quot;, &quot;的&quot;, &quot;沒&quot;, &quot;有&quot;)
-sequence8 &lt;- c(&quot;.&quot;,&quot;*&quot;,&quot;*&quot;,&quot;:&quot;, &quot;,&quot;, &quot;,&quot;, &quot;;&quot;, &quot;.&quot;)
+sequence7 &lt;- c(&quot;.&quot;,&quot;*&quot;,&quot;*&quot;,&quot;:&quot;, &quot;,&quot;, &quot;,&quot;, &quot;;&quot;, &quot;.&quot;)
 
 print(rrate(sequence1, method = &quot;lsmo&quot;))</code></pre>
 <pre><code>## [1] 0</code></pre>
@@ -434,8 +434,6 @@ print(rrate(sequence1, method = &quot;lsmo&quot;))</code></pre>
 <pre class="r"><code>print(rrate(sequence6, method = &quot;lsmo&quot;))</code></pre>
 <pre><code>## [1] 0.3333333</code></pre>
 <pre class="r"><code>print(rrate(sequence7, method = &quot;lsmo&quot;))</code></pre>
-<pre><code>## [1] 0.1666667</code></pre>
-<pre class="r"><code>print(rrate(sequence8, method = &quot;lsmo&quot;))</code></pre>
 <pre><code>## [1] 0.2857143</code></pre>
 <pre class="r"><code>print(rrate(sequence1, method = &quot;sproat&quot;))</code></pre>
 <pre><code>## [1] 0</code></pre>
@@ -450,8 +448,6 @@ print(rrate(sequence1, method = &quot;lsmo&quot;))</code></pre>
 <pre class="r"><code>print(rrate(sequence6, method = &quot;sproat&quot;))</code></pre>
 <pre><code>## [1] 0.5</code></pre>
 <pre class="r"><code>print(rrate(sequence7, method = &quot;sproat&quot;))</code></pre>
-<pre><code>## [1] 1</code></pre>
-<pre class="r"><code>print(rrate(sequence8, method = &quot;sproat&quot;))</code></pre>
 <pre><code>## [1] 0.6666667</code></pre>
 </div>
 <div id="literature-references" class="section level1">
