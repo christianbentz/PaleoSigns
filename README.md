@@ -1,6 +1,6 @@
 # PaleoSigns
 
-This repository contains data and code to work on the statistical properties of Upper Paleolithic geometric signs of the Swabian Aurignacian. The relevant primary article is: Bentz and Dutkiewicz (under review). Ancient humans of 40 000 years ago communicated with a system of visual signs. 
+This repository contains data and code to work on the statistical properties of Upper Paleolithic geometric signs of the Swabian Aurignacian. The relevant primary article is: Bentz and Dutkiewicz (under review). Ancient humans of 40 000 years ago developed a system of visual signs. 
 
 ## Data
 
