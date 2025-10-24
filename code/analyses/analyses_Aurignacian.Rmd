@@ -1,7 +1,7 @@
 ---
 title: 'Analyses: Swabian Aurignacian'
 author: 'Chris Bentz'
-date: '06.03.2025'
+date: '24.10.2025'
 output:
   html_document: default
   pdf_document: default
@@ -39,6 +39,7 @@ library(GGally)
 library(MASS)
 library(forcats)
 library(jtools) # for effect plots by predictor variable
+library(effectsize)
 ```
 
 Give the package versions.
@@ -678,6 +679,13 @@ summary(best.model)
 ```
 Interpretation: In the model summary above, the reference level for object_type is "tools", i.e. the residue category. Hence, the entropy rates of sign sequences found on anthropomorph figurines are on average *higher* than the ones found on objects classified as tools. A similar effect occurs for zoomorph figurines which also carry more information than tools on average. Inversely, entropy rates of sequences on tubes and flutes as well as personal ornaments are somewhat *lower* than on tools. There is no significant effect of the volume of an object on the entropy rate (though the coefficient is positive, as one would expect). There is no significant effect of the age of an object (c. 30 000 to 40 000 years old) either. Lastly, fragmented objects tend to have lower entropy rate than ``almost complete'' ones. The details of the results (e.g. p-values) change for different versions of preprocessing (i.e. including and excluding certain data points), but the overall trends are similar. In particular, the entropy rate of sign sequences on zoomorph figurines is robustly higher than for the reference level of tools.   
 
+## Effect size
+Using the effectsize package function r2_semipartial() for getting partial effect sizes ($\Delta R^2$) for each predictor variable in the best model. This metric is tested in Algina et al. (2008) for different sample sizes and number of predictor variables.
+```{r}
+r2_semipartial(best.model)
+```
+Interpretation: Only the object type variable is associated with a $\Delta R^2$ value significantly higher than zero (i.e. the CI does not include zero).
+
 \newpage
 
 ## Checking of Model Assumptions
@@ -792,9 +800,14 @@ print(citation("performance"), style = "text")
 print(citation("see"), style = "text")
 print(citation("MASS"), style = "text")
 print(citation("jtools"), style = "text")
+print(citation("effectsize"), style = "text")
 ```
 
 # Literature References
+Algina, J., Keselman, H. J., & Penfield, R. D. (2008). Confidence intervals for the squared multiple semipartial correlation coefficient. Journal of Modern Applied Statistical Methods, 7(1), 2.
+
 Baayen, R. H. (2008). Analyzing Linguistic Data. A Practical Introduction to Statistics Using R. Cambridge: Cambridge University Press.
 
 Baayen, H. (2013). Multivariate Statistics. In: Podesva, R. J. & Sharma, D. (eds.), Research methods in linguistics. Cambridge: Cambridge University Press, p. 337-372.
+
+Funder, D. C., & Ozer, D. J. (2019). Evaluating effect size in psychological research: Sense and nonsense. Advances in methods and practices in psychological science, 2(2), 156-168.
