@@ -684,7 +684,7 @@ Using the effectsize package function r2_semipartial() for getting partial effec
 ```{r}
 r2_semipartial(best.model)
 ```
-Interpretation: Only the object type variable is associated with a $\Delta R^2$ value significantly higher than zero (i.e. the CI does not include zero).
+Interpretation: Only the object type variable is associated with a $\Delta R^2$ value significantly higher than zero (i.e. the CI does not include zero). An effect size value of $\Delta R^2 = 0.13$ is considered medium (upper range) by Field (2013).
 
 \newpage
 
@@ -810,4 +810,5 @@ Baayen, R. H. (2008). Analyzing Linguistic Data. A Practical Introduction to Sta
 
 Baayen, H. (2013). Multivariate Statistics. In: Podesva, R. J. & Sharma, D. (eds.), Research methods in linguistics. Cambridge: Cambridge University Press, p. 337-372.
 
-Funder, D. C., & Ozer, D. J. (2019). Evaluating effect size in psychological research: Sense and nonsense. Advances in methods and practices in psychological science, 2(2), 156-168.
+Field, A (2013) Discovering statistics using IBM SPSS Statistics. Fourth Edition. Sage: London.
+
